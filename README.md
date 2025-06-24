@@ -7,8 +7,4 @@
   <li>Updated upd3 address (Lobby.cs)</li>
   <li>Updated game version from 2.22 to 2.3 (GameData.cs)</li>
 </ul>
-<h3>Bugs</h3>
-<ul>
-  <li>Strange buggy wheel collision behaviour (Possible Cause: Buggy.cs: lines marked "FIXME")</li>
-</ul>
 </details>
