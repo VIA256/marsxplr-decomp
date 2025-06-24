@@ -1,4 +1,7 @@
 # Mars Explorer Decompilation Project
+## About
+My amatuer attempt at decompiling Mars Explorer so that it can be improved to run on newer machines and other platforms
+<hr>
 <details closed>
 <summary><h2>Assembly - UnityScript</h2></summary>
 <h3>About</h3>
@@ -8,6 +11,7 @@
   <li>Updated game version from 2.22 to 2.3 (GameData.cs)</li>
 </ul>
 </details>
+<hr>
 <details closed>
 <summary><h2>Mars Explorer</h2></summary>
 <h3>About</h3>
@@ -16,6 +20,7 @@
   <li>Libraries in here are referenced until they too will decompiled</li>
 </ul>
 </details>
+<hr>
 <details closed>
 <summary><h2>marsxplr_exe</h2></summary>
 <h3>About</h3>
