@@ -1,0 +1,138 @@
+Player: init engine
+Direct3D:
+    Version:  Direct3D 9.0c [igdumdim32.dll 10.18.10.3345]
+    Renderer: Intel(R) HD Graphics 4000
+    Vendor:   Intel
+    VRAM:     -1984 MB
+D3D: VRAM amount suspiciously low (less than 32MB for PS2.0 card)
+desktop: 1280x800 60Hz; virtual: 1280x800 at 0,0
+ GLib: Cannot convert message: Conversion from character set 'UTF-8' to 'CP1252' is not supported
+
+** (Mars Explorer.exe:4248): WARNING **: Missing method .ctor in assembly data-079934C8, type System.Runtime.Versioning.TargetFrameworkAttribute
+
+** (Mars Explorer.exe:4248): WARNING **: Can't find custom attr constructor image: data-079934C8 mtoken: 0x0a000004
+     Total Object count 225 (Before unload 130)
+    Total Object count 244 (Before unload 247)
+                 Total Object count 829 (Before unload 292)
+                   Failed to get pixels of splat texture
+ 
+(Filename: ..\..\Runtime\Terrain\SplatDatabase.cpp Line: 155)
+
+Failed to get pixels of splat texture
+ 
+(Filename: ..\..\Runtime\Terrain\SplatDatabase.cpp Line: 155)
+
+Failed to get pixels of splat texture
+ 
+(Filename: ..\..\Runtime\Terrain\SplatDatabase.cpp Line: 155)
+
+     Failed to get pixels of splat texture
+UnityEngine.TerrainData:set_splatPrototypes(SplatPrototype[])
+UnityEngine.TerrainData:set_splatPrototypes(SplatPrototype[])
+TerrainController:OnSceneGenerated()
+UnityEngine.GameObject:SendMessage(String, Object, SendMessageOptions)
+UnityEngine.GameObject:SendMessage(String, Object, SendMessageOptions)
+UnityEngine.GameObject:SendMessage(String, SendMessageOptions)
+_0024:MoveNext()
+
+[..\..\Runtime\Terrain\SplatDatabase.cpp line 155] 
+(Filename: ..\..\Runtime\Terrain\SplatDatabase.cpp Line: 155)
+
+Failed to get pixels of splat texture
+UnityEngine.TerrainData:set_splatPrototypes(SplatPrototype[])
+UnityEngine.TerrainData:set_splatPrototypes(SplatPrototype[])
+TerrainController:OnSceneGenerated()
+UnityEngine.GameObject:SendMessage(String, Object, SendMessageOptions)
+UnityEngine.GameObject:SendMessage(String, Object, SendMessageOptions)
+UnityEngine.GameObject:SendMessage(String, SendMessageOptions)
+_0024:MoveNext()
+
+[..\..\Runtime\Terrain\SplatDatabase.cpp line 155] 
+(Filename: ..\..\Runtime\Terrain\SplatDatabase.cpp Line: 155)
+
+Failed to get pixels of splat texture
+UnityEngine.TerrainData:set_splatPrototypes(SplatPrototype[])
+UnityEngine.TerrainData:set_splatPrototypes(SplatPrototype[])
+TerrainController:OnSceneGenerated()
+UnityEngine.GameObject:SendMessage(String, Object, SendMessageOptions)
+UnityEngine.GameObject:SendMessage(String, Object, SendMessageOptions)
+UnityEngine.GameObject:SendMessage(String, SendMessageOptions)
+_0024:MoveNext()
+
+[..\..\Runtime\Terrain\SplatDatabase.cpp line 155] 
+(Filename: ..\..\Runtime\Terrain\SplatDatabase.cpp Line: 155)
+
+Failed to get pixels of splat texture
+UnityEngine.TerrainData:set_splatPrototypes(SplatPrototype[])
+UnityEngine.TerrainData:set_splatPrototypes(SplatPrototype[])
+TerrainController:OnSceneGenerated()
+UnityEngine.GameObject:SendMessage(String, Object, SendMessageOptions)
+UnityEngine.GameObject:SendMessage(String, Object, SendMessageOptions)
+UnityEngine.GameObject:SendMessage(String, SendMessageOptions)
+_0024:MoveNext()
+
+[..\..\Runtime\Terrain\SplatDatabase.cpp line 155] 
+(Filename: ..\..\Runtime\Terrain\SplatDatabase.cpp Line: 155)
+
+Failed to get pixels of splat texture
+UnityEngine.TerrainData:RecalculateBaseMapIfDirty()
+UnityEngine.TerrainData:RecalculateBaseMapIfDirty()
+UnityEngine.Terrain:CullAllTerrains(Int32)
+
+[..\..\Runtime\Terrain\SplatDatabase.cpp line 155] 
+(Filename: ..\..\Runtime\Terrain\SplatDatabase.cpp Line: 155)
+
+Failed to get pixels of splat texture
+UnityEngine.TerrainData:RecalculateBaseMapIfDirty()
+UnityEngine.TerrainData:RecalculateBaseMapIfDirty()
+UnityEngine.Terrain:CullAllTerrains(Int32)
+
+[..\..\Runtime\Terrain\SplatDatabase.cpp line 155] 
+(Filename: ..\..\Runtime\Terrain\SplatDatabase.cpp Line: 155)
+
+Failed to get pixels of splat texture
+UnityEngine.TerrainData:RecalculateBaseMapIfDirty()
+UnityEngine.TerrainData:RecalculateBaseMapIfDirty()
+UnityEngine.Terrain:CullAllTerrains(Int32)
+
+[..\..\Runtime\Terrain\SplatDatabase.cpp line 155] 
+(Filename: ..\..\Runtime\Terrain\SplatDatabase.cpp Line: 155)
+
+Failed to get pixels of splat texture
+UnityEngine.TerrainData:RecalculateBaseMapIfDirty()
+UnityEngine.TerrainData:RecalculateBaseMapIfDirty()
+UnityEngine.Terrain:CullAllTerrains(Int32)
+
+[..\..\Runtime\Terrain\SplatDatabase.cpp line 155] 
+(Filename: ..\..\Runtime\Terrain\SplatDatabase.cpp Line: 155)
+
+ArgumentException: Getting control 0's position in a group with only 0 controls when doing repaint
+Aborting
+
+UnityEngine.GUILayoutGroup.GetNext () 
+UnityEngine.GUILayoutUtility.DoGetRect (Single minWidth, Single maxWidth, Single minHeight, Single maxHeight, UnityEngine.GUIStyle style, UnityEngine.GUILayoutOption[] options) [0x00000]
+UnityEngine.GUILayoutUtility.GetRect (Single width, Single height, UnityEngine.GUIStyle style, UnityEngine.GUILayoutOption[] options) [0x00000]
+UnityEngine.GUILayout.Space (Single pixels) 
+Game.GUIPanel (Int32 id) 
+UnityEngine.GUI+_Window.Do () 
+UnityEngine.GUI.EndWindows (UnityEngine.IDList idlist) 
+UnityEngine.GUIUtility.EndGUI (Int32 doLayout, Int32 doWindows, UnityEngine.IDList idlist) 
+ 
+(Filename:  Line: -1)
+
+    ArgumentException: Getting control 2's position in a group with only 2 controls when doing repaint
+Aborting
+
+UnityEngine.GUILayoutGroup.GetNext () 
+UnityEngine.GUILayoutUtility.DoGetRect (Single minWidth, Single maxWidth, Single minHeight, Single maxHeight, UnityEngine.GUIStyle style, UnityEngine.GUILayoutOption[] options) [0x00000]
+UnityEngine.GUILayoutUtility.GetRect (Single width, Single height, UnityEngine.GUIStyle style, UnityEngine.GUILayoutOption[] options) [0x00000]
+UnityEngine.GUILayout.Space (Single pixels) 
+Game.GUIPanel (Int32 id) 
+UnityEngine.GUI+_Window.Do () 
+UnityEngine.GUI.EndWindows (UnityEngine.IDList idlist) 
+UnityEngine.GUIUtility.EndGUI (Int32 doLayout, Int32 doWindows, UnityEngine.IDList idlist) 
+ 
+(Filename:  Line: -1)
+
+                                Total Object count 1012 (Before unload 1109)
+Cleanup player
