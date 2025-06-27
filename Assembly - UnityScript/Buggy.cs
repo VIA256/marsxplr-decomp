@@ -600,13 +600,12 @@ public class Buggy : MonoBehaviour
 					float[] array17 = hitCompress;
 					array17[RuntimeServices.NormalizeArrayIndex(array17, i)] = hitInfo.distance / (suspensionRange + wheelRadius) * -1f + 1f;
 					Vector3[] array18 = hitVelocity;
-					//FIXME ref Vector3 reference = ref array18[RuntimeServices.NormalizeArrayIndex(array18, i)];
 					Transform[] array19 = wheels;
 					Transform obj5 = array19[RuntimeServices.NormalizeArrayIndex(array19, i)];
 					Rigidbody myRigidbody = vehicle.myRigidbody;
 					Transform obj6 = transform;
 					Vector3[] array20 = wheelPositn;
-					//FIXME reference = obj5.InverseTransformDirection(myRigidbody.GetPointVelocity(obj6.TransformPoint(array20[RuntimeServices.NormalizeArrayIndex(array20, i)])));
+					hitVelocity[i] = obj5.InverseTransformDirection(myRigidbody.GetPointVelocity(obj6.TransformPoint(array20[RuntimeServices.NormalizeArrayIndex(array20, i)])));
 					if (isDynamic)
 					{
 						float[] array21 = hitFriction;
