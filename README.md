@@ -6,9 +6,19 @@ My amatuer attempt at decompiling Mars Explorer so that it can be improved to ru
 <summary><h2>Assembly - UnityScript</h2></summary>
 <h3>About</h3>
 <ul>
+  <li>(almost) all of the games compiled unityscripts</li>
   <li>Used ILSpy to decompile dll from marsxplr 2.22 win32 into C#</li>
   <li>Updated upd3 address (Lobby.cs)</li>
   <li>Updated game version from 2.22 to 2.3 (GameData.cs)</li>
+</ul>
+</details>
+<hr>
+<details closed>
+<summary><h2>Assembly - CSharp - first pass</h2></summary>
+<h3>About</h3>
+<ul>
+  <li>some of the games compiled C# scripts</li>
+  <li>decompiled with ilspy</li>
 </ul>
 </details>
 <hr>
