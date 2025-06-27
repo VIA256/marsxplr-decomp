@@ -2,7 +2,7 @@
   <PropertyGroup>
     <AssemblyName>26998b3a9cbf54825a27e5f2d3cc4df1</AssemblyName>
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-    <TargetFramework>net20</TargetFramework>
+    <TargetFramework>net35</TargetFramework>
   </PropertyGroup>
   <PropertyGroup>
     <LangVersion>3</LangVersion>
