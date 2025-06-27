@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <AssemblyName>Assembly - CSharp - first pass</AssemblyName>
+    <AssemblyName>26998b3a9cbf54825a27e5f2d3cc4df1</AssemblyName>
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
     <TargetFramework>net20</TargetFramework>
   </PropertyGroup>
