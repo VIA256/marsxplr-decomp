@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>e36192721fc364533a8edf2aefd3b72c</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <TargetFramework>net20</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>3</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="UnityEngine">
+      <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="26998b3a9cbf54825a27e5f2d3cc4df1">
+      <HintPath>..\Mars Explorer\Mars Explorer_Data\Assembly - CSharp - first pass.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
