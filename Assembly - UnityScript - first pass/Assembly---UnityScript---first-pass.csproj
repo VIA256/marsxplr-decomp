@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>50e2df949ee0745d0a011b02942f43d5</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <TargetFramework>net35</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>3</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="UnityEngine">
+      <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="Boo.Lang">
+      <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\Boo.Lang.dll</HintPath>
+    </Reference>
+	<Reference Include="System">
+	  <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\System.dll</HintPath>
+	</Reference>
+    <Reference Include="System.Core">
+      <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\System.core.dll</HintPath>
+    </Reference>
+	<Reference Include="System.Xml">
+      <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\System.Xml.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
