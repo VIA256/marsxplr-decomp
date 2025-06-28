@@ -11,7 +11,7 @@ public class GlowEffectIsland : MonoBehaviour
 
 	public float blurSpread = 0.7f;
 
-	public Color glowTint = glowTint;
+	public Color glowTint = new Color(1, 1, 1, 0);
 
 	private static string compositeMatString = "Shader \"GlowCompose\" {\n\tProperties {\n\t\t_Color (\"Glow Amount\", Color) = (1,1,1,1)\n\t\t_MainTex (\"\", RECT) = \"white\" {}\n\t}\n\tSubShader {\n\t\tPass {\n\t\t\tZTest Always Cull Off ZWrite Off Fog { Mode Off }\n\t\t\tBlend One One\n\t\t\tSetTexture [_MainTex] {constantColor [_Color] combine constant * texture DOUBLE}\n\t\t}\n\t}\n\tFallback off\n}";
 
