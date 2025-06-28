@@ -1009,6 +1009,9 @@ public class Game : MonoBehaviour
 	[HideInInspector]
 	public float fps;
 
+	[NonSerialized]
+	public const int maxBots = 25;
+
 	public Game()
 	{
 		whirldIn = new WhirldIn();
