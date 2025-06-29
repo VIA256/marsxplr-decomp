@@ -66,3 +66,11 @@ My amatuer attempt at decompiling Mars Explorer so that it can be improved to ru
   <li>decomipled with ilspy</li>
 </ul>
 </details>
+<details closed>
+<summary><h2>TerrainControllerData</h2></summary>
+<h3>About</h3>
+<ul>
+  <li>dll made by aub for the sole purpose of making terrain calculations less annoying or something</li>
+  <li>decomipled with ilspy</li>
+</ul>
+</details>
