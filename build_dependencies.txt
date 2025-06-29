@@ -1,0 +1,24 @@
+------------LISTING/DERIVED BUILD ORDER------------------
+
+Assembly - CSharp - first pass:
+	UnityEngine
+
+Ionic.Zlib:
+
+TerrainControllerData:
+
+Assembly - UnityScript:
+	Assembly - CSharp - first pass
+	Boo.Lang
+	Ionic.Zlib
+	TerrainControllerData
+	UnityEngine
+	UnityScript.Lang
+
+Assembly - CSharp:
+	Assembly CSharp - first pass
+	UnityEngine
+
+Assembly - UnityScript - first pass:
+	Boo.Lang
+	UnityEngine

@@ -7,6 +7,8 @@
   <PropertyGroup>
     <LangVersion>3</LangVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+	<OutputPath>bin</OutputPath>
+	<AppendTargetFrameworkToOutputPath>False</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup />
