@@ -14,7 +14,7 @@
   <ItemGroup />
   <ItemGroup>
     <Reference Include="UnityEngine">
-      <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\UnityEngine.dll</HintPath>
+      <HintPath>..\UnityEngine\bin\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="Boo.Lang">
       <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\Boo.Lang.dll</HintPath>

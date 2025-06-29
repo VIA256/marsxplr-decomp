@@ -16,7 +16,7 @@
   <ItemGroup />
   <ItemGroup>
     <Reference Include="UnityEngine">
-      <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\UnityEngine.dll</HintPath>
+      <HintPath>..\UnityEngine\bin\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="26998b3a9cbf54825a27e5f2d3cc4df1">
       <HintPath>..\Assembly - CSharp - first pass\bin\26998b3a9cbf54825a27e5f2d3cc4df1.dll</HintPath>
