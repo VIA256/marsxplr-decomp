@@ -75,3 +75,10 @@ My amatuer attempt at decompiling Mars Explorer so that it can be improved to ru
   <li>decomipled with ilspy</li>
 </ul>
 </details>
+<hr>
+<h1>building</h1>
+Building mars explorer from source in its entirety hasnt yet been implemented, but all of the above targets are (ideally) buildable.<br>
+I have setup a quick and dirty build system for all said targets in the single build_all.bat script.<br>
+You must run it in an environment with msbuild in the path (for example, i use x64 native tools command prompt for vs2019).<br>
+If the build is successfull, you should be able to find a bunch of dlls in the directory marsxplr_build\Mars Explorer_Data.<br>
+You can copy the dlls from that directory into the Mars Explorer_Data directory of your own personal Mars Explorer install.<br>
