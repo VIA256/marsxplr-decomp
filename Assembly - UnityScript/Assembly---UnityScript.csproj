@@ -22,7 +22,7 @@
       <HintPath>..\Assembly - CSharp - first pass\bin\26998b3a9cbf54825a27e5f2d3cc4df1.dll</HintPath>
     </Reference>
     <Reference Include="Boo.Lang">
-      <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\Boo.Lang.dll</HintPath>
+      <HintPath>..\Boo.Lang\bin\Boo.Lang.dll</HintPath>
     </Reference>
     <Reference Include="UnityScript.Lang">
       <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\UnityScript.Lang.dll</HintPath>

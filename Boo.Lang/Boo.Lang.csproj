@@ -1,6 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <AssemblyName>UnityEngine</AssemblyName>
+    <AssemblyName>Boo.Lang</AssemblyName>
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
     <TargetFramework>net35</TargetFramework>
   </PropertyGroup>
@@ -10,11 +10,9 @@
 	<OutputPath>bin</OutputPath>
 	<AppendTargetFrameworkToOutputPath>False</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
-  <PropertyGroup />
+  <PropertyGroup>
+    <RootNamespace />
+  </PropertyGroup>
   <ItemGroup />
-  <ItemGroup>
-    <Reference Include="Boo.Lang">
-      <HintPath>..\Boo.Lang\bin\Boo.Lang.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+  <ItemGroup />
 </Project>

@@ -14,7 +14,7 @@
   <ItemGroup />
   <ItemGroup>
     <Reference Include="Boo.Lang">
-      <HintPath>..\Boo.Lang\bin\Boo.Lang.dll</HintPath>
+      <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\Boo.Lang.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
