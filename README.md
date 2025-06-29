@@ -57,3 +57,12 @@ My amatuer attempt at decompiling Mars Explorer so that it can be improved to ru
   <li>ghidra project for Mars Explorer.exe</li>
 </ul>
 </details>
+<hr>
+<details closed>
+<summary><h2>Ionic.Zlib</h2></summary>
+<h3>About</h3>
+<ul>
+  <li>Ionic.Zlib 1.8.4.24</li>
+  <li>decomipled with ilspy</li>
+</ul>
+</details>
