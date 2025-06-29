@@ -17,7 +17,7 @@
       <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="26998b3a9cbf54825a27e5f2d3cc4df1">
-      <HintPath>..\Assembly - CSharp - first pass\bin\26998b3a9cbf54825a27e5f2d3cc4df1.dll</HintPath>
+      <HintPath>..\Mars Explorer\Mars Explorer_Data\Assembly - CSharp - first pass.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

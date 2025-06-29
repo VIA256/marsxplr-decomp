@@ -19,7 +19,7 @@
       <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="26998b3a9cbf54825a27e5f2d3cc4df1">
-      <HintPath>..\Assembly - CSharp - first pass\bin\26998b3a9cbf54825a27e5f2d3cc4df1.dll</HintPath>
+      <HintPath>..\Mars Explorer\Mars Explorer_Data\Assembly - CSharp - first pass.dll</HintPath>
     </Reference>
     <Reference Include="Boo.Lang">
       <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\Boo.Lang.dll</HintPath>
@@ -28,10 +28,10 @@
       <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\UnityScript.Lang.dll</HintPath>
     </Reference>
     <Reference Include="Ionic.Zlib">
-      <HintPath>..\Ionic.Zlib\bin\Ionic.Zlib.dll</HintPath>
+      <HintPath>..\Mars Explorer\Mars Explorer_Data\Ionic.Zlib.dll</HintPath>
     </Reference>
     <Reference Include="MonoDevelop DLLs">
-      <HintPath>..\TerrainControllerData\bin\MonoDevelop DLLs.dll</HintPath>
+      <HintPath>..\Mars Explorer\Mars Explorer_Data\TerrainControllerData.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
