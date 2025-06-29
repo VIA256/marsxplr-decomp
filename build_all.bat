@@ -18,11 +18,15 @@ msbuild /t:Clean %flags% "Ionic.Zlib\Ionic.Zlib.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild /t:Clean %flags% "TerrainControllerData\TerrainControllerData.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
+msbuild /t:Clean %flags% "UnityEngine\UnityEngine.csproj"
+if %errorlevel% neq 0 exit /b %errorlevel%
 
 echo ----------------
 echo   BUILDING ALL
 echo ----------------
 
+msbuild %flags% "UnityEngine\UnityEngine.csproj"
+if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild %flags% "Assembly - CSharp - first pass\Assembly---CSharp---first-pass.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild %flags% "Ionic.Zlib\Ionic.Zlib.csproj"
@@ -40,12 +44,17 @@ echo -----------------
 echo   COPYING FILES
 echo -----------------
 
-rd /S /Q marsxplr_build\*
+if exist "marsxplr_build\Mars Explorer_Data\lib" rd /S /Q "marsxplr_build\Mars Explorer_Data\lib"
+if %errorlevel% neq 0 exit /b %errorlevel%
+if exist "marsxplr_build\Mars Explorer_Data" rd /S /Q "marsxplr_build\Mars Explorer_Data"
+if %errorlevel% neq 0 exit /b %errorlevel%
 if exist marsxplr_build rd /S /Q marsxplr_build
 if %errorlevel% neq 0 exit /b %errorlevel%
 md marsxplr_build
 if %errorlevel% neq 0 exit /b %errorlevel%
 md "marsxplr_build\Mars Explorer_Data"
+if %errorlevel% neq 0 exit /b %errorlevel%
+md "marsxplr_build\Mars Explorer_Data\lib"
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 copy "Assembly - CSharp\bin\e36192721fc364533a8edf2aefd3b72c.dll" "marsxplr_build\Mars Explorer_Data\Assembly - CSharp.dll"
@@ -59,6 +68,8 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 copy "Ionic.Zlib\bin\Ionic.Zlib.dll" "marsxplr_build\Mars Explorer_Data\Ionic.Zlib.dll"
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy "TerrainControllerData\bin\MonoDevelop DLLs.dll" "marsxplr_build\Mars Explorer_Data\TerrainControllerData.dll"
+if %errorlevel% neq 0 exit /b %errorlevel%
+copy "UnityEngine\bin\UnityEngine.dll" "marsxplr_build\Mars Explorer_Data\lib\UnityEngine.dll"
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 echo -----------------

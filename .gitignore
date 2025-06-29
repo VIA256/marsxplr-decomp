@@ -17,3 +17,6 @@ TerrainControllerData/obj/
 TerrainControllerData/bin/
 TerrainControllerData/.vs/
 marsxplr_build/
+UnityEngine/obj/
+UnityEngine/bin/
+UnityEngine/.vs/
