@@ -17,14 +17,5 @@
     <Reference Include="26998b3a9cbf54825a27e5f2d3cc4df1">
       <HintPath>..\Mars Explorer\Mars Explorer_Data\Assembly - CSharp - first pass.dll</HintPath>
     </Reference>
-	<Reference Include="System">
-	  <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\System.dll</HintPath>
-	</Reference>
-    <Reference Include="System.Core">
-      <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\System.core.dll</HintPath>
-    </Reference>
-	<Reference Include="System.Xml">
-      <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\System.Xml.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>

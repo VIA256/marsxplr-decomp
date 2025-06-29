@@ -17,14 +17,5 @@
     <Reference Include="Boo.Lang">
       <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\Boo.Lang.dll</HintPath>
     </Reference>
-	<Reference Include="System">
-	  <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\System.dll</HintPath>
-	</Reference>
-    <Reference Include="System.Core">
-      <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\System.core.dll</HintPath>
-    </Reference>
-	<Reference Include="System.Xml">
-      <HintPath>..\Mars Explorer\Mars Explorer_Data\lib\System.Xml.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>
