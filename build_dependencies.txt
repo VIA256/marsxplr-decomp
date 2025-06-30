@@ -12,6 +12,9 @@ Ionic.Zlib:
 
 TerrainControllerData:
 
+UnityScript.Lang:
+	Boo.Lang
+
 Assembly - UnityScript:
 	Assembly - CSharp - first pass
 	Boo.Lang

@@ -22,6 +22,8 @@ msbuild /t:Clean %flags% "UnityEngine\UnityEngine.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild /t:Clean %flags% "Boo.Lang\Boo.Lang.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
+msbuild /t:Clean %flags% "UnityScript.Lang\UnityScript.Lang.csproj"
+if %errorlevel% neq 0 exit /b %errorlevel%
 
 echo ----------------
 echo   BUILDING ALL
@@ -36,6 +38,8 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild %flags% "Ionic.Zlib\Ionic.Zlib.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild %flags% "TerrainControllerData\TerrainControllerData.csproj"
+if %errorlevel% neq 0 exit /b %errorlevel%
+msbuild %flags% "UnityScript.Lang\UnityScript.Lang.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild %flags% "Assembly - UnityScript\Assembly---UnityScript.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
@@ -76,6 +80,8 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 copy "UnityEngine\bin\UnityEngine.dll" "marsxplr_build\Mars Explorer_Data\lib\UnityEngine.dll"
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy "Boo.Lang\bin\Boo.Lang.dll" "marsxplr_build\Mars Explorer_Data\lib\Boo.Lang.dll"
+if %errorlevel% neq 0 exit /b %errorlevel%
+copy "UnityScript.Lang\bin\UnityScript.Lang.dll" "marsxplr_build\Mars Explorer_Data\lib\UnityScript.Lang.dll"
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 echo -----------------
