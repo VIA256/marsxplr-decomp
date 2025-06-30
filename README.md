@@ -42,15 +42,6 @@ My amatuer attempt at decompiling Mars Explorer so that it can be improved to ru
 </details>
 <hr>
 <details closed>
-<summary><h2>Mars Explorer</h2></summary>
-<h3>About</h3>
-<ul>
-  <li>Mars Explorer 2.22 win32 game directory</li>
-  <li>Libraries in here are referenced until they too will decompiled</li>
-</ul>
-</details>
-<hr>
-<details closed>
 <summary><h2>marsxplr_exe</h2></summary>
 <h3>About</h3>
 <ul>
@@ -91,6 +82,16 @@ My amatuer attempt at decompiling Mars Explorer so that it can be improved to ru
 <ul>
   <li>Boo programming language library</li>
   <li>part of old unity's functionality</li>
+  <li>decomipled with ilspy</li>
+</ul>
+</details>
+<hr>
+<details closed>
+<summary><h2>UnityScript.Lang</h2></summary>
+<h3>About</h3>
+<ul>
+  <li>UnityScript scripting language library</li>
+  <li>used by Assembly - UnityScript</li>
   <li>decomipled with ilspy</li>
 </ul>
 </details>
