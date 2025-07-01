@@ -259,7 +259,7 @@ public class Game : MonoBehaviour
 						_0024self_433.worldLoadTime = Time.time;
 						_0024worldOBJ_0024425 = GameObject.Find(_0024self_433.whirldIn.worldName);
 						_0024objs_0024426 = _0024worldOBJ_0024425.GetComponentsInChildren(typeof(Transform));
-						if (!RuntimeServices.EqualityOperator(_0024self_433.whirldIn.worldParams["ccc"], 1) && RuntimeServices.ToBool(RuntimeServices.InvokeBinaryOperator("op_GreaterThan", RuntimeServices.GetProperty(_0024objs_0024426, "length"), 15)))
+						if (!RuntimeServices.EqualityOperator(_0024self_433.whirldIn.worldParams["ccc"], 1) && RuntimeServices.ToBool(RuntimeServices.InvokeBinaryOperator("op_GreaterThan", RuntimeServices.GetProperty(_0024objs_0024426, "Length"), 15)))
 						{
 							_0024worldOBJ_0024425.AddComponent(typeof(CombineChildren));
 						}
