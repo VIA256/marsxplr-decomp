@@ -46,6 +46,7 @@ My amatuer attempt at decompiling Mars Explorer so that it can be improved to ru
 <h3>About</h3>
 <ul>
   <li>ghidra project for Mars Explorer.exe</li>
+  <li>not yet integrable into build system</li>
 </ul>
 </details>
 <hr>
@@ -93,6 +94,16 @@ My amatuer attempt at decompiling Mars Explorer so that it can be improved to ru
   <li>UnityScript scripting language library</li>
   <li>used by Assembly - UnityScript</li>
   <li>decomipled with ilspy</li>
+</ul>
+</details>
+<hr>
+<details closed>
+<summary><h2>mono-1-vc</h2></summary>
+<h3>About</h3>
+<ul>
+  <li>mono runtime for unity player</li>
+  <li>ghidra project</li>
+  <li>not yet integrable into build system</li>
 </ul>
 </details>
 <hr>
