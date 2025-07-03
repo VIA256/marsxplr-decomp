@@ -1127,16 +1127,13 @@ public class Settings : MonoBehaviour
 				}
 				GUILayout.Space(10f);
 				GUILayout.BeginHorizontal();
-				if (Game.Controller.botsInGame < Game.maxBots && GUILayout.Button("Add Bot"))
+				if (GUILayout.Button("Add Bot"))
 				{
 					Game.Controller.StartCoroutine_Auto(Game.Controller.addBot());
 				}
 				if (Game.Controller.botsInGame > 0)
 				{
-					if (Game.Controller.botsInGame != Game.maxBots)
-					{
-						GUILayout.Space(5f);
-					}
+					GUILayout.Space(5f);
 					if (GUILayout.Button("Axe Bot"))
 					{
 						Game.Controller.StartCoroutine_Auto(Game.Controller.axeBot());
