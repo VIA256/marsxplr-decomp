@@ -212,7 +212,7 @@ public class Buggy : MonoBehaviour
 		if (wingState != 0f)
 		{
 			wingState += Time.deltaTime * 2f;
-			if (!(wingState < 1f))
+			if (wingState >= 1f)
 			{
 				wingOpen = true;
 				if (wingState > 2f)
@@ -223,14 +223,15 @@ public class Buggy : MonoBehaviour
 			else if (wingState > 0f)
 			{
 				wingOpen = false;
-				int num = 0;
+
 				Vector3 localPosition = leftTrail.localPosition;
-				float num2 = (localPosition.x = num);
-				Vector3 vector = (leftTrail.localPosition = localPosition);
-				int num3 = 0;
-				Vector3 localPosition2 = rightTrail.localPosition;
-				float num4 = (localPosition2.x = num3);
-				Vector3 vector3 = (rightTrail.localPosition = localPosition2);
+				localPosition.x = 0;
+				leftTrail.localPosition = localPosition;
+
+				localPosition = rightTrail.localPosition;
+				float num4 = (localPosition.x = 0);
+				rightTrail.localPosition = localPosition;
+
 				wingState = 0f;
 			}
 		}
@@ -242,104 +243,80 @@ public class Buggy : MonoBehaviour
 			{
 				baseVertices = wingMesh.vertices;
 			}
-			Vector3[] array = new Vector3[baseVertices.Length];
-			for (int i = 0; i < array.Length; i = checked(i + 1))
+			Vector3[] vertices = new Vector3[baseVertices.Length];
+			for (int i = 0; i < vertices.Length; i++)
 			{
-				Vector3[] array2 = baseVertices;
-				Vector3 vector5 = array2[RuntimeServices.NormalizeArrayIndex(array2, i)];
-				if ((!(wingState < -1f) && wingState < 0f) || (!(wingState < 1f) && wingState < 2f))
+				Vector3 pos = baseVertices[i];
+				if (wingState >= -1 && wingState < 0 || wingState >= 1 && wingState < 2)
 				{
 					if (wingState > 0f)
 					{
-						vector5.y *= wingState - 1f;
-						vector5.x *= wingState - 1f;
-						float x = (wingState - 1f) * (3.5f * -1f);
-						Vector3 localPosition3 = leftTrail.localPosition;
-						float num5 = (localPosition3.x = x);
-						Vector3 vector6 = (leftTrail.localPosition = localPosition3);
-						float x2 = (wingState - 1f) * 3.5f;
-						Vector3 localPosition4 = rightTrail.localPosition;
-						float num6 = (localPosition4.x = x2);
-						Vector3 vector8 = (rightTrail.localPosition = localPosition4);
+						pos.y *= wingState - 1f;
+						pos.x *= wingState - 1f;
+
+						Vector3 localPosition = leftTrail.localPosition;
+						localPosition.x = (wingState - 1f) * (3.5f * -1f);
+						leftTrail.localPosition = localPosition;
+
+						localPosition = rightTrail.localPosition;
+						localPosition.x = (wingState - 1f) * 3.5f;
+						rightTrail.localPosition = localPosition;
 					}
 					else
 					{
-						vector5.y *= wingState;
-						vector5.x *= wingState;
-						float x3 = wingState * 3.5f;
-						Vector3 localPosition5 = leftTrail.localPosition;
-						float num7 = (localPosition5.x = x3);
-						Vector3 vector10 = (leftTrail.localPosition = localPosition5);
-						float x4 = wingState * (3.5f * -1f);
-						Vector3 localPosition6 = rightTrail.localPosition;
-						float num8 = (localPosition6.x = x4);
-						Vector3 vector12 = (rightTrail.localPosition = localPosition6);
+						pos.y *= wingState;
+						pos.x *= wingState;
+
+						Vector3 localPosition = leftTrail.localPosition;
+						localPosition.x = wingState * 3.5f;
+						leftTrail.localPosition = localPosition;
+
+						localPosition = rightTrail.localPosition;
+						localPosition.x = wingState * (3.5f * -1f);
+						rightTrail.localPosition = localPosition;
 					}
 				}
 				else
 				{
-					float num9 = vector5.z * (vehicle.input.x * 0.14f);
-					num9 = ((!(vector5.z > 0.2f)) ? (num9 * (Mathf.Abs(vector5.x) / 10f)) : 0f);
-					num9 += vector5.x * (motorInputSmoothed * 0.04f);
-					float num10 = Mathf.Sin(num9);
-					float num11 = Mathf.Cos(num9);
-					vector5.x = vector5.y * num10 + vector5.x * num11;
-					vector5.y = vector5.y * num11 - vector5.x * num10;
+					float t = pos.z * (vehicle.input.x * 0.14f);
+					if (pos.z > 0.2) t = 0;
+					else t *= (Mathf.Abs(pos.x) / 10);
+					t += pos.x * (motorInputSmoothed * 0.04f);
+					float st = Mathf.Sin(t);
+					float ct = Mathf.Cos(t);
+					pos.x = pos.y * st + pos.x * ct;
+					pos.y = pos.y * ct - pos.x * st;
 				}
-				array[RuntimeServices.NormalizeArrayIndex(array, i)] = vector5;
+				vertices[i] = pos;
 			}
-			if ((wingState < -1f || !(wingState < 0f)) && (wingState < 1f || !(wingState < 2f)))
+			if (!(wingState >= -1 && wingState < 0 || wingState >= 1 && wingState < 2))
 			{
-				float x5 = 3.5f * -1f;
-				Vector3 localPosition7 = leftTrail.localPosition;
-				float num12 = (localPosition7.x = x5);
-				Vector3 vector14 = (leftTrail.localPosition = localPosition7);
-				float x6 = 3.5f;
-				Vector3 localPosition8 = rightTrail.localPosition;
-				float num13 = (localPosition8.x = x6);
-				Vector3 vector16 = (rightTrail.localPosition = localPosition8);
+				Vector3 localPosition = leftTrail.localPosition;
+				localPosition.x = -3.5f;
+				leftTrail.localPosition = localPosition;
+
+				localPosition = rightTrail.localPosition;
+				localPosition.x = 3.5f;
+				rightTrail.localPosition = localPosition;
 			}
-			wingMesh.vertices = array;
+			wingMesh.vertices = vertices;
 		}
 		else
 		{
-			int num14 = 0;
-			Vector3 localPosition9 = rightTrail.localPosition;
-			float num15 = (localPosition9.x = num14);
-			Vector3 vector18 = (rightTrail.localPosition = localPosition9);
-			int num16 = num14;
-			Vector3 localPosition10 = leftTrail.localPosition;
-			float num17 = (localPosition10.x = num16);
-			Vector3 vector20 = (leftTrail.localPosition = localPosition10);
+			Vector3 localPosition = rightTrail.localPosition;
+			localPosition.x = 0;
+			rightTrail.localPosition = localPosition;
+
+			localPosition = leftTrail.localPosition;
+			localPosition.x = 0;
+			leftTrail.localPosition = localPosition;
 		}
-		for (int i = 0; i < 4; i = checked(i + 1))
+		for (int i = 0; i < 4; i++)
 		{
-			float x7 = wheelPos.x * (float)((i % 2 != 0) ? 1 : (-1));
-			float y = wheelPos.y;
-			float[] array3 = hitDistance;
-			float num18;
-			if (array3[RuntimeServices.NormalizeArrayIndex(array3, i)] == -1f)
-			{
-				num18 = suspensionRange;
-			}
-			else
-			{
-				float[] array4 = hitDistance;
-				num18 = array4[RuntimeServices.NormalizeArrayIndex(array4, i)] - wheelRadius;
-			}
-			Vector3 vector5 = new Vector3(x7, y - num18, wheelPos.z * (float)((i < 2) ? 1 : (-1)));
-			Transform[] array5 = wheels;
-			array5[RuntimeServices.NormalizeArrayIndex(array5, i)].transform.position = transform.TransformPoint(vector5);
-			Transform[] array6 = wheelGraphics;
-			array6[RuntimeServices.NormalizeArrayIndex(array6, i)].transform.Rotate(360f * (motorSpeed / wheelCircumference) * Time.deltaTime * 0.5f, 0f, 0f);
-			Transform[] array7 = axels;
-			if (array7[RuntimeServices.NormalizeArrayIndex(array7, i)].gameObject.active)
-			{
-				Transform[] array8 = axels;
-				Transform obj = array8[RuntimeServices.NormalizeArrayIndex(array8, i)];
-				Transform[] array9 = wheels;
-				obj.LookAt(array9[RuntimeServices.NormalizeArrayIndex(array9, i)].position);
-			}
+			Vector3 pos = new Vector3(wheelPos.x * ((i % 2 != 0) ? 1 : -1), wheelPos.y - (hitDistance[i] == -1 ? suspensionRange : (hitDistance[i] - wheelRadius)), wheelPos.z * (i < 2 ? 1 : -1));
+			wheels[i].transform.position = this.transform.TransformPoint(pos);
+			wheelGraphics[i].transform.Rotate(360f * (motorSpeed / wheelCircumference) * Time.deltaTime * 0.5f, 0, 0);
+			if (axels[i].gameObject.active) axels[i].LookAt(wheels[i].position);
 		}
 	}
 
