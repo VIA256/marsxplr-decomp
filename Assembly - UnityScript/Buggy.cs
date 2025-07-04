@@ -67,105 +67,61 @@ public class Buggy : MonoBehaviour
 			return new _0024(_0024self_539);
 		}
 	}
-
+	
+	//Object Linkages
 	public MeshFilter wing0;
-
 	public MeshFilter wing1;
-
 	public Transform floatPoints;
-
 	public GameObject wheel;
-
 	public GameObject axel;
-
 	public Transform leftTrail;
-
 	public Transform rightTrail;
-
 	public GameObject WheelmarksPrefab;
-
 	public Collider buggyCollider;
-
 	public WhirldLOD lod;
-
 	public Transform[] wheels;
-
 	public Transform[] wheelGraphics;
-
 	public Transform[] axels;
-
 	public Vector3 wheelPos;
-
 	public Vector3 axelPos;
 
+	//Internal Registers
 	private Vector3[] baseVertices;
-
 	private Vector3[] baseNormals;
-
 	private Mesh wingMesh;
-
 	private float wingState;
-
 	private int wingFlaps;
-
 	private bool wingOpen;
-
 	private bool isInverted;
-
 	private Vehicle vehicle;
-
 	private Transform[] bouyancyPoints;
-
 	private float suspensionRange;
-
 	private float friction;
-
 	private float[] realComp;
-
 	private float[] hitDistance;
-
 	private float[] hitCompress;
-
 	private float[] hitFriction;
-
 	private Vector3[] hitVelocity;
-
 	private Vector3[] wheelPositn;
-
 	private Vector3[] hitForce;
-
 	private Skidmarks wheelMarks;
-
 	private int[] wheelMarkIndex;
-
 	private bool isDynamic;
-
 	private float frictionTotal;
-
 	private float brakePower;
 
+	//Drivetrain Data
 	private float motorTorque;
-
 	private float motorSpeed;
-
 	private float motorSpd;
-
 	private float motorInputSmoothed;
-
 	private float wheelRadius;
-
 	private float wheelCircumference;
-
 	private int motorMass;
-
 	private int motorDrag;
-
 	private int maxAcceleration;
-
 	private int motorAccel;
-
 	private float motorSpeedNew;
-
 	public Buggy()
 	{
 		wingState = 0f;
@@ -195,68 +151,60 @@ public class Buggy : MonoBehaviour
 	public void InitVehicle(Vehicle veh)
 	{
 		vehicle = veh;
-		UnityScript.Lang.Array array = new UnityScript.Lang.Array();
-		array.Add(wing0.renderer.material);
-		array.Add(wing1.renderer.material);
+
+		UnityScript.Lang.Array materialAccents = new UnityScript.Lang.Array();
+
+		//Init Wing Tinting
+		materialAccents.Add(wing0.renderer.material);
+		materialAccents.Add(wing1.renderer.material);
+
+		//Instantiate Wheels
 		int i;
-		for (i = 0; i < 4; i = checked(i + 1))
+		for (i = 0; i < 4; i++)
 		{
-			Vector3[] array2 = wheelPositn;
-			array2[RuntimeServices.NormalizeArrayIndex(array2, i)] = new Vector3(wheelPos.x * (float)((i % 2 != 0) ? 1 : (-1)), wheelPos.y, wheelPos.z * (float)((i < 2) ? 1 : (-1)));
-			GameObject original = wheel;
-			Transform obj = this.transform;
-			Vector3[] array3 = wheelPositn;
-			GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate(original, obj.TransformPoint(array3[RuntimeServices.NormalizeArrayIndex(array3, i)]), this.transform.rotation);
-			Transform[] array4 = wheels;
-			array4[RuntimeServices.NormalizeArrayIndex(array4, i)] = gameObject.transform;
-			Transform[] array5 = wheelGraphics;
-			int num = RuntimeServices.NormalizeArrayIndex(array5, i);
-			Transform[] array6 = wheels;
-			array5[num] = array6[RuntimeServices.NormalizeArrayIndex(array6, i)].Find("Graphic").transform;
+			wheelPositn[i] = new Vector3(wheelPos.x * (float)((i % 2 != 0) ? 1 : (-1)), wheelPos.y, wheelPos.z * (float)((i < 2) ? 1 : (-1)));
+			GameObject go = (GameObject)UnityEngine.Object.Instantiate(wheel, this.transform.TransformPoint(wheelPositn[i]), this.transform.rotation);
+			wheels[i] = go.transform;
+			wheelGraphics[i] = wheels[i].Find("Graphic").transform;
 			if (i == 1 || i == 3)
 			{
-				int num2 = 0;
-				Transform[] array7 = wheels;
-				Vector3 localEulerAngles = array7[RuntimeServices.NormalizeArrayIndex(array7, i)].Find("Graphic/Simple").transform.localEulerAngles;
-				float num3 = (localEulerAngles.y = num2);
-				Transform[] array8 = wheels;
-				Vector3 vector = (array8[RuntimeServices.NormalizeArrayIndex(array8, i)].Find("Graphic/Simple").transform.localEulerAngles = localEulerAngles);
+				Vector3 localEulerAngles = wheels[i].Find("Graphic/Simple").transform.localEulerAngles;
+				localEulerAngles.y = 0;
+				wheels[i].Find("Graphic/Simple").transform.localEulerAngles = localEulerAngles;
 			}
-			Transform[] array9 = wheelGraphics;
-			MeshRenderer meshRenderer = (MeshRenderer)array9[RuntimeServices.NormalizeArrayIndex(array9, i)].Find("Detailed/Beadlock").GetComponent(typeof(MeshRenderer));
-			array.Add(meshRenderer.material);
-			Transform[] array10 = wheels;
-			array10[RuntimeServices.NormalizeArrayIndex(array10, i)].parent = this.transform;
-			gameObject = (GameObject)UnityEngine.Object.Instantiate(axel, this.transform.TransformPoint(new Vector3(axelPos.x * (float)((i % 2 != 0) ? 1 : (-1)), axelPos.y, axelPos.z * (float)((i < 2) ? 1 : (-1)))), this.transform.rotation);
-			Transform[] array11 = axels;
-			array11[RuntimeServices.NormalizeArrayIndex(array11, i)] = gameObject.transform;
-			Transform[] array12 = axels;
-			array12[RuntimeServices.NormalizeArrayIndex(array12, i)].parent = this.transform;
+			MeshRenderer mR = (MeshRenderer)wheelGraphics[i].Find("Detailed/Beadlock").GetComponent(typeof(MeshRenderer));
+			materialAccents.Add(mR.material);
+			wheels[i].parent = this.transform;
+			go = (GameObject)UnityEngine.Object.Instantiate(axel, this.transform.TransformPoint(new Vector3(axelPos.x * (float)((i % 2 != 0) ? 1 : (-1)), axelPos.y, axelPos.z * (float)((i < 2) ? 1 : (-1)))), this.transform.rotation);
+			axels[i] = go.transform;
+			axels[i].parent = this.transform;
 		}
+
+		//Instantiate Skidmarks
 		if (vehicle.isPlayer)
 		{
-			GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate(WheelmarksPrefab, Vector3.zero, Quaternion.identity);
-			gameObject.layer = 11;
-			wheelMarks = (Skidmarks)gameObject.GetComponentInChildren(typeof(Skidmarks));
+			GameObject go = (GameObject)UnityEngine.Object.Instantiate(WheelmarksPrefab, Vector3.zero, Quaternion.identity);
+			go.layer = 11;
+			wheelMarks = (Skidmarks)go.GetComponentInChildren(typeof(Skidmarks));
 		}
 		else
 		{
-			GameObject obj2 = leftTrail.gameObject;
-			bool flag = (rightTrail.gameObject.active = false);
-			obj2.active = flag;
+			leftTrail.gameObject.active = false;
+			rightTrail.gameObject.active = false;
 		}
+
+		//Initialize Bouyancy Points
 		i = 0;
 		bouyancyPoints = new Transform[floatPoints.childCount];
-		IEnumerator enumerator = UnityRuntimeServices.GetEnumerator(floatPoints);
-		while (enumerator.MoveNext())
+
+		IEnumerator pt = UnityRuntimeServices.GetEnumerator(floatPoints);
+		while (pt.MoveNext())
 		{
-			Transform transform = (Transform)RuntimeServices.Coerce(enumerator.Current, typeof(Transform));
-			Transform[] array13 = bouyancyPoints;
-			array13[RuntimeServices.NormalizeArrayIndex(array13, i)] = transform;
-			UnityRuntimeServices.Update(enumerator, transform);
-			i = checked(i + 1);
+			bouyancyPoints[i] = (Transform)pt.Current;
+			i++;
 		}
-		vehicle.materialAccent = (Material[])array.ToBuiltin(typeof(Material));
+
+		vehicle.materialAccent = (Material[])materialAccents.ToBuiltin(typeof(Material));
 	}
 
 	public void Update()
