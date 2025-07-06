@@ -18,11 +18,11 @@ public class Buggy : MonoBehaviour
 		[CompilerGenerated]
 		private sealed class _0024 : GenericGeneratorEnumerator<object>, IEnumerator
 		{
-			internal Buggy _0024self_538;
+			internal Buggy thisBuggy0;
 
 			public _0024(Buggy self_)
 			{
-				_0024self_538 = self_;
+				thisBuggy0 = self_;
 			}
 
 			public override bool MoveNext()
@@ -30,20 +30,20 @@ public class Buggy : MonoBehaviour
 				switch (_state)
 				{
 				default:
-					if (!_0024self_538.vehicle)
+					if (!thisBuggy0.vehicle)
 					{
 						return Yield(2, null);
 					}
-					_0024self_538.vehicle.camSmooth = _0024self_538.vehicle.specialInput;
-					if (_0024self_538.vehicle.specialInput)
+					thisBuggy0.vehicle.camSmooth = thisBuggy0.vehicle.specialInput;
+					if (thisBuggy0.vehicle.specialInput)
 					{
-						_0024self_538.wingState = 1f;
-						_0024self_538.wingFlaps = 0;
+						thisBuggy0.wingState = 1f;
+						thisBuggy0.wingFlaps = 0;
 					}
 					else
 					{
-						_0024self_538.wingState = -1f;
-						_0024self_538.wingFlaps = 0;
+						thisBuggy0.wingState = -1f;
+						thisBuggy0.wingFlaps = 0;
 					}
 					Yield(1, null);
 					break;
@@ -55,16 +55,16 @@ public class Buggy : MonoBehaviour
 			}
 		}
 
-		internal Buggy _0024self_539;
+		internal Buggy thisBuggy1;
 
 		public OnSetSpecialInput_0024105(Buggy self_)
 		{
-			_0024self_539 = self_;
+			thisBuggy1 = self_;
 		}
 
 		public override IEnumerator<object> GetEnumerator()
 		{
-			return new _0024(_0024self_539);
+			return new _0024(thisBuggy1);
 		}
 	}
 	
@@ -751,14 +751,11 @@ public class Buggy : MonoBehaviour
 
 	public void OnLOD(int level)
 	{
-		for (int i = 0; i < 4; i = checked(i + 1))
+		for (int i = 0; i < 4; i++)
 		{
-			Transform[] array = wheelGraphics;
-			array[RuntimeServices.NormalizeArrayIndex(array, i)].Find("Detailed").gameObject.SetActiveRecursively(level == 0);
-			Transform[] array2 = wheelGraphics;
-			array2[RuntimeServices.NormalizeArrayIndex(array2, i)].Find("Simple").gameObject.active = level != 0;
-			Transform[] array3 = axels;
-			array3[RuntimeServices.NormalizeArrayIndex(array3, i)].gameObject.SetActiveRecursively(level == 0);
+			wheelGraphics[i].Find("Detailed").gameObject.SetActiveRecursively(level == 0);
+			wheelGraphics[i].Find("Simple").gameObject.active = level != 0;
+			axels[i].gameObject.SetActiveRecursively(level == 0);
 		}
 	}
 
