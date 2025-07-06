@@ -696,6 +696,8 @@ public class Buggy : MonoBehaviour
 				vehicle.myRigidbody.AddForce(vehicle.myRigidbody.velocity * -8f + Vector3.up * (wingOpen ? 400 : 200));
 				vehicle.myRigidbody.angularDrag = 2f;
 			}
+
+			//Collision Friction
 			if (wingOpen || wheelsAreTouchingGround || Physics.Raycast(transform.position, transform.up * -1f, 3f, vehicle.terrainMask))
 			{
 				buggyCollider.material.frictionCombine = PhysicMaterialCombine.Minimum;
@@ -707,6 +709,7 @@ public class Buggy : MonoBehaviour
 		}
 	}
 
+	//Self righting
 	public void OnCollisionStay(Collision collision)
 	{
 		if (vehicle.zorbBall)
@@ -714,14 +717,14 @@ public class Buggy : MonoBehaviour
 			return;
 		}
 		int i = 0;
-		ContactPoint[] contacts = collision.contacts;
-		for (int length = contacts.Length; i < length; i = checked(i + 1))
+		ContactPoint[] contact = collision.contacts;
+		for (int length = contact.Length; i < length; i = checked(i + 1))
 		{
-			if (isInverted && Vector3.Angle(transform.up, contacts[i].normal) < 50f)
+			if (isInverted && Vector3.Angle(transform.up, contact[i].normal) < 50f)
 			{
 				isInverted = false;
 			}
-			else if (!isInverted && vehicle.myRigidbody.angularVelocity.sqrMagnitude < 5f && !wingOpen && Vector3.Angle(transform.up, contacts[i].normal) > 120f)
+			else if (!isInverted && vehicle.myRigidbody.angularVelocity.sqrMagnitude < 5f && !wingOpen && Vector3.Angle(transform.up, contact[i].normal) > 120f)
 			{
 				isInverted = true;
 			}
@@ -731,6 +734,7 @@ public class Buggy : MonoBehaviour
 			}
 		}
 	}
+
 
 	public IEnumerator OnSetSpecialInput()
 	{
