@@ -24,6 +24,8 @@ msbuild /t:Clean %flags% "Boo.Lang\Boo.Lang.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild /t:Clean %flags% "UnityScript.Lang\UnityScript.Lang.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
+msbuild /t:Clean %flags% "UnityDomainLoad\UnityDomainLoad.csproj"
+if %errorlevel% neq 0 exit /b %errorlevel%
 
 echo ----------------
 echo   BUILDING ALL
@@ -46,6 +48,8 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild %flags% "Assembly - CSharp\Assembly---CSharp.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild %flags% "Assembly - UnityScript - first pass\Assembly---UnityScript---first-pass.csproj"
+if %errorlevel% neq 0 exit /b %errorlevel%
+msbuild %flags% "UnityDomainLoad\UnityDomainLoad.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 echo -----------------
@@ -82,6 +86,8 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 copy "Boo.Lang\bin\Boo.Lang.dll" "marsxplr_build\Mars Explorer_Data\lib\Boo.Lang.dll"
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy "UnityScript.Lang\bin\UnityScript.Lang.dll" "marsxplr_build\Mars Explorer_Data\lib\UnityScript.Lang.dll"
+if %errorlevel% neq 0 exit /b %errorlevel%
+copy "UnityDomainLoad\bin\UnityDomainLoad.exe" "marsxplr_build\Mars Explorer_Data\lib\UnityDomainLoad.exe"
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 echo -----------------

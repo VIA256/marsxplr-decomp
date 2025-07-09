@@ -30,3 +30,5 @@ Assembly - CSharp:
 Assembly - UnityScript - first pass:
 	Boo.Lang
 	UnityEngine
+
+UnityDomainLoad:
