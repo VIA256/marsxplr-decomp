@@ -8,40 +8,31 @@ using UnityEngine;
 using UnityScript.Lang;
 
 [Serializable]
-public class Buggy : MonoBehaviour
-{
+public class Buggy : MonoBehaviour {
 	[Serializable]
 	[CompilerGenerated]
-	internal sealed class OnSetSpecialInput_0024105 : GenericGenerator<object>
-	{
+	internal sealed class OnSetSpecialInput_0024105 : GenericGenerator<object> {
 		[Serializable]
 		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<object>, IEnumerator
-		{
+		private sealed class _0024 : GenericGeneratorEnumerator<object>, IEnumerator {
 			internal Buggy thisBuggy0;
 
-			public _0024(Buggy self_)
-			{
+			public _0024(Buggy self_) {
 				thisBuggy0 = self_;
 			}
 
-			public override bool MoveNext()
-			{
-				switch (_state)
-				{
+			public override bool MoveNext() {
+				switch (_state){
 				default:
-					if (!thisBuggy0.vehicle)
-					{
+					if (!thisBuggy0.vehicle){
 						return Yield(2, null);
 					}
 					thisBuggy0.vehicle.camSmooth = thisBuggy0.vehicle.specialInput;
-					if (thisBuggy0.vehicle.specialInput)
-					{
+					if (thisBuggy0.vehicle.specialInput){
 						thisBuggy0.wingState = 1f;
 						thisBuggy0.wingFlaps = 0;
 					}
-					else
-					{
+					else {
 						thisBuggy0.wingState = -1f;
 						thisBuggy0.wingFlaps = 0;
 					}
@@ -57,13 +48,11 @@ public class Buggy : MonoBehaviour
 
 		internal Buggy thisBuggy1;
 
-		public OnSetSpecialInput_0024105(Buggy self_)
-		{
+		public OnSetSpecialInput_0024105(Buggy self_){
 			thisBuggy1 = self_;
 		}
 
-		public override IEnumerator<object> GetEnumerator()
-		{
+		public override IEnumerator<object> GetEnumerator(){
 			return new _0024(thisBuggy1);
 		}
 	}
@@ -122,8 +111,8 @@ public class Buggy : MonoBehaviour
 	private int maxAcceleration;
 	private int motorAccel;
 	private float motorSpeedNew;
-	public Buggy()
-	{
+	
+	public Buggy(){
 		wingState = 0f;
 		wingFlaps = 0;
 		isInverted = false;
@@ -148,8 +137,7 @@ public class Buggy : MonoBehaviour
 		motorSpeedNew = 0f;
 	}
 
-	public void InitVehicle(Vehicle veh)
-	{
+	public void InitVehicle(Vehicle veh){
 		vehicle = veh;
 
 		UnityScript.Lang.Array materialAccents = new UnityScript.Lang.Array();
@@ -160,14 +148,20 @@ public class Buggy : MonoBehaviour
 
 		//Instantiate Wheels
 		int i;
-		for (i = 0; i < 4; i++)
-		{
-			wheelPositn[i] = new Vector3(wheelPos.x * (float)((i % 2 != 0) ? 1 : (-1)), wheelPos.y, wheelPos.z * (float)((i < 2) ? 1 : (-1)));
-			GameObject go = (GameObject)UnityEngine.Object.Instantiate(wheel, this.transform.TransformPoint(wheelPositn[i]), this.transform.rotation);
+		for (i = 0; i < 4; i++){
+			wheelPositn[i] = new Vector3(
+				wheelPos.x * (float)((i % 2 != 0) ? 1 : (-1)),
+				wheelPos.y,
+				wheelPos.z * (float)((i < 2) ? 1 : (-1))
+			);
+			GameObject go = (GameObject)UnityEngine.Object.Instantiate(
+				wheel,
+				this.transform.TransformPoint(wheelPositn[i]),
+				this.transform.rotation
+			);
 			wheels[i] = go.transform;
 			wheelGraphics[i] = wheels[i].Find("Graphic").transform;
-			if (i == 1 || i == 3)
-			{
+			if (i == 1 || i == 3){
 				Vector3 localEulerAngles = wheels[i].Find("Graphic/Simple").transform.localEulerAngles;
 				localEulerAngles.y = 0;
 				wheels[i].Find("Graphic/Simple").transform.localEulerAngles = localEulerAngles;
@@ -175,20 +169,30 @@ public class Buggy : MonoBehaviour
 			MeshRenderer mR = (MeshRenderer)wheelGraphics[i].Find("Detailed/Beadlock").GetComponent(typeof(MeshRenderer));
 			materialAccents.Add(mR.material);
 			wheels[i].parent = this.transform;
-			go = (GameObject)UnityEngine.Object.Instantiate(axel, this.transform.TransformPoint(new Vector3(axelPos.x * (float)((i % 2 != 0) ? 1 : (-1)), axelPos.y, axelPos.z * (float)((i < 2) ? 1 : (-1)))), this.transform.rotation);
+			go = (GameObject)UnityEngine.Object.Instantiate(
+				axel,
+				this.transform.TransformPoint(new Vector3(
+					axelPos.x * (float)((i % 2 != 0) ? 1 : (-1)),
+					axelPos.y,
+					axelPos.z * (float)((i < 2) ? 1 : (-1))
+				)),
+				this.transform.rotation
+			);
 			axels[i] = go.transform;
 			axels[i].parent = this.transform;
 		}
 
 		//Instantiate Skidmarks
-		if (vehicle.isPlayer)
-		{
-			GameObject go = (GameObject)UnityEngine.Object.Instantiate(WheelmarksPrefab, Vector3.zero, Quaternion.identity);
+		if (vehicle.isPlayer){
+			GameObject go = (GameObject)UnityEngine.Object.Instantiate(
+				WheelmarksPrefab,
+				Vector3.zero,
+				Quaternion.identity
+			);
 			go.layer = 11;
 			wheelMarks = (Skidmarks)go.GetComponentInChildren(typeof(Skidmarks));
 		}
-		else
-		{
+		else {
 			leftTrail.gameObject.active = false;
 			rightTrail.gameObject.active = false;
 		}
@@ -198,8 +202,7 @@ public class Buggy : MonoBehaviour
 		bouyancyPoints = new Transform[floatPoints.childCount];
 
 		IEnumerator pt = UnityRuntimeServices.GetEnumerator(floatPoints);
-		while (pt.MoveNext())
-		{
+		while (pt.MoveNext()){
 			bouyancyPoints[i] = (Transform)pt.Current;
 			i++;
 		}
@@ -207,23 +210,18 @@ public class Buggy : MonoBehaviour
 		vehicle.materialAccent = (Material[])materialAccents.ToBuiltin(typeof(Material));
 	}
 
-	public void Update()
-	{
+	public void Update(){
 		//Wings
-		if (wingState != 0f)
-		{
+		if (wingState != 0f){
 			wingState += Time.deltaTime * 2f;
-			if (wingState >= 1f)
-			{
+			if (wingState >= 1f){
 				wingOpen = true;
-				if (wingState > 2f)
-				{
+				if (wingState > 2f){
 					wingState = 0f;
 				}
 			}
 			//Closing Wings
-			else if (wingState > 0f)
-			{
+			else if (wingState > 0f){
 				wingOpen = false;
 
 				Vector3 localPosition = leftTrail.localPosition;
@@ -239,20 +237,15 @@ public class Buggy : MonoBehaviour
 		}
 		wingMesh = ((lod.level != 0) ? wing1 : wing0).mesh;
 		((lod.level != 0) ? wing1 : wing0).gameObject.active = wingOpen;
-		if (wingOpen)
-		{
-			if (baseVertices == null)
-			{
+		if (wingOpen){
+			if (baseVertices == null){
 				baseVertices = wingMesh.vertices;
 			}
 			Vector3[] vertices = new Vector3[baseVertices.Length];
-			for (int i = 0; i < vertices.Length; i++)
-			{
+			for (int i = 0; i < vertices.Length; i++){
 				Vector3 pos = baseVertices[i];
-				if (wingState >= -1 && wingState < 0 || wingState >= 1 && wingState < 2)
-				{
-					if (wingState > 0f)
-					{
+				if (wingState >= -1 && wingState < 0 || wingState >= 1 && wingState < 2){
+					if (wingState > 0f){
 						pos.y *= wingState - 1f;
 						pos.x *= wingState - 1f;
 
@@ -264,8 +257,7 @@ public class Buggy : MonoBehaviour
 						localPosition.x = (wingState - 1f) * 3.5f;
 						rightTrail.localPosition = localPosition;
 					}
-					else
-					{
+					else {
 						pos.y *= wingState;
 						pos.x *= wingState;
 
@@ -278,8 +270,7 @@ public class Buggy : MonoBehaviour
 						rightTrail.localPosition = localPosition;
 					}
 				}
-				else
-				{
+				else {
 					float t = pos.z * (vehicle.input.x * 0.14f);
 					if (pos.z > 0.2) t = 0;
 					else t *= (Mathf.Abs(pos.x) / 10);
@@ -291,8 +282,7 @@ public class Buggy : MonoBehaviour
 				}
 				vertices[i] = pos;
 			}
-			if (!(wingState >= -1 && wingState < 0 || wingState >= 1 && wingState < 2))
-			{
+			if (!(wingState >= -1 && wingState < 0 || wingState >= 1 && wingState < 2)){
 				Vector3 localPosition = leftTrail.localPosition;
 				localPosition.x = -3.5f;
 				leftTrail.localPosition = localPosition;
@@ -303,8 +293,7 @@ public class Buggy : MonoBehaviour
 			}
 			wingMesh.vertices = vertices;
 		}
-		else
-		{
+		else {
 			Vector3 localPosition = rightTrail.localPosition;
 			localPosition.x = 0;
 			rightTrail.localPosition = localPosition;
@@ -315,33 +304,44 @@ public class Buggy : MonoBehaviour
 		}
 
 		//Wheels
-		for (int i = 0; i < 4; i++)
-		{
-			Vector3 pos = new Vector3(wheelPos.x * ((i % 2 != 0) ? 1 : -1), wheelPos.y - (hitDistance[i] == -1 ? suspensionRange : (hitDistance[i] - wheelRadius)), wheelPos.z * (i < 2 ? 1 : -1));
+		for (int i = 0; i < 4; i++) {
+			Vector3 pos = new Vector3(
+				wheelPos.x * ((i % 2 != 0) ? 1 : -1),
+				wheelPos.y - (hitDistance[i] == -1 ? suspensionRange : (hitDistance[i] - wheelRadius)),
+				wheelPos.z * (i < 2 ? 1 : -1)
+			);
 			wheels[i].transform.position = this.transform.TransformPoint(pos);
-			wheelGraphics[i].transform.Rotate(360f * (motorSpeed / wheelCircumference) * Time.deltaTime * 0.5f, 0, 0);
-			if (axels[i].gameObject.active) axels[i].LookAt(wheels[i].position);
+			wheelGraphics[i].transform.Rotate(
+				360f * (motorSpeed / wheelCircumference) * Time.deltaTime * 0.5f,
+				0,
+				0
+			);
+			if (axels[i].gameObject.active){
+				axels[i].LookAt(wheels[i].position);
+			}
 		}
 	}
 
-	public void FixedUpdate()
-	{
+	public void FixedUpdate(){
 		bool wheelsAreTouchingGround = false;
-		if (Game.Settings.buggySmartSuspension)
-		{
-			if ((Game.Settings.buggyNewPhysics || wingOpen) && !Physics.Raycast(this.transform.position, Vector3.up * -1f, 5f, vehicle.terrainMask)) //Auto Gear Retract
-			{
-				if (suspensionRange > 0.01f)
-				{
+		if (Game.Settings.buggySmartSuspension){
+			//Auto Gear Retract
+			if (
+				(Game.Settings.buggyNewPhysics || wingOpen) &&
+				!Physics.Raycast(
+					this.transform.position,
+					Vector3.up * -1f, 5f,
+					vehicle.terrainMask
+				)
+			){
+				if (suspensionRange > 0.01f){
 					suspensionRange -= Time.deltaTime * 0.5f;
 				}
-				else
-				{
+				else {
 					suspensionRange = 0f;
 				}
 			}
-			else
-			{
+			else {
 				suspensionRange = Mathf.Lerp(
 					suspensionRange,
 					(wingOpen ? 0.5f : Mathf.Lerp(
@@ -349,15 +349,17 @@ public class Buggy : MonoBehaviour
 						0.2f,
 						Mathf.Min(
 							1f,
-							((Game.Settings.buggyNewPhysics ? vehicle.myRigidbody.velocity.magnitude : Mathf.Abs(motorSpeed)) / Game.Settings.buggySpeed)
+							((Game.Settings.buggyNewPhysics ?
+								vehicle.myRigidbody.velocity.magnitude :
+								Mathf.Abs(motorSpeed)) / Game.Settings.buggySpeed
+							)
 						)
 					)),
 					Time.deltaTime * 3f
 				);
 			}
 		}
-		else
-		{
+		else{
 			suspensionRange = 0.4f;
 		}
 		Vector3 centerOfMass = vehicle.myRigidbody.centerOfMass;
@@ -371,14 +373,17 @@ public class Buggy : MonoBehaviour
 		vehicle.myRigidbody.mass = 30f;
 
 		RaycastHit hit = default(RaycastHit);
-		checked
-		{
-			if (vehicle.myRigidbody.isKinematic)
-			{
-				for (int i = 0; i < 4; i++)
-				{
-					if (Physics.Raycast(transform.TransformPoint(wheelPositn[i]), transform.up * -1, out hit, suspensionRange + wheelRadius, vehicle.terrainMask))
-					{
+		checked {
+			if (vehicle.myRigidbody.isKinematic){
+				for (int i = 0; i < 4; i++){
+					if (
+						Physics.Raycast(
+							transform.TransformPoint(wheelPositn[i]),
+							transform.up * -1,
+							out hit,
+							suspensionRange + wheelRadius, vehicle.terrainMask
+						)
+					){
 						motorSpeed = hitVelocity[i].z;
 						hitDistance[i] = hit.distance;
 					}
@@ -386,58 +391,97 @@ public class Buggy : MonoBehaviour
 				}
 				return;
 			}
-			if (wingOpen)
-			{
-				motorInputSmoothed = Mathf.Lerp(vehicle.input.y, motorInputSmoothed + (vehicle.brakes ? -1 : 0), 0.8f);
+			if (wingOpen){
+				motorInputSmoothed = Mathf.Lerp(
+					vehicle.input.y,
+					motorInputSmoothed + (vehicle.brakes ? -1 : 0),
+					0.8f
+				);
 				int stallSpeed = 16;
 				Vector3 locVel = transform.InverseTransformDirection(vehicle.myRigidbody.velocity);
-				float roll = ((!(transform.eulerAngles.z > 180f)) ? transform.eulerAngles.z : (transform.eulerAngles.z - 360f));
-				float pitch = ((!(transform.eulerAngles.x > 180f)) ? transform.eulerAngles.x : (transform.eulerAngles.x - 360f));
-				if (locVel.sqrMagnitude > (float)stallSpeed)
-				{
+				float roll = ((!(transform.eulerAngles.z > 180f)) ?
+					transform.eulerAngles.z :
+					(transform.eulerAngles.z - 360f)
+				);
+				float pitch = ((!(transform.eulerAngles.x > 180f)) ?
+					transform.eulerAngles.x :
+					(transform.eulerAngles.x - 360f)
+				);
+				if (locVel.sqrMagnitude > (float)stallSpeed){
 					vehicle.myRigidbody.drag = vehicle.myRigidbody.velocity.magnitude / Game.Settings.buggyFlightDrag * 0.3f;
 					
 					//Airbrakes
-					if (vehicle.brakes)
-					{
-						if (brakePower < 1f)
-						{
+					if (vehicle.brakes){
+						if (brakePower < 1f){
 							brakePower += Time.deltaTime * 0.15f;
 						}
 						float multiplier = -brakePower * 2f;
-						vehicle.myRigidbody.AddRelativeForce(locVel.x * multiplier * 5f, locVel.y * multiplier * 100f, locVel.z * 150f * multiplier);
-						vehicle.myRigidbody.AddRelativeTorque(new Vector3((pitch + (vehicle.input.y * -100f)) * -2f, vehicle.input.x * 280f, roll * -1f));
+						vehicle.myRigidbody.AddRelativeForce(
+							locVel.x * multiplier * 5f,
+							locVel.y * multiplier * 100f,
+							locVel.z * 150f * multiplier
+						);
+						vehicle.myRigidbody.AddRelativeTorque(new Vector3(
+							(pitch + (vehicle.input.y * -100f)) * -2f,
+							vehicle.input.x * 280f,
+							roll * -1f
+						));
 					}
 
 					//Standard Flight
-					else
-					{
+					else {
 						brakePower = 0f;
-						float angDelta = Vector3.Angle(vehicle.myRigidbody.velocity, transform.TransformDirection(Vector3.forward));
-						if (angDelta > 10f && Game.Settings.buggyFlightSlip)
-						{
-							vehicle.myRigidbody.velocity = vehicle.myRigidbody.transform.TransformDirection(locVel.x * 0.95f, locVel.y * 0.95f, locVel.z + ((Mathf.Abs(locVel.x) + Mathf.Abs(locVel.y)) * 0.1f * (angDelta / 360)));
-						}
-						else
-						{
-							vehicle.myRigidbody.velocity = vehicle.myRigidbody.transform.TransformDirection(0, 0,
-								locVel.magnitude + (Time.deltaTime * 50 * (Game.Settings.buggyFlightLooPower ? Mathf.Abs(motorInputSmoothed) / 10 : (motorInputSmoothed < 0.999f && motorInputSmoothed > -0.999f ? Mathf.Abs(motorInputSmoothed) / 10 : 0)))
+						float angDelta = Vector3.Angle(
+							vehicle.myRigidbody.velocity,
+							transform.TransformDirection(Vector3.forward)
+						);
+						if (angDelta > 10f && Game.Settings.buggyFlightSlip){
+							vehicle.myRigidbody.velocity = vehicle.myRigidbody.transform.TransformDirection(
+								locVel.x * 0.95f,
+								locVel.y * 0.95f,
+								locVel.z + ((Mathf.Abs(locVel.x) + Mathf.Abs(locVel.y)) * 0.1f * (angDelta / 360))
 							);
 						}
-						vehicle.myRigidbody.AddRelativeTorque(new Vector3(motorInputSmoothed * 100 * Game.Settings.buggyFlightAgility, 0, vehicle.input.x * -100 * Game.Settings.buggyFlightAgility));
+						else {
+							vehicle.myRigidbody.velocity = vehicle.myRigidbody.transform.TransformDirection(
+								0,
+								0,
+								locVel.magnitude + (Time.deltaTime * 50 * (Game.Settings.buggyFlightLooPower ?
+									Mathf.Abs(motorInputSmoothed) / 10 :
+									(motorInputSmoothed < 0.999f && motorInputSmoothed > -0.999f ?
+										Mathf.Abs(motorInputSmoothed) / 10 :
+										0
+									)
+								))
+							);
+						}
+						vehicle.myRigidbody.AddRelativeTorque(new Vector3(
+							motorInputSmoothed * 100 * Game.Settings.buggyFlightAgility,
+							0,
+							vehicle.input.x * -100 * Game.Settings.buggyFlightAgility
+						));
 					}
 
 					//Slideslip - "Dihedral"
-					if (vehicle.input.x == 0 && (transform.eulerAngles.z < 90 || transform.eulerAngles.z > 270))
-					{
+					if (
+						vehicle.input.x == 0 &&
+						(transform.eulerAngles.z < 90 ||
+							transform.eulerAngles.z > 270
+						)
+					){
 						vehicle.myRigidbody.AddRelativeTorque(
-							((transform.eulerAngles.x < 10 || transform.eulerAngles.x > 350) ? pitch - 0.95f : 0) * -0,
+							((transform.eulerAngles.x < 10 || transform.eulerAngles.x > 350) ?
+								pitch - 0.95f :
+								0
+							) * -0,
 							roll * -0.6f,
-							((transform.eulerAngles.z < 20 || transform.eulerAngles.z > 340) ? roll * -0.5f : 0)
+							((transform.eulerAngles.z < 20 || transform.eulerAngles.z > 340) ?
+								roll * -0.5f :
+								0
+							)
 						);
 					}
-					else if (vehicle.input.x == 0)
-					{
+					else if (vehicle.input.x == 0){
 						vehicle.myRigidbody.AddRelativeTorque(
 							0,
 							(transform.eulerAngles.z - 180) * 0.4f, 0
@@ -445,89 +489,134 @@ public class Buggy : MonoBehaviour
 					}
 
 					//Lava "Thermals"
-					if (transform.position.y < Game.Settings.lavaAlt + 10 || Physics.Raycast(transform.position, Vector3.down, out hit, 10, 1 << 4))
-					{
+					if (
+						transform.position.y < Game.Settings.lavaAlt + 10 ||
+						Physics.Raycast(transform.position, Vector3.down, out hit, 10, 1 << 4)
+					){
 						vehicle.myRigidbody.AddForce(Vector3.up * (10 - hit.distance) * 40);
 					}
 					vehicle.myRigidbody.angularDrag = 5f;
 				}
-				else
-				{
+				else {
 					//Stalling
 					vehicle.myRigidbody.angularDrag = 1f;
 					vehicle.myRigidbody.drag = vehicle.myRigidbody.velocity.magnitude / Game.Settings.buggyFlightDrag * 9f;
-					vehicle.myRigidbody.AddRelativeTorque(new Vector3(vehicle.input.y + 0.5f * 100f, 0f, vehicle.input.x * -30f));
+					vehicle.myRigidbody.AddRelativeTorque(new Vector3(
+						vehicle.input.y + 0.5f * 100f,
+						0f,
+						vehicle.input.x * -30f
+					));
 				}
 			}
-			else if (vehicle.brakes && vehicle.myRigidbody.velocity.magnitude < 1.5f)
-			{
-				if (vehicle.input.y != 0f)
-				{
+			else if (vehicle.brakes && vehicle.myRigidbody.velocity.magnitude < 1.5f){
+				if (vehicle.input.y != 0f){
 					vehicle.myRigidbody.drag = 2f;
 				}
-				else
-				{
+				else {
 					vehicle.myRigidbody.drag = 50f;
 				}
 				vehicle.myRigidbody.angularDrag = 1f;
 			}
-			else if (vehicle.brakes && vehicle.myRigidbody.velocity.magnitude < 10f)
-			{
-				if (vehicle.input.y != 0f)
-				{
+			else if (vehicle.brakes && vehicle.myRigidbody.velocity.magnitude < 10f){
+				if (vehicle.input.y != 0f){
 					vehicle.myRigidbody.drag = 2f;
 				}
-				else
-				{
+				else {
 					vehicle.myRigidbody.drag = 10f;
 				}
 			}
-			else
-			{
+			else {
 				vehicle.myRigidbody.angularDrag = 0.2f;
 				vehicle.myRigidbody.drag = 0.01f;
 			}
 
 			//Steering
-			float steeringAngle = Mathf.Lerp(40f, 30f, vehicle.myRigidbody.velocity.magnitude / Game.Settings.buggySpeed);
-			wheels[0].localRotation = (wheels[1].localRotation = Quaternion.LookRotation(new Vector3(vehicle.input.x * (steeringAngle / 90f), 0f, 1f + -1f * Mathf.Abs(vehicle.input.x * (steeringAngle / 90f)))));
-			steeringAngle = Mathf.Lerp(20f, 0f, vehicle.myRigidbody.velocity.magnitude / Game.Settings.buggySpeed);
-			wheels[2].localRotation = (wheels[3].localRotation = Quaternion.LookRotation(new Vector3(vehicle.input.x * -1f * (steeringAngle / 90f), 0f, 1f + -1f * Mathf.Abs(vehicle.input.x * (steeringAngle / 90f)))));
+			float steeringAngle = Mathf.Lerp(
+				40f,
+				30f,
+				vehicle.myRigidbody.velocity.magnitude / Game.Settings.buggySpeed
+			);
+			wheels[0].localRotation = (wheels[1].localRotation = Quaternion.LookRotation(new Vector3(
+				vehicle.input.x * (steeringAngle / 90f),
+				0f,
+				1f + -1f * Mathf.Abs(vehicle.input.x * (steeringAngle / 90f))
+			)));
+			steeringAngle = Mathf.Lerp(
+				20f,
+				0f,
+				vehicle.myRigidbody.velocity.magnitude / Game.Settings.buggySpeed
+			);
+			wheels[2].localRotation = (wheels[3].localRotation = Quaternion.LookRotation(new Vector3(
+				vehicle.input.x * -1f * (steeringAngle / 90f),
+				0f,
+				1f + -1f * Mathf.Abs(vehicle.input.x * (steeringAngle / 90f))
+			)));
 
 			//Experimental Motor Physics
-			if (Game.Settings.buggyNewPhysics)
-			{
-				motorTorque = -vehicle.input.y * Mathf.Lerp(Game.Settings.buggyPower * 3f, 0f, hitVelocity[0].z / Game.Settings.buggySpeed);
+			if (Game.Settings.buggyNewPhysics){
+				motorTorque = -vehicle.input.y * Mathf.Lerp(
+					Game.Settings.buggyPower * 3f,
+					0f,
+					hitVelocity[0].z / Game.Settings.buggySpeed
+				);
 
 				//Apply Wheel Force
 				frictionTotal = 0f;
-				for (int i = 0; i < 4; i++)
-				{
-					if (Physics.Raycast(transform.TransformPoint(wheelPositn[i]), transform.up * -1, out hit, suspensionRange + wheelRadius, vehicle.terrainMask))
-					{
-						if (motorTorque == 0 || motorTorque < (hitFriction[i] * hitForce[i].z)) motorSpeed = hitVelocity[i].z;      //Static Friction
-						else motorSpeed = Mathf.Lerp(Game.Settings.buggySpeed, 0, (motorTorque - (hitFriction[i] * hitForce[i].z)) / motorTorque);      //Dynamic Friction
-																																						//motorSpeed += -motorSpeed * motorDrag / motorTorque * Time.fixedDeltaTime;
+				for (int i = 0; i < 4; i++){
+					if (
+						Physics.Raycast(
+							transform.TransformPoint(wheelPositn[i]),
+							transform.up * -1,
+							out hit,
+							suspensionRange + wheelRadius,
+							vehicle.terrainMask
+						)
+					){
+						//Static Friction
+						if (motorTorque == 0 || motorTorque < (hitFriction[i] * hitForce[i].z)){
+							motorSpeed = hitVelocity[i].z;
+						}
+						//Dynamic Friction
+						else {
+							motorSpeed = Mathf.Lerp(
+								Game.Settings.buggySpeed,
+								0,
+								(motorTorque - (hitFriction[i] * hitForce[i].z)) / motorTorque
+							);
+							//motorSpeed += -motorSpeed * motorDrag / motorTorque * Time.fixedDeltaTime;
+						}
 						motorSpd = (frictionTotal - Game.Settings.buggyPower * 3) / (Game.Settings.buggyPower * 3 / Game.Settings.buggySpeed);
 
 						wheelsAreTouchingGround = true;
-						isDynamic = ((motorTorque > hitFriction[i]) || (Mathf.Abs(hitVelocity[i].x) > Mathf.Abs(hitVelocity[i].z) * 0.3f));
+						isDynamic = (
+							(motorTorque > hitFriction[i]) ||
+							(Mathf.Abs(hitVelocity[i].x) > Mathf.Abs(hitVelocity[i].z) * 0.3f)
+						);
 						hitDistance[i] = hit.distance;
 						hitCompress[i] = -((hit.distance) / (suspensionRange + wheelRadius)) + 1;
 						hitVelocity[i] = wheels[i].InverseTransformDirection(vehicle.myRigidbody.GetPointVelocity(transform.TransformPoint(wheelPositn[i])));
-						if (isDynamic)
-						{
+						if (isDynamic){
 							hitFriction[i] = Game.Settings.buggyTr * 60;
 							//Debug.DrawRay(transform.TransformPoint(wheelPositn[i]),transform.up * 5, Color.red);
 							//getSpringForce(comp, vel.y) *				//Spring Compression position, normalized (0-1)
 							//Mathf.Lerp(1, 1, Mathf.Min(comp * 4, 1))	//Static tire friction coeffecient, as function of downforce*/
 						}
-						else
-						{
-							hitFriction[i] = Game.Settings.buggyTr * 150 * Mathf.Lerp(1.5f, 0.5f, Mathf.Min(hitCompress[i] * 3, 1));
+						else{
+							hitFriction[i] = Game.Settings.buggyTr * 150 * Mathf.Lerp(
+								1.5f,
+								0.5f,
+								Mathf.Min(hitCompress[i] * 3, 1)
+							);
 						}
 
-						Vector3 dir = new Vector3(hitVelocity[i].x, 0, (Game.Settings.buggyAWD == true || i > 1 ? (hitVelocity[i].z - motorSpeed) : 0));
+						Vector3 dir = new Vector3(
+							hitVelocity[i].x,
+							0,
+							(
+								Game.Settings.buggyAWD == true ||
+								i > 1 ? (hitVelocity[i].z - motorSpeed) : 0
+							)
+						);
 						if (dir.magnitude > 1) dir = dir.normalized;
 						hitForce[i] = dir;
 						//Debug.DrawRay(transform.TransformPoint(wheelPositn[i]),transform.right * dir.x, Color.blue);
@@ -535,11 +624,21 @@ public class Buggy : MonoBehaviour
 						Vector3 force = wheels[i].TransformDirection(dir * -hitFriction[i]);
 						//Debug.DrawRay(hit.point,force / 50);
 						vehicle.myRigidbody.AddForceAtPosition(force, hit.point);
-						if (wheelMarks) wheelMarkIndex[i] = wheelMarks.AddSkidMark(hit.point, hit.normal, (isDynamic ? 1 : Mathf.Min(0.5f, force.magnitude * 0.0025f)), wheelMarkIndex[i]);     //Do Tire Tracks
+						if (wheelMarks){
+							//Do Tire Tracks
+							wheelMarkIndex[i] = wheelMarks.AddSkidMark(
+								hit.point,
+								hit.normal,
+								(isDynamic ? 1 : Mathf.Min(
+									0.5f,
+									force.magnitude * 0.0025f
+								)),
+								wheelMarkIndex[i]
+							);
+						}
 						frictionTotal += hitFriction[i];
 					}
-					else
-					{
+					else {
 						hitDistance[i] = -1;
 						wheelMarkIndex[i] = -1;
 					}
@@ -547,19 +646,32 @@ public class Buggy : MonoBehaviour
 			}
 
 			//Modified Yoggy physics
-			else
-			{
+			else {
 				//Motor
-				motorTorque = Mathf.Max(1f, Mathf.Lerp(Game.Settings.buggyPower * 5f, 0f, motorSpeed / (Game.Settings.buggySpeed * 10f)) * Mathf.Abs((wingOpen ? 0 : vehicle.input.y)));
-				motorAccel = (int)Mathf.Lerp(maxAcceleration, 0f, motorSpeed / (Game.Settings.buggySpeed * 10f));
+				motorTorque = Mathf.Max(
+					1f,
+					Mathf.Lerp(
+						Game.Settings.buggyPower * 5f,
+						0f,
+						motorSpeed / (Game.Settings.buggySpeed * 10f)
+					) * Mathf.Abs((wingOpen ? 0 : vehicle.input.y))
+				);
+				motorAccel = (int)Mathf.Lerp(
+					maxAcceleration,
+					0f,
+					motorSpeed / (Game.Settings.buggySpeed * 10f)
+				);
 				motorSpeed += vehicle.input.y * (float)motorAccel / (float)motorMass * Time.fixedDeltaTime;
 				motorSpeed += -motorSpeed * (vehicle.brakes ? 50 : motorDrag) / motorTorque * Time.fixedDeltaTime;
 
 				//Wheel / Terrain Collisions
-				for (int i = 0; i < 4; i++)
-				{
-					if (Physics.Raycast(transform.TransformPoint(wheelPositn[i]), transform.up * -1f, out hit, suspensionRange + wheelRadius, vehicle.terrainMask))
-					{
+				for (int i = 0; i < 4; i++){
+					if (Physics.Raycast(
+						transform.TransformPoint(wheelPositn[i]),
+						transform.up * -1f,
+						out hit,
+						suspensionRange + wheelRadius, vehicle.terrainMask
+					)){
 						/* BUCKING BRONCO BUGGY
 						wheelsAreTouchingGround = true;
 						float[] array33 = hitCompress;
@@ -608,10 +720,17 @@ public class Buggy : MonoBehaviour
 
 						wheelsAreTouchingGround = true;
 						hitCompress[i] = -((hit.distance) / (suspensionRange + wheelRadius)) + 1;
-						hitVelocity[i] = wheels[i].InverseTransformDirection(vehicle.myRigidbody.GetPointVelocity(transform.TransformPoint(wheelPositn[i])));
-						if (hit.rigidbody)
-						{
-							vehicle.myRigidbody.AddForceAtPosition((hitVelocity[i] - wheels[i].InverseTransformDirection(hit.rigidbody.GetPointVelocity(hit.point))) / 4, hit.point, ForceMode.VelocityChange);
+						hitVelocity[i] = wheels[i].InverseTransformDirection(
+							vehicle.myRigidbody.GetPointVelocity(transform.TransformPoint(wheelPositn[i]))
+						);
+						if (hit.rigidbody){
+							vehicle.myRigidbody.AddForceAtPosition(
+								(hitVelocity[i] - wheels[i].InverseTransformDirection(
+									hit.rigidbody.GetPointVelocity(hit.point)
+								)) / 4,
+								hit.point,
+								ForceMode.VelocityChange
+							);
 							//vehicle.transform.position += (hit.rigidbody.GetPointVelocity(hit.point) * Time.fixedDeltaTime) / 4;
 							//hitVelocity[i] = hit.rigidbody.GetPointVelocity(hit.point);
 							//hitVelocity[i] = hit.rigidbody.GetPointVelocity(hit.point);
@@ -623,10 +742,20 @@ public class Buggy : MonoBehaviour
 							-(hitVelocity[i].z - motorSpeed) * friction     //Motor
 						), new Vector3(1000, 1000, 1000))), hit.point);
 						motorSpeed += ((hitVelocity[i].z - motorSpeed) * friction * Time.fixedDeltaTime) / motorTorque;
-						if (wheelMarks) wheelMarkIndex[i] = wheelMarks.AddSkidMark(hit.point, hit.normal, (Mathf.Abs(hitVelocity[i].x) > Mathf.Abs(hitVelocity[i].z) * 0.3f ? Mathf.Abs(vehicle.input.y) * 0.5f + 0.25f : Mathf.Min(0.5f, friction * 0.05f)), wheelMarkIndex[i]);     //Do Tire Tracks
+						if (wheelMarks){
+							//Do Tire Tracks
+							wheelMarkIndex[i] = wheelMarks.AddSkidMark(
+								hit.point,
+								hit.normal,
+								(Mathf.Abs(hitVelocity[i].x) > Mathf.Abs(hitVelocity[i].z) * 0.3f ?
+									Mathf.Abs(vehicle.input.y) * 0.5f + 0.25f :
+									Mathf.Min(0.5f, friction * 0.05f)
+								),
+								wheelMarkIndex[i]
+							);
+						}
 					}
-					else
-					{
+					else {
 						hit.distance = -1f;
 						wheelMarkIndex[i] = -1;
 					}
@@ -635,15 +764,16 @@ public class Buggy : MonoBehaviour
 			}
 
 			//Suspension
-			for (int i = 0; i < 4; i++)
-			{
+			for (int i = 0; i < 4; i++){
 				if (hitDistance[i] == -1) continue;
-				vehicle.myRigidbody.AddForceAtPosition(transform.up * (-hitVelocity[i].y * Game.Settings.buggySh * 1 * (wingOpen ? 3 : 1) + hitCompress[i] * (20 * vehicle.myRigidbody.mass) * (wingOpen && i < 2 ? 8 : 1)), transform.TransformPoint(wheelPositn[i]));
+				vehicle.myRigidbody.AddForceAtPosition(
+					transform.up * (-hitVelocity[i].y * Game.Settings.buggySh * 1 * (wingOpen ? 3 : 1) + hitCompress[i] * (20 * vehicle.myRigidbody.mass) * (wingOpen && i < 2 ? 8 : 1)),
+					transform.TransformPoint(wheelPositn[i])
+				);
 			}
 
-			//Floating
-			if ((transform.position.y < Game.Settings.lavaAlt + 0.1f && transform.position.y - Game.Settings.lavaAlt > -3f) || Physics.Raycast(transform.position + Vector3.up * 3f, Vector3.down, out hit, 3.1f, 1 << 4))
-			{
+			//Floating :33333
+			if ((transform.position.y < Game.Settings.lavaAlt + 0.1f && transform.position.y - Game.Settings.lavaAlt > -3f) || Physics.Raycast(transform.position + Vector3.up * 3f, Vector3.down, out hit, 3.1f, 1 << 4)){
 				//Vars
 				if (wingOpen && hit.distance < 2f)
 				{
