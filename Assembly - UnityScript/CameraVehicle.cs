@@ -3,46 +3,28 @@ using Boo.Lang.Runtime;
 using UnityEngine;
 
 [Serializable]
-public class CameraVehicle : MonoBehaviour
-{
+public class CameraVehicle : MonoBehaviour {
 	public GUILayer guiLayer;
 
 	public Transform arrow;
-
 	public Vector3 lastDir;
-
 	public float lastY;
-
 	public float sensitivityX;
-
 	public float sensitivityY;
-
 	public float rotationX;
-
 	public float rotationY;
-
 	public float heightBoost;
-
 	public float targetHeight;
-
 	public Quaternion gyroTation;
-
 	public Quaternion wr;
-
 	private bool underwater;
-
 	public RaycastHit hit;
-
 	public MotionBlur mb;
-
 	public GlowEffect glowEffect;
-
 	public ColorCorrectionEffect colorEffect;
-
 	public float worldTime;
 
-	public CameraVehicle()
-	{
+	public CameraVehicle(){
 		lastDir = new Vector3(1f, 1f, 1f);
 		sensitivityX = 15f;
 		sensitivityY = 15f;
@@ -52,161 +34,196 @@ public class CameraVehicle : MonoBehaviour
 		worldTime = 0f;
 	}
 
-	public void Start()
-	{
+	public void Start(){
 		Time.timeScale = 1f;
-		float x = 270.01f;
-		Quaternion rotation = transform.rotation;
-		Vector3 eulerAngles = rotation.eulerAngles;
-		float num = (eulerAngles.x = x);
-		Vector3 vector = (rotation.eulerAngles = eulerAngles);
-		Quaternion quaternion = (transform.rotation = rotation);
+		transform.rotation.eulerAngles.x = 270.01f;
 	}
 
-	public void LateUpdate()
-	{
-		if (!Game.Player || !Game.PlayerVeh || !Game.PlayerVeh.ridePos)
-		{
+	public void LateUpdate(){
+		if (
+			!Game.Player ||
+			!Game.PlayerVeh ||
+			!Game.PlayerVeh.ridePos
+		){
 			return;
 		}
-		if (mb.enabled)
-		{
+
+		//Blur
+		if (mb.enabled){
 			mb.blurAmount -= Time.deltaTime * 0.13f;
-			if (mb.blurAmount < 0f)
-			{
+			if (mb.blurAmount < 0f){
 				mb.enabled = false;
 			}
 		}
-		if (Game.Settings.useHypersound == 1)
-		{
-			Game.Settings.gameMusic.pitch = Mathf.Clamp(0.5f * -1f + Game.Player.rigidbody.velocity.magnitude / 15f, 0.8f, 1.5f);
+
+		//Audio
+		if (Game.Settings.useHypersound == 1){
+			Game.Settings.gameMusic.pitch = Mathf.Clamp(
+				-0.5f + Game.Player.rigidbody.velocity.magnitude / 15f,
+				0.8f,
+				1.5f
+			);
 		}
-		if (Game.Settings.camMode == 0 || Input.GetButton("Fire2") || (Input.GetButton("Snipe") && !Game.Messaging.chatting))
-		{
+
+		//Cursor Locking
+		if (
+			Game.Settings.camMode == 0 ||
+			Input.GetButton("Fire2") ||
+			(Input.GetButton("Snipe") && !Game.Messaging.chatting)
+		){
 			Screen.lockCursor = true;
 		}
-		else
-		{
+		else {
 			Screen.lockCursor = false;
 		}
-		if (Input.GetButton("Snipe") && !Game.Messaging.chatting)
-		{
-			if (Camera.main.fieldOfView == 60f)
-			{
+
+		//Snipe Zooming
+		if (Input.GetButton("Snipe") && !Game.Messaging.chatting){
+			if (Camera.main.fieldOfView == 60f){
 				Camera.main.fieldOfView = 10f;
 			}
 			Camera.main.fieldOfView = Camera.main.fieldOfView + Input.GetAxis("Mouse ScrollWheel") * -1f;
-			if (Camera.main.fieldOfView > 50f)
-			{
+			if (Camera.main.fieldOfView > 50f){
 				Camera.main.fieldOfView = 50f;
 			}
-			else if (Camera.main.fieldOfView < 1.5f)
-			{
+			else if (Camera.main.fieldOfView < 1.5f){
 				Camera.main.fieldOfView = 1.5f;
 			}
 		}
-		else if (Camera.main.fieldOfView != 60f)
-		{
+		else if (Camera.main.fieldOfView != 60f){
 			Camera.main.fieldOfView = 60f;
 		}
-		Vector3 vector = transform.InverseTransformPoint(camera.ScreenToWorldPoint(new Vector3(camera.pixelWidth - 30f - 65f, 30f, camera.nearClipPlane + 0.05f)));
-		if (Vector3.Distance(vector, arrow.localPosition) < 0.002f)
-		{
-			arrow.localPosition = Vector3.Lerp(arrow.localPosition, vector, Time.deltaTime * 0.005f);
+
+		//Green Arrow
+		Vector3 targetPos = transform.InverseTransformPoint(camera.ScreenToWorldPoint(new Vector3(
+			camera.pixelWidth - 30f - 65f,
+			30f,
+			camera.nearClipPlane + 0.05f
+		)));
+		if (Vector3.Distance(targetPos, arrow.localPosition) < 0.002f){
+			arrow.localPosition = Vector3.Lerp(
+				arrow.localPosition,
+				targetPos,
+				Time.deltaTime * 0.005f
+			);
 		}
-		else
-		{
-			arrow.localPosition = vector;
+		else {
+			arrow.localPosition = targetPos;
 		}
-		arrow.rotation = Quaternion.Lerp(arrow.rotation, Quaternion.LookRotation(((Game.PlayerVeh.isIt == 0 && (bool)Game.QuarryVeh) ? Game.QuarryVeh.gameObject.transform : World.@base).position - Game.Player.transform.position), Time.deltaTime * 15f);
-		arrow.localScale = Vector3.one * Mathf.Lerp(0.03f, 1f, Camera.main.fieldOfView / 60f);
-		if (Input.GetKeyDown(KeyCode.Escape) && Game.Settings.camMode == 0)
-		{
+		arrow.rotation = Quaternion.Lerp(
+			arrow.rotation, 
+			Quaternion.LookRotation(
+				((Game.PlayerVeh.isIt || !Game.QuarryVeh) ?
+					World.@base :
+					Game.QuarryVeh.gameObject.transform
+				).position - Game.Player.transform.position
+			),
+			Time.deltaTime * 15f
+		);
+		arrow.localScale = Vector3.one * Mathf.Lerp(
+			0.03f,
+			1f,
+			Camera.main.fieldOfView / 60f
+		);
+
+		//HotKeys
+		if (Input.GetKeyDown(KeyCode.Escape) && Game.Settings.camMode == 0){ // Unlock Cursor
 			Game.Settings.camMode = 1;
 			PlayerPrefs.SetInt("cam", 1);
 		}
-		if (!Game.Messaging.chatting)
-		{
-			if (Input.GetKeyDown(KeyCode.Alpha1))
-			{
+		if (!Game.Messaging.chatting){
+			if (Input.GetKeyDown(KeyCode.Alpha1)){
 				Game.Settings.camMode = 0;
 				PlayerPrefs.SetInt("cam", 0);
 			}
-			else if (Input.GetKeyDown(KeyCode.Alpha2))
-			{
+			else if (Input.GetKeyDown(KeyCode.Alpha2)){
 				Game.Settings.camMode = 1;
 				PlayerPrefs.SetInt("cam", 1);
 			}
-			else if (Input.GetKeyDown(KeyCode.Alpha3))
-			{
+			else if (Input.GetKeyDown(KeyCode.Alpha3)){
 				Game.Settings.camDist = 0f;
 				PlayerPrefs.SetFloat("camDist", 0f);
 			}
-			else if (Input.GetKeyDown(KeyCode.Alpha4))
-			{
+			else if (Input.GetKeyDown(KeyCode.Alpha4)){
 				Game.Settings.camDist = 20f;
 				PlayerPrefs.SetFloat("camDist", 20f);
 			}
-			else if (Input.GetKeyDown(KeyCode.Alpha5))
-			{
+			else if (Input.GetKeyDown(KeyCode.Alpha5)){
 				Game.Settings.camMode = 2;
 				PlayerPrefs.SetInt("cam", 2);
 			}
-			else if (Input.GetKeyDown(KeyCode.Alpha6))
-			{
+			else if (Input.GetKeyDown(KeyCode.Alpha6)){
 				Game.Settings.camMode = 3;
 				PlayerPrefs.SetInt("cam", 3);
 			}
-			else if (Input.GetKeyDown(KeyCode.Alpha7))
-			{
-				Game.Settings.gyroCam = !Game.Settings.gyroCam;
-				PlayerPrefs.SetInt("gyroCam", Game.Settings.gyroCam ? 1 : 0);
+			else if (Input.GetKeyDown(KeyCode.Alpha7)){
+				Game.Settings.gyroCam = (Game.Settings.gyroCam ? false : true);
+				PlayerPrefs.SetInt("gyroCam", (Game.Settings.gyroCam ? 1 : 0));
 			}
 		}
+
+		//Constants
 		float num = (float)Game.PlayerVeh.camOffset + Game.Settings.camDist;
-		if (worldTime < 7f)
-		{
+
+		//World Entry Effect
+		if (worldTime < 7f){
 			worldTime = Time.time - Game.Controller.worldLoadTime;
-			transform.position = Vector3.Lerp(transform.position, Game.Player.transform.position, Time.deltaTime * 1f);
-			wr = Quaternion.LookRotation(Game.Player.transform.position - transform.position, Vector3.up);
-			if (worldTime > 1f)
-			{
-				transform.rotation = Quaternion.Slerp(transform.rotation, wr, Time.deltaTime * 0.5f * Mathf.Min(1f, (worldTime - 1f) * 0.5f));
+			transform.position = Vector3.Lerp(
+				transform.position,
+				Game.Player.transform.position,
+				Time.deltaTime * 1f
+			);
+			wr = Quaternion.LookRotation(
+				Game.Player.transform.position - transform.position,
+				Vector3.up
+			);
+			if (worldTime > 1f){
+				transform.rotation = Quaternion.Slerp(
+					transform.rotation,
+					wr,
+					Time.deltaTime * 0.5f * Mathf.Min(1f, (worldTime - 1f) * 0.5f)
+				);
 			}
 		}
-		else if (Game.Settings.camMode == 0 || Input.GetButton("Fire2") || (Input.GetButton("Snipe") && !Game.Messaging.chatting))
-		{
+
+		//Ride
+		else if (
+			Game.Settings.camMode == 0 ||
+			Input.GetButton("Fire2") ||
+			(Input.GetButton("Snipe") && !Game.Messaging.chatting)
+		){
 			transform.position = Game.PlayerVeh.ridePos.position;
-			if (Input.GetButtonDown("Fire2") || Input.GetKeyDown(KeyCode.Alpha1))
-			{
+			
+			if (Input.GetButtonDown("Fire2") || Input.GetKeyDown(KeyCode.Alpha1)){
 				rotationX = 0f;
 				rotationY = 0f;
-				if (Game.Settings.gyroCam)
-				{
-					gyroTation = Quaternion.Euler(0f, Game.PlayerVeh.ridePos.rotation.eulerAngles.y, 0f);
+				if (Game.Settings.gyroCam){
+					gyroTation = Quaternion.Euler(
+						0f,
+						Game.PlayerVeh.ridePos.rotation.eulerAngles.y,
+						0f
+					);
 				}
 			}
-			if (Game.Settings.gyroCam)
-			{
+			
+			if (Game.Settings.gyroCam){
 				transform.rotation = gyroTation;
 			}
-			else
-			{
+			else {
 				transform.rotation = Game.PlayerVeh.ridePos.rotation;
 			}
-			rotationX += Input.GetAxis("Mouse X") * ((!Input.GetButton("Snipe")) ? 2f : 0.5f);
-			rotationY += Input.GetAxis("Mouse Y") * ((!Input.GetButton("Snipe")) ? 2f : 0.5f);
-			if (rotationX < -360f)
-			{
+			
+			rotationX += Input.GetAxis("Mouse X") * (Input.GetButton("Snipe") ? 0.5f : 2f);
+			rotationY += Input.GetAxis("Mouse Y") * (Input.GetButton("Snipe") ? 0.5f : 2f);
+			
+			if (rotationX < -360f){
 				rotationX += 360f;
 			}
-			else if (rotationX > 360f)
-			{
+			else if (rotationX > 360f){
 				rotationX -= 360f;
 			}
-			if (rotationY < -360f)
-			{
-				rotationY += 360f;
+			if (rotationY < -360f){
+				rotationY += 360f; //:33333
 			}
 			else if (rotationY > 360f)
 			{
