@@ -36,7 +36,11 @@ public class CameraVehicle : MonoBehaviour {
 
 	public void Start(){
 		Time.timeScale = 1f;
-		transform.rotation.eulerAngles.x = 270.01f;
+		Quaternion trot = transform.rotation;
+		Vector3 ea = trot.eulerAngles;
+		ea.x = 270.01f;
+		trot.eulerAngles = ea;
+		transform.rotation = trot;
 	}
 
 	public void LateUpdate(){
@@ -113,7 +117,7 @@ public class CameraVehicle : MonoBehaviour {
 		arrow.rotation = Quaternion.Lerp(
 			arrow.rotation, 
 			Quaternion.LookRotation(
-				((Game.PlayerVeh.isIt || !Game.QuarryVeh) ?
+				((Game.PlayerVeh.isIt != 0 || !Game.QuarryVeh) ?
 					World.@base :
 					Game.QuarryVeh.gameObject.transform
 				).position - Game.Player.transform.position
