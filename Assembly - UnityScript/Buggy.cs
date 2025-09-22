@@ -772,25 +772,31 @@ public class Buggy : MonoBehaviour {
 				);
 			}
 
-			//Floating :33333
-			if ((transform.position.y < Game.Settings.lavaAlt + 0.1f && transform.position.y - Game.Settings.lavaAlt > -3f) || Physics.Raycast(transform.position + Vector3.up * 3f, Vector3.down, out hit, 3.1f, 1 << 4)){
+			//Floating
+			if (
+				(transform.position.y < Game.Settings.lavaAlt + 0.1f && transform.position.y - Game.Settings.lavaAlt > -3f) ||
+				Physics.Raycast(transform.position + Vector3.up * 3f, Vector3.down, out hit, 3.1f, 1 << 4)
+			){
 				//Vars
-				if (wingOpen && hit.distance < 2f)
-				{
+				if (wingOpen && hit.distance < 2f){
 					vehicle.myRigidbody.AddForce(Vector3.up * 400f);
 				}
-				float roll = (transform.eulerAngles.z > 180 ? transform.eulerAngles.z - 360 : transform.eulerAngles.z);
-				float pitch = (transform.eulerAngles.x > 180 ? transform.eulerAngles.x - 360 : transform.eulerAngles.x);
+				float roll = (transform.eulerAngles.z > 180 ?
+					transform.eulerAngles.z - 360 :
+					transform.eulerAngles.z
+				);
+				float pitch = (transform.eulerAngles.x > 180 ?
+					transform.eulerAngles.x - 360 :
+					transform.eulerAngles.x
+				);
 				vehicle.myRigidbody.angularDrag = 2f;
 
 				//Flowing Lava
 				float waterAngle = default(float);
 				Vector3 waterAxis = default(Vector3);
-				if (hit.distance != 0f && (bool)hit.transform)
-				{
+				if (hit.distance != 0f && (bool)hit.transform){
 					hit.transform.rotation.ToAngleAxis(out waterAngle, out waterAxis);
-					if (waterAngle != 0f)
-					{
+					if (waterAngle != 0f){
 						vehicle.myRigidbody.AddForce(hit.transform.rotation.eulerAngles * 0.8f);
 					}
 				}
@@ -798,98 +804,128 @@ public class Buggy : MonoBehaviour {
 				//BouyancyPoints
 				int i = 0;
 				Transform[] m = bouyancyPoints;
-				for (int length = m.Length; i < length; i++)
-				{
-					if (m[i].position.y < Game.Settings.lavaAlt || Physics.Raycast(m[i].position + (Vector3.up * 3f), Vector3.down, out hit, 3f, 1 << 4))
-					{
-						float bouyancyY = (hit.distance != 0f ? hit.distance - 5 : m[i].position.y - 2 - Game.Settings.lavaAlt);
-						if (bouyancyY < -1.8f)
-						{
+				for (int length = m.Length; i < length; i++){
+					if (
+						m[i].position.y < Game.Settings.lavaAlt ||
+						Physics.Raycast(
+							m[i].position + (Vector3.up * 3f),
+							Vector3.down,
+							out hit,
+							3f,
+							1 << 4
+						)
+					){
+						float bouyancyY = (hit.distance != 0f ?
+							hit.distance - 5 :
+							m[i].position.y - 2 - Game.Settings.lavaAlt
+						);
+						if (bouyancyY < -1.8f){
 							bouyancyY = -1.8f;
 						}
-						vehicle.myRigidbody.AddForceAtPosition((new Vector3(0f, bouyancyY * -1f * (100f + vehicle.myRigidbody.GetPointVelocity(m[i].position).magnitude * (float)((!(vehicle.myRigidbody.GetPointVelocity(m[i].position).magnitude > 15f)) ? 15 : 100)), 0f) + vehicle.myRigidbody.GetPointVelocity(m[i].position) * -200f) / Extensions.get_length((System.Array)bouyancyPoints), m[i].position);
+						vehicle.myRigidbody.AddForceAtPosition((new Vector3(
+							0f,
+							-bouyancyY * (100f + vehicle.myRigidbody.GetPointVelocity(m[i].position).magnitude * (float)((!(vehicle.myRigidbody.GetPointVelocity(m[i].position).magnitude > 15f)) ? 15 : 100)),
+							0f
+						) + vehicle.myRigidbody.GetPointVelocity(m[i].position) * -200f) / Extensions.get_length((System.Array)bouyancyPoints), m[i].position);
 					}
 				}
-				if (vehicle.input.y >= 0f)
-				{
-					vehicle.myRigidbody.AddRelativeTorque(new Vector3(vehicle.input.y * -1f * 500f * ((70f - Mathf.Min(70f, Mathf.Max(1f, pitch * -1f))) / 70f), vehicle.input.y * vehicle.input.x * 300f, roll * -3f + vehicle.input.y * vehicle.input.x * -50f));
+				if (vehicle.input.y >= 0f){
+					vehicle.myRigidbody.AddRelativeTorque(new Vector3(
+						vehicle.input.y * -1f * 500f * ((70f - Mathf.Min(70f, Mathf.Max(1f, pitch * -1f))) / 70f),
+						vehicle.input.y * vehicle.input.x * 300f,
+						roll * -3f + vehicle.input.y * vehicle.input.x * -50f
+					));
 				}
-				if (!wingOpen && hit.distance < 3f)
-				{
-					vehicle.myRigidbody.AddRelativeForce(Vector3.forward * vehicle.input.y * 1200f);
+				if (!wingOpen && hit.distance < 3f){
+					vehicle.myRigidbody.AddRelativeForce(
+						Vector3.forward * vehicle.input.y * 1200f
+					);
 				}
 			}
 
 			//Diving
-			else if (transform.position.y < Game.Settings.lavaAlt || Physics.Raycast(transform.position + Vector3.up * 200f, Vector3.down, 200f, 1 << 4))
-			{
+			else if (
+				transform.position.y < Game.Settings.lavaAlt ||
+				Physics.Raycast(
+					transform.position + Vector3.up * 200f,
+					Vector3.down, 200f,
+					1 << 4
+				)
+			){
 				vehicle.myRigidbody.AddForce(vehicle.myRigidbody.velocity * -8f + Vector3.up * (wingOpen ? 400 : 200));
 				vehicle.myRigidbody.angularDrag = 2f;
 			}
 
 			//Collision Friction
-			if (wingOpen || wheelsAreTouchingGround || Physics.Raycast(transform.position, transform.up * -1f, 3f, vehicle.terrainMask))
-			{
+			if (
+				wingOpen ||
+				wheelsAreTouchingGround ||
+				Physics.Raycast(
+					transform.position,
+					transform.up * -1f,
+					3f,
+					vehicle.terrainMask
+				)
+			){
 				buggyCollider.material.frictionCombine = PhysicMaterialCombine.Minimum;
 			}
-			else
-			{
+			else {
 				buggyCollider.material.frictionCombine = PhysicMaterialCombine.Maximum;
 			}
 		}
 	}
 
 	//Self righting
-	public void OnCollisionStay(Collision collision)
-	{
-		if (vehicle.zorbBall)
-		{
+	public void OnCollisionStay(Collision collision){
+		if (vehicle.zorbBall){
 			return;
 		}
 		int i = 0;
 		ContactPoint[] contact = collision.contacts;
-		for (int length = contact.Length; i < length; i = checked(i + 1))
-		{
-			if (isInverted && Vector3.Angle(transform.up, contact[i].normal) < 50f)
-			{
+		for (int length = contact.Length; i < length; i = checked(i + 1)){
+			if (
+				isInverted &&
+				Vector3.Angle(transform.up, contact[i].normal) < 50f
+			){
 				isInverted = false;
 			}
-			else if (!isInverted && vehicle.myRigidbody.angularVelocity.sqrMagnitude < 5f && !wingOpen && Vector3.Angle(transform.up, contact[i].normal) > 120f)
-			{
+			else if (
+				!isInverted &&
+				vehicle.myRigidbody.angularVelocity.sqrMagnitude < 5f &&
+				!wingOpen
+				&& Vector3.Angle(transform.up, contact[i].normal) > 120f
+			){
 				isInverted = true;
 			}
-			if (isInverted)
-			{
-				vehicle.myRigidbody.AddTorque(Vector3.Cross(transform.up, Vector3.up) * Vector3.Angle(transform.up, Vector3.up) * 3f);
+			if (isInverted){
+				vehicle.myRigidbody.AddTorque(
+					Vector3.Cross(
+						transform.up,
+						Vector3.up
+					) * Vector3.Angle(transform.up, Vector3.up) * 3f
+				);
 			}
 		}
 	}
 
 
-	public IEnumerator OnSetSpecialInput()
-	{
+	public IEnumerator OnSetSpecialInput(){
 		return new OnSetSpecialInput_0024105(this).GetEnumerator();
 	}
 
-	public void OnDisable()
-	{
-		if ((bool)wheelMarks)
-		{
+	public void OnDisable(){
+		if ((bool)wheelMarks){
 			UnityEngine.Object.Destroy(wheelMarks.gameObject);
 		}
 	}
 
-	public void OnLOD(int level)
-	{
-		for (int i = 0; i < 4; i++)
-		{
+	public void OnLOD(int level){
+		for (int i = 0; i < 4; i++){
 			wheelGraphics[i].Find("Detailed").gameObject.SetActiveRecursively(level == 0);
 			wheelGraphics[i].Find("Simple").gameObject.active = level != 0;
 			axels[i].gameObject.SetActiveRecursively(level == 0);
 		}
 	}
 
-	public void Main()
-	{
-	}
+	public void Main(){}
 }
