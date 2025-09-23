@@ -269,103 +269,206 @@ public class CameraVehicle : MonoBehaviour {
 						)
 					),
 					Time.deltaTime * 4f
-				); //:33333
-				if (Physics.Linecast(transform.position + Vector3.up * 50f, transform.position + Vector3.down * 1f, out hit, 1 << 8) && !RuntimeServices.EqualityOperator(RuntimeServices.GetProperty(hit.collider, "type"), typeof(TerrainCollider)))
-				{
-					float y = transform.position.y + (51f - hit.distance);
-					Vector3 position = transform.position;
-					float num2 = (position.y = y);
-					Vector3 vector2 = (transform.position = position);
+				);
+				if (Physics.Linecast(
+					transform.position + Vector3.up * 50f,
+					transform.position + Vector3.down * 1f, out hit,
+					1 << 8
+				) && !RuntimeServices.EqualityOperator(
+					RuntimeServices.GetProperty(hit.collider, "type"),
+					typeof(TerrainCollider)
+				)){
+					Vector3 tpos = transform.position;
+					float y = tpos.y + 51 - hit.distance;
+					tpos.y = y;
+					transform.position = position;
 				}
 			}
-			else if (Game.Settings.camChase == 1)
-			{
-				float num3 = Vector3.Distance(Game.Player.transform.position, transform.position);
-				if ((bool)Game.Player.transform.gameObject.rigidbody && Game.Player.transform.gameObject.rigidbody.velocity.sqrMagnitude > 0.1f && Game.Player.transform.gameObject.rigidbody.velocity.normalized.y < 0.8f && Game.Player.transform.gameObject.rigidbody.velocity.normalized.y > 0.8f * -1f)
-				{
-					lastDir = Vector3.Lerp(lastDir, Game.Player.transform.gameObject.rigidbody.velocity.normalized, 0.1f);
+
+			//Agile
+			else if (Game.Settings.camChase == 1){
+				if (
+					(bool)Game.Player.transform.gameObject.rigidbody &&
+					Game.Player.transform.gameObject.rigidbody.velocity.sqrMagnitude > 0.1f &&
+					Game.Player.transform.gameObject.rigidbody.velocity.normalized.y < 0.8f &&
+					Game.Player.transform.gameObject.rigidbody.velocity.normalized.y > -0.8f
+				){
+					lastDir = Vector3.Lerp(
+						lastDir,
+						Game.Player.transform.gameObject.rigidbody.velocity.normalized,
+						0.1f
+					);
 				}
-				else
-				{
-					Vector3.Lerp(lastDir, new Vector3(lastDir.x, 0f, lastDir.z), 0.1f);
+				else{
+					Vector3.Lerp(
+						lastDir,
+						new Vector3(lastDir.x, 0f, lastDir.z),
+						0.1f
+					);
 				}
-				Vector3 to = Game.Player.transform.position + lastDir * (camDist * -1f) + Vector3.up * (camDist / 3f);
-				float y2 = transform.position.y + (Game.Player.transform.position.y - lastY) * Time.deltaTime;
-				Vector3 position2 = transform.position;
-				float num4 = (position2.y = y2);
-				Vector3 vector4 = (transform.position = position2);
-				transform.position = Vector3.Lerp(transform.position, to, Time.deltaTime * 4f);
+				Vector3 newPos = (
+					Game.Player.transform.position + 
+					lastDir * -(camDist) + 
+					Vector3.up * (camDist / 3f)
+				);
+				Vector3 tpos = transform.position;
+				float y = tpos.y + (Game.Player.transform.position.y - lastY) * Time.deltaTime;
+				tpos.y = y;
+				transform.position = tpos;
+				transform.position = Vector3.Lerp(
+					transform.position,
+					newPos,
+					Time.deltaTime * 4f
+				);
 				lastY = Game.Player.transform.position.y;
-				transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Game.Player.transform.position - transform.position, (!Game.Settings.flightCam) ? Vector3.up : Game.Player.transform.up), Time.deltaTime * 4f);
-				if (Physics.Linecast(transform.position + Vector3.up * 50f, transform.position + Vector3.down * 1f, out hit, 1 << 8) && !RuntimeServices.EqualityOperator(RuntimeServices.GetProperty(hit.collider, "type"), typeof(TerrainCollider)))
-				{
-					float y3 = transform.position.y + (51f - hit.distance);
-					Vector3 position3 = transform.position;
-					float num5 = (position3.y = y3);
-					Vector3 vector6 = (transform.position = position3);
+				transform.rotation = Quaternion.Slerp(
+					transform.rotation,
+					Quaternion.LookRotation(
+						Game.Player.transform.position - transform.position,
+						((Game.Settings.flightCam != 0) ?
+							Game.Player.transform.up :
+							Vector3.up
+						)
+					),
+					Time.deltaTime * 4f
+				);
+				if (
+					Physics.Linecast(
+						transform.position + Vector3.up * 50f,
+						transform.position + Vector3.down,
+						out hit,
+						1 << 8
+					) &&
+					!RuntimeServices.EqualityOperator(
+						RuntimeServices.GetProperty(hit.collider, "type"),
+						typeof(TerrainCollider)
+					)
+				){
+					float tpos = transform.position;
+					float y = tpos.y + 51 - hit.distance;
+					tpos.y = y;
+					transform.position = tpos;
 				}
 			}
-			else if (Game.Settings.camChase == 2 && Game.Player.transform.rigidbody.velocity.magnitude > 0f)
-			{
-				float num6 = 3f;
-				float num7 = 10f;
-				float num8 = 3f;
-				float y4 = Quaternion.LookRotation(Game.Player.transform.rigidbody.velocity).eulerAngles.y;
-				y4 += Input.GetAxis("Horizontal") * Mathf.Lerp(30f, 10f, camDist / 30f);
-				float b = Game.Player.transform.position.y + Mathf.Lerp(0.1f, 15f, camDist / 30f) + heightBoost;
+
+			//Arcade
+			else if (
+				Game.Settings.camChase == 2 &&
+				Game.Player.transform.rigidbody.velocity.magnitude > 0f
+			){
+				float heightDamping = 3f;
+				float rotationDamping = 3f;
+				float wantedRotationAngle = Quaternion.LookRotation(
+					Game.Player.transform.rigidbody.velocity
+				).eulerAngles.y;
+				wantedRotationAngle += Mathf.Lerp(
+					30f,
+					10f,
+					camDist / 30f
+				) * Input.GetAxis("Horizontal");
+				float wantedHeight = (
+					Game.Player.transform.position.y +
+					Mathf.Lerp(0.1f, 15f, camDist / 30f) +
+					heightBoost
+				);
 				targetHeight = Mathf.Lerp(0.5f, 3f, camDist / 30f);
-				float y5 = transform.eulerAngles.y;
-				float y6 = transform.position.y;
-				y5 = Mathf.LerpAngle(y5, y4, num8 * Time.deltaTime);
-				y6 = Mathf.Lerp(y6, b, num6 * Time.deltaTime);
-				Quaternion quaternion = Quaternion.Euler(0f, y5, 0f);
-				Vector3 position4 = Game.Player.transform.position;
-				position4.y += targetHeight;
-				transform.position = position4;
-				transform.position -= quaternion * Vector3.forward * camDist;
-				float y7 = y6;
-				Vector3 position5 = transform.position;
-				float num9 = (position5.y = y7);
-				Vector3 vector8 = (transform.position = position5);
-				RaycastHit hitInfo = default(RaycastHit);
-				if (Physics.Raycast(transform.position + Vector3.up * 49.4f, Vector3.down, out hitInfo, 50f, 1 << 8) && !RuntimeServices.EqualityOperator(RuntimeServices.GetProperty(hitInfo.collider, "type"), typeof(TerrainCollider)))
-				{
-					Physics.Linecast(transform.position, Game.Player.transform.position + Vector3.up * y6, out hitInfo, 1 << 8);
-					transform.position += quaternion * Vector3.forward * hitInfo.distance;
-					heightBoost = hitInfo.distance * 0.7f;
+				
+				float currentRotationAngle = transform.eulerAngles.y;
+				float currentHeight = transform.position.y;
+				currentRotationAngle = Mathf.LerpAngle(
+					currentRotationAngle,
+					wantedRotationAngle,
+					rotationDamping * Time.deltaTime
+				);
+				currentHeight = Mathf.Lerp(
+					currentHeight,
+					wantedHeight,
+					heightDamping * Time.deltaTime
+				);
+				Quaternion currentRotation = Quaternion.Euler(
+					0f,
+					currentRotationAngle,
+					0f
+				);
+				Vector3 pos = Game.Player.transform.position;
+				pos.y += targetHeight; //Look ABOVE the target
+				transform.position = pos;
+				transform.position -= currentRotation * Vector3.forward * camDist;
+				Vector3 tpos = transform.position;
+				tpos.y = currentHeight;
+				transform.position = tpos;
+
+				//Terrain Avoidance
+				RaycastHit hit = default(RaycastHit);
+				if (
+					Physics.Raycast(
+						transform.position + Vector3.up * 49.4f,
+						Vector3.down,
+						out hit,
+						50f,
+						1 << 8
+					) &&
+					!RuntimeServices.EqualityOperator(
+						RuntimeServices.GetProperty(hit.collider, "type"),
+						typeof(TerrainCollider)
+					)
+				){ //We are under terrain
+					Physics.Linecast( //Determine how far forward we need to go to be out of it
+						transform.position,
+						Game.Player.transform.position + Vector3.up * currentHeight,
+						out hit,
+						1 << 8
+					);
+					transform.position += currentRotation * Vector3.forward * hit.distance;
+					heightBoost = hit.distance * 0.7f;
 				}
-				else
-				{
+				else{
 					heightBoost = 0f;
 				}
-				transform.LookAt(position4);
+				
+				transform.LookAt(pos);
 			}
 		}
-		else if (Game.Settings.camMode == 2)
-		{
-			transform.position = Vector3.Lerp(transform.position, Game.Player.transform.position + Vector3.up * 40f, Time.deltaTime * 0.3f);
-			wr = Quaternion.LookRotation(Game.Player.transform.position - transform.position, Vector3.up);
-			transform.rotation = Quaternion.Slerp(transform.rotation, wr, Time.deltaTime * 2f);
+
+		//Soar
+		else if (Game.Settings.camMode == 2){
+			transform.position = Vector3.Lerp(
+				transform.position,
+				Game.Player.transform.position + Vector3.up * 40f,
+				Time.deltaTime * 0.3f
+			);
+			wr = Quaternion.LookRotation(
+				Game.Player.transform.position - transform.position,
+				Vector3.up
+			);
+			transform.rotation = Quaternion.Slerp(
+				transform.rotation,
+				wr,
+				Time.deltaTime * 2f
+			);
 		}
-		else if (Game.Settings.camMode == 3)
-		{
-			transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Game.Player.transform.position - transform.position), Time.deltaTime * 1.5f);
-			transform.Translate(new Vector3(Input.GetAxis("camX") * Time.deltaTime * 50f, Input.GetAxis("camY") * Time.deltaTime * 40f, Input.GetAxis("camZ") * Time.deltaTime * 50f));
+
+		//Spectate
+		else if (Game.Settings.camMode == 3){
+			transform.rotation = Quaternion.Slerp(
+				transform.rotation,
+				Quaternion.LookRotation(Game.Player.transform.position - transform.position),
+				Time.deltaTime * 1.5f
+			);
+			transform.Translate(new Vector3(
+				Input.GetAxis("camX") * Time.deltaTime * 50f,
+				Input.GetAxis("camY") * Time.deltaTime * 40f,
+				Input.GetAxis("camZ") * Time.deltaTime * 50f
+			));
 		}
-		else if (Game.Settings.camMode == 4)
-		{
-			float x = transform.position.x + Input.GetAxis("camX") * Time.deltaTime * 50f;
-			Vector3 position6 = transform.position;
-			float num10 = (position6.x = x);
-			Vector3 vector10 = (transform.position = position6);
-			float y8 = transform.position.y + Input.GetAxis("camY") * Time.deltaTime * 50f;
-			Vector3 position7 = transform.position;
-			float num11 = (position7.y = y8);
-			Vector3 vector12 = (transform.position = position7);
-			float z = transform.position.z + Input.GetAxis("camZ") * Time.deltaTime * 50f;
-			Vector3 position8 = transform.position;
-			float num12 = (position8.z = z);
-			Vector3 vector14 = (transform.position = position8);
+
+		//Roam
+		else if (Game.Settings.camMode == 4){
+			Vector3 tpos = transform.position;
+			tpos.x += Input.GetAxis("camX") * Time.deltaTime * 50;
+			tpos.y += Input.GetAxis("camY") * Time.deltaTime * 50;
+			tpos.z += Input.GetAxis("camZ") * Time.deltaTime * 50;
+			transform.position = tpos;
 			rotationX += Input.GetAxis("Mouse X") * sensitivityX;
 			rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
 			transform.localRotation = Quaternion.AngleAxis(rotationX, Vector3.up);
@@ -373,31 +476,40 @@ public class CameraVehicle : MonoBehaviour {
 		}
 	}
 
-	public void OnPreRender()
-	{
-		if (!(Game.Settings.fogColor == Color.clear))
-		{
-			if (transform.position.y < Game.Settings.lavaAlt || Physics.Raycast(transform.position + Vector3.up * 200f, Vector3.up * -1f, 200f, 1 << 4))
-			{
-				RenderSettings.fogColor = World.seaFogColor;
-				RenderSettings.fogDensity = Game.Settings.lavaFog;
-				glowEffect.enabled = Game.Settings.renderLevel > 2;
-				glowEffect.glowTint = World.seaGlowColor;
-				Camera.main.clearFlags = CameraClearFlags.Color;
-			}
-			else
-			{
-				RenderSettings.fogColor = Game.Settings.fogColor;
-				RenderSettings.fogDensity = Game.Settings.worldFog;
-				glowEffect.enabled = false;
-				Camera.main.clearFlags = ((Camera.main.farClipPlane > 2000f) ? CameraClearFlags.Skybox : CameraClearFlags.Color);
-			}
-			colorEffect.enabled = glowEffect.enabled;
-			Camera.main.backgroundColor = RenderSettings.fogColor;
+	public void OnPreRender(){
+		if (Game.Settings.fogColor == Color.clear){
+			//Game has just initialized - don't start adding effects yet...
+			return;
 		}
+		
+		if (
+			transform.position.y < Game.Settings.lavaAlt ||
+			Physics.Raycast(
+				transform.position + Vector3.up * 200f,
+				Vector3.up * -1f,
+				200f,
+				1 << 4
+			)
+		){
+			RenderSettings.fogColor = World.seaFogColor;
+			RenderSettings.fogDensity = Game.Settings.lavaFog;
+			glowEffect.enabled = Game.Settings.renderLevel > 2;
+			glowEffect.glowTint = World.seaGlowColor;
+			Camera.main.clearFlags = CameraClearFlags.SolidColor;
+		}
+		else{
+			RenderSettings.fogColor = Game.Settings.fogColor;
+			RenderSettings.fogDensity = Game.Settings.worldFog;
+			glowEffect.enabled = false;
+			Camera.main.clearFlags = ((Camera.main.farClipPlane > 2000f) ?
+				CameraClearFlags.Skybox :
+				CameraClearFlags.SolidColor
+			);
+		}
+		
+		colorEffect.enabled = glowEffect.enabled;
+		Camera.main.backgroundColor = RenderSettings.fogColor;
 	}
 
-	public void Main()
-	{
-	}
+	public void Main(){}
 }
