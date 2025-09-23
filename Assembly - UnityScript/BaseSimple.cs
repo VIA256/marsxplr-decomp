@@ -8,7 +8,13 @@ public class BaseSimple : MonoBehaviour {
 	public bool upMode;
 
 	public void Start(){
-		mat = (Material)RuntimeServices.Coerce(RuntimeServices.GetProperty(GetComponent(typeof(MeshRenderer)), "material"), typeof(Material));
+		mat = (Material)RuntimeServices.Coerce(
+			RuntimeServices.GetProperty(
+				GetComponent(typeof(MeshRenderer)),
+				"material"
+			),
+			typeof(Material)
+		);
 		Vector3 mts = mat.mainTextureScale;
 		mts.x = 1;
 		mts.y = 0.1f;
@@ -16,7 +22,13 @@ public class BaseSimple : MonoBehaviour {
 	}
 
 	public void Update(){
-		transform.localScale = Vector3.one * Mathf.Max(0.5f, Mathf.Min(10, Vector3.Distance(transform.position, Camera.main.transform.position) / 10f));
+		transform.localScale = Vector3.one * Mathf.Max(
+			0.5f,
+			Mathf.Min(
+				10,
+				Vector3.Distance(transform.position, Camera.main.transform.position) / 10f
+			)
+		);
 
 		Vector3 lea = transform.localEulerAngles;
 		lea.y += Time.deltaTime * 10;
