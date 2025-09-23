@@ -8,10 +8,8 @@ public class GameData : MonoBehaviour{
 	public static string gameName = "marsxplr";
 	public static string userName = string.Empty;
 	public static string userCode = string.Empty;
-	
 	public static string errorMessage = string.Empty;
 	public static string masterBlacklist = string.Empty;
-	
 	public static GameWorldDesc[] gameWorlds;
 	public static int networkMode = 0;
 	
