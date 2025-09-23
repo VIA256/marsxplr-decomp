@@ -1,14 +1,12 @@
 using System;
 
 [Serializable]
-public class ChatEntry
-{
+public class ChatEntry{
 	public string text;
 
 	public chatOrigins origin;
 
-	public ChatEntry()
-	{
+	public ChatEntry(){
 		text = string.Empty;
 	}
 }
