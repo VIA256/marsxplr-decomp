@@ -167,7 +167,7 @@ public class CameraVehicle : MonoBehaviour {
 		}
 
 		//Constants
-		float num = (float)Game.PlayerVeh.camOffset + Game.Settings.camDist;
+		float camDist = (float)Game.PlayerVeh.camOffset + Game.Settings.camDist;
 
 		//World Entry Effect
 		if (worldTime < 7f){
@@ -227,29 +227,29 @@ public class CameraVehicle : MonoBehaviour {
 				rotationX -= 360f;
 			}
 			if (rotationY < -360f){
-				rotationY += 360f; //:33333
+				rotationY += 360f;
 			}
-			else if (rotationY > 360f)
-			{
+			else if (rotationY > 360f){
 				rotationY -= 360f;
 			}
+			
 			rotationX = Mathf.Clamp(rotationX, -360f, 360f);
-			if (Game.Settings.gyroCam)
-			{
+			if (Game.Settings.gyroCam){
 				rotationY = Mathf.Clamp(rotationY, -100f, 100f);
 			}
-			else
-			{
+			else{
 				rotationY = Mathf.Clamp(rotationY, -20f, 100f);
 			}
 			transform.localRotation *= Quaternion.AngleAxis(rotationX, Vector3.up);
 			transform.localRotation *= Quaternion.AngleAxis(rotationY, Vector3.left);
 		}
-		else if (Game.Settings.camMode == 1)
-		{
-			if (Game.Settings.camChase == 0)
-			{
-				transform.position = Vector3.Lerp(transform.position, Game.Player.transform.position - Vector3.Normalize(Game.Player.transform.position - transform.position) * num + Vector3.one * ((!Game.PlayerVeh.camSmooth) ? Mathf.Lerp(0f, 15f, num / 30f) : 0f), Time.deltaTime * 3.5f);
+
+		//Chase
+		else if (Game.Settings.camMode == 1){
+		
+			//Smooth :33333
+			if (Game.Settings.camChase == 0){
+				transform.position = Vector3.Lerp(transform.position, Game.Player.transform.position - Vector3.Normalize(Game.Player.transform.position - transform.position) * camDist + Vector3.one * ((!Game.PlayerVeh.camSmooth) ? Mathf.Lerp(0f, 15f, camDist / 30f) : 0f), Time.deltaTime * 3.5f);
 				transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Game.Player.transform.position - transform.position, (!Game.Settings.flightCam) ? Vector3.up : Game.Player.transform.up), Time.deltaTime * 4f);
 				if (Physics.Linecast(transform.position + Vector3.up * 50f, transform.position + Vector3.down * 1f, out hit, 1 << 8) && !RuntimeServices.EqualityOperator(RuntimeServices.GetProperty(hit.collider, "type"), typeof(TerrainCollider)))
 				{
@@ -270,7 +270,7 @@ public class CameraVehicle : MonoBehaviour {
 				{
 					Vector3.Lerp(lastDir, new Vector3(lastDir.x, 0f, lastDir.z), 0.1f);
 				}
-				Vector3 to = Game.Player.transform.position + lastDir * (num * -1f) + Vector3.up * (num / 3f);
+				Vector3 to = Game.Player.transform.position + lastDir * (camDist * -1f) + Vector3.up * (camDist / 3f);
 				float y2 = transform.position.y + (Game.Player.transform.position.y - lastY) * Time.deltaTime;
 				Vector3 position2 = transform.position;
 				float num4 = (position2.y = y2);
@@ -292,9 +292,9 @@ public class CameraVehicle : MonoBehaviour {
 				float num7 = 10f;
 				float num8 = 3f;
 				float y4 = Quaternion.LookRotation(Game.Player.transform.rigidbody.velocity).eulerAngles.y;
-				y4 += Input.GetAxis("Horizontal") * Mathf.Lerp(30f, 10f, num / 30f);
-				float b = Game.Player.transform.position.y + Mathf.Lerp(0.1f, 15f, num / 30f) + heightBoost;
-				targetHeight = Mathf.Lerp(0.5f, 3f, num / 30f);
+				y4 += Input.GetAxis("Horizontal") * Mathf.Lerp(30f, 10f, camDist / 30f);
+				float b = Game.Player.transform.position.y + Mathf.Lerp(0.1f, 15f, camDist / 30f) + heightBoost;
+				targetHeight = Mathf.Lerp(0.5f, 3f, camDist / 30f);
 				float y5 = transform.eulerAngles.y;
 				float y6 = transform.position.y;
 				y5 = Mathf.LerpAngle(y5, y4, num8 * Time.deltaTime);
@@ -303,7 +303,7 @@ public class CameraVehicle : MonoBehaviour {
 				Vector3 position4 = Game.Player.transform.position;
 				position4.y += targetHeight;
 				transform.position = position4;
-				transform.position -= quaternion * Vector3.forward * num;
+				transform.position -= quaternion * Vector3.forward * camDist;
 				float y7 = y6;
 				Vector3 position5 = transform.position;
 				float num9 = (position5.y = y7);
