@@ -247,10 +247,29 @@ public class CameraVehicle : MonoBehaviour {
 		//Chase
 		else if (Game.Settings.camMode == 1){
 		
-			//Smooth :33333
+			//Smooth
 			if (Game.Settings.camChase == 0){
-				transform.position = Vector3.Lerp(transform.position, Game.Player.transform.position - Vector3.Normalize(Game.Player.transform.position - transform.position) * camDist + Vector3.one * ((!Game.PlayerVeh.camSmooth) ? Mathf.Lerp(0f, 15f, camDist / 30f) : 0f), Time.deltaTime * 3.5f);
-				transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Game.Player.transform.position - transform.position, (!Game.Settings.flightCam) ? Vector3.up : Game.Player.transform.up), Time.deltaTime * 4f);
+				transform.position = Vector3.Lerp(
+					transform.position,
+					Game.Player.transform.position - Vector3.Normalize(
+						Game.Player.transform.position - transform.position
+					) * camDist + Vector3.one * ((Game.PlayerVeh.camSmooth != 0) ?
+						0f :
+						Mathf.Lerp(0f, 15f, camDist / 30f)
+					),
+					Time.deltaTime * 3.5f
+				);
+				transform.rotation = Quaternion.Slerp(
+					transform.rotation,
+					Quaternion.LookRotation(
+						Game.Player.transform.position - transform.position,
+						((Game.Settings.flightCam != 0) ?
+							Game.Player.transform.up :
+							Vector3.up
+						)
+					),
+					Time.deltaTime * 4f
+				); //:33333
 				if (Physics.Linecast(transform.position + Vector3.up * 50f, transform.position + Vector3.down * 1f, out hit, 1 << 8) && !RuntimeServices.EqualityOperator(RuntimeServices.GetProperty(hit.collider, "type"), typeof(TerrainCollider)))
 				{
 					float y = transform.position.y + (51f - hit.distance);
