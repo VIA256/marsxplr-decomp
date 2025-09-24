@@ -1,6 +1,6 @@
 @echo off
 
-set "flags=/p:Configuration=Debug /p:Platform=x86"
+set "flags=/p:Configuration=Debug /p:Platform=Win32"
 
 echo ----------------
 echo   BUILDING ALL
