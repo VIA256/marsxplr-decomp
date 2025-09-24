@@ -253,7 +253,7 @@ public class CameraVehicle : MonoBehaviour {
 					transform.position,
 					Game.Player.transform.position - Vector3.Normalize(
 						Game.Player.transform.position - transform.position
-					) * camDist + Vector3.one * ((Game.PlayerVeh.camSmooth != 0) ?
+					) * camDist + Vector3.one * (Game.PlayerVeh.camSmooth ?
 						0f :
 						Mathf.Lerp(0f, 15f, camDist / 30f)
 					),
@@ -263,7 +263,7 @@ public class CameraVehicle : MonoBehaviour {
 					transform.rotation,
 					Quaternion.LookRotation(
 						Game.Player.transform.position - transform.position,
-						((Game.Settings.flightCam != 0) ?
+						(Game.Settings.flightCam ?
 							Game.Player.transform.up :
 							Vector3.up
 						)
@@ -281,7 +281,7 @@ public class CameraVehicle : MonoBehaviour {
 					Vector3 tpos = transform.position;
 					float y = tpos.y + 51 - hit.distance;
 					tpos.y = y;
-					transform.position = position;
+					transform.position = tpos;
 				}
 			}
 
@@ -325,7 +325,7 @@ public class CameraVehicle : MonoBehaviour {
 					transform.rotation,
 					Quaternion.LookRotation(
 						Game.Player.transform.position - transform.position,
-						((Game.Settings.flightCam != 0) ?
+						(Game.Settings.flightCam ?
 							Game.Player.transform.up :
 							Vector3.up
 						)
@@ -344,10 +344,10 @@ public class CameraVehicle : MonoBehaviour {
 						typeof(TerrainCollider)
 					)
 				){
-					float tpos = transform.position;
-					float y = tpos.y + 51 - hit.distance;
-					tpos.y = y;
-					transform.position = tpos;
+					Vector3 trapos = transform.position;
+					float vecy = trapos.y + 51 - hit.distance;
+					trapos.y = vecy;
+					transform.position = trapos;
 				}
 			}
 
