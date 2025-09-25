@@ -1,6 +1,6 @@
 # Mars Explorer Decompilation Project
 ## About
-My amatuer attempt at decompiling Mars Explorer so that it can be improved to run on newer machines and other platforms
+My amatuer attempt at decompiling Mars Explorer so that it can be improved to run on newer machines and other platforms (as well as ease of modding to support new 3rd party multiplayer and whirlds)
 <hr>
 <details closed>
 <summary><h2>Assembly - UnityScript</h2></summary>
