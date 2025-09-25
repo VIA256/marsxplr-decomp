@@ -1,42 +1,49 @@
 using UnityEngine;
 
+// Sets up transformation matrices to scale&scroll water waves
+// for the case where graphics card does not support vertex programs.
+//
+// Also disables reflection and/or refraction cameras if the shader
+// falls back to non reflective/refractive one.
+
 public class WaterWaveScroll : MonoBehaviour
 {
-	private string oldWaterMode = "";
+    private string oldWaterMode = "";
 
-	private void Update()
-	{
-		if (!base.renderer)
-		{
-			return;
-		}
-		Material material = base.renderer.material;
-		if (!material)
-		{
-			return;
-		}
-		Vector4 vector = material.GetVector("WaveSpeed");
-		float num = material.GetFloat("_WaveScale");
-		float num2 = Time.time / 40f;
-		Vector3 pos = new Vector3(num2 * vector.x, num2 * vector.y, 0f);
-		Vector3 vector2 = new Vector3(1f / num, 1f / num, 1f);
-		Matrix4x4 matrix = Matrix4x4.TRS(pos, Quaternion.identity, vector2);
-		material.SetMatrix("_WaveMatrix", matrix);
-		pos = new Vector3(num2 * vector.z, num2 * vector.w, 0f);
-		matrix = Matrix4x4.TRS(pos, Quaternion.identity, vector2 * 0.45f);
-		material.SetMatrix("_WaveMatrix2", matrix);
-		string text = material.GetTag("WATERMODE", false);
-		if (text != oldWaterMode)
-		{
-			Component[] componentsInChildren = GetComponentsInChildren(typeof(Camera));
-			Component[] array = componentsInChildren;
-			int num3 = array.Length;
-			for (int i = 0; i < num3; i++)
-			{
-				Camera camera = (Camera)array[i];
-				camera.SendMessage("ExternalSetMode", text, SendMessageOptions.DontRequireReceiver);
-			}
-			oldWaterMode = text;
-		}
-	}
+    void Update()
+    {
+        if (!renderer)
+            return;
+        Material mat = renderer.material;
+        if (!mat)
+            return;
+
+        Vector4 waveSpeed = mat.GetVector("WaveSpeed");
+        float waveScale = mat.GetFloat("_WaveScale");
+        float t = Time.time / 40.0f;
+
+        Vector3 offset = new Vector3(t * waveSpeed.x, t * waveSpeed.y, 0);
+        Vector3 scale = new Vector3(1.0f / waveScale, 1.0f / waveScale, 1);
+        Matrix4x4 scrollMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
+        mat.SetMatrix("_WaveMatrix", scrollMatrix);
+
+        offset = new Vector3(t * waveSpeed.z, t * waveSpeed.w, 0);
+        scrollMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale * 0.45f);
+        mat.SetMatrix("_WaveMatrix2", scrollMatrix);
+
+        // Get reflection mode from shader's tag
+        string waterMode = mat.GetTag("WATERMODE", false);
+        if (waterMode != oldWaterMode)
+        {
+            // If reflection mode changed, enable/disable
+            // additional water cameras.
+            Component[] reflCameras = GetComponentsInChildren(typeof(Camera));
+            foreach (Camera cam in reflCameras)
+            {
+                cam.SendMessage("ExternalSetMode", waterMode, SendMessageOptions.DontRequireReceiver);
+            }
+
+            oldWaterMode = waterMode;
+        }
+    }
 }

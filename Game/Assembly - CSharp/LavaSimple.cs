@@ -1,26 +1,30 @@
 using UnityEngine;
 
+// Sets up transformation matrices to scale&scroll water waves
+// for the case where graphics card does not support vertex programs.
+
 [ExecuteInEditMode]
 public class LavaSimple : MonoBehaviour
 {
-	private void Update()
-	{
-		if ((bool)base.renderer)
-		{
-			Material sharedMaterial = base.renderer.sharedMaterial;
-			if ((bool)sharedMaterial)
-			{
-				Vector4 vector = sharedMaterial.GetVector("WaveSpeed");
-				float num = sharedMaterial.GetFloat("_WaveScale");
-				float num2 = Time.time / 40f;
-				Vector3 pos = new Vector3(num2 * vector.x, num2 * vector.y, 0f);
-				Vector3 vector2 = new Vector3(1f / num, 1f / num, 1f);
-				Matrix4x4 matrix = Matrix4x4.TRS(pos, Quaternion.identity, vector2);
-				sharedMaterial.SetMatrix("_WaveMatrix", matrix);
-				pos = new Vector3(num2 * vector.z, num2 * vector.w, 0f);
-				matrix = Matrix4x4.TRS(pos, Quaternion.identity, vector2 * 0.45f);
-				sharedMaterial.SetMatrix("_WaveMatrix2", matrix);
-			}
-		}
-	}
+    void Update()
+    {
+        if (!renderer)
+            return;
+        Material mat = renderer.sharedMaterial;
+        if (!mat)
+            return;
+
+        Vector4 waveSpeed = mat.GetVector("WaveSpeed");
+        float waveScale = mat.GetFloat("_WaveScale");
+        float t = Time.time / 40.0f;
+
+        Vector3 offset = new Vector3(t * waveSpeed.x, t * waveSpeed.y, 0);
+        Vector3 scale = new Vector3(1.0f / waveScale, 1.0f / waveScale, 1);
+        Matrix4x4 scrollMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
+        mat.SetMatrix("_WaveMatrix", scrollMatrix);
+
+        offset = new Vector3(t * waveSpeed.z, t * waveSpeed.w, 0);
+        scrollMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale * 0.45f);
+        mat.SetMatrix("_WaveMatrix2", scrollMatrix);
+    }
 }

@@ -1,147 +1,177 @@
 using UnityEngine;
+using System.Collections;
 
-[AddComponentMenu("Image Effects/Blur (island)")]
 [ExecuteInEditMode]
+[AddComponentMenu("Image Effects/Blur (island)")]
 public class BlurEffectIsland : MonoBehaviour
 {
-	public int iterations = 3;
+    /// Blur iterations - larger number means more blur.
+    public int iterations = 3;
 
-	public float blurSpread = 0.6f;
+    /// Blur spread for each iteration. Lower values
+    /// give better looking blur, but require more iterations to
+    /// get large blurs. Value is usually between 0.5 and 1.0.
+    public float blurSpread = 0.6f;
 
-	private static string blurMatString = "Shader \"BlurConeTap\" {\n\tSubShader {\n\t\tPass {\n\t\t\tZTest Always Cull Off ZWrite Off Fog { Mode Off }\n\t\t\tSetTexture [__RenderTex] {constantColor (0,0,0,0.25) combine texture * constant alpha}\n\t\t\tSetTexture [__RenderTex] {constantColor (0,0,0,0.25) combine texture * constant + previous}\n\t\t\tSetTexture [__RenderTex] {constantColor (0,0,0,0.25) combine texture * constant + previous}\n\t\t\tSetTexture [__RenderTex] {constantColor (0,0,0,0.25) combine texture * constant + previous}\n\t\t}\n\t}\n\tFallback off\n}";
+    // --------------------------------------------------------
+    // The blur iteration shader.
+    // Basically it just takes 4 texture samples and averages them.
+    // By applying it repeatedly and spreading out sample locations
+    // we get a Gaussian blur approximation.
 
-	private static Material m_Material;
-
-	protected static Material material
-	{
-		get
-		{
-			if (m_Material == null)
-			{
-				m_Material = new Material(blurMatString);
-				m_Material.hideFlags = HideFlags.HideAndDontSave;
-				m_Material.shader.hideFlags = HideFlags.HideAndDontSave;
-			}
-			return m_Material;
+    private static string blurMatString =
+@"Shader ""BlurConeTap"" {
+	SubShader {
+		Pass {
+			ZTest Always Cull Off ZWrite Off Fog { Mode Off }
+			SetTexture [__RenderTex] {constantColor (0,0,0,0.25) combine texture * constant alpha}
+			SetTexture [__RenderTex] {constantColor (0,0,0,0.25) combine texture * constant + previous}
+			SetTexture [__RenderTex] {constantColor (0,0,0,0.25) combine texture * constant + previous}
+			SetTexture [__RenderTex] {constantColor (0,0,0,0.25) combine texture * constant + previous}
 		}
 	}
+	Fallback off
+}";
 
-	protected void OnDisable()
-	{
-		if ((bool)m_Material)
-		{
-			Object.DestroyImmediate(m_Material.shader);
-			Object.DestroyImmediate(m_Material);
-		}
-	}
+    static Material m_Material = null;
+    protected static Material material
+    {
+        get
+        {
+            if (m_Material == null)
+            {
+                m_Material = new Material(blurMatString);
+                m_Material.hideFlags = HideFlags.HideAndDontSave;
+                m_Material.shader.hideFlags = HideFlags.HideAndDontSave;
+            }
+            return m_Material;
+        }
+    }
 
-	public bool IsSupported()
-	{
-		if (!SystemInfo.supportsImageEffects)
-		{
-			return false;
-		}
-		if (!material.shader.isSupported)
-		{
-			return false;
-		}
-		return true;
-	}
+    protected void OnDisable()
+    {
+        if (m_Material)
+        {
+            DestroyImmediate(m_Material.shader);
+            DestroyImmediate(m_Material);
+        }
+    }
 
-	protected void Start()
-	{
-		if (!IsSupported())
-		{
-			base.enabled = false;
-		}
-	}
+    // --------------------------------------------------------
 
-	public void FourTapCone(RenderTexture source, RenderTexture dest, int iteration)
-	{
-		RenderTexture.active = dest;
-		source.SetGlobalShaderProperty("__RenderTex");
-		float offsetX = (0.5f + (float)iteration * blurSpread) / (float)source.width;
-		float offsetY = (0.5f + (float)iteration * blurSpread) / (float)source.height;
-		GL.PushMatrix();
-		GL.LoadOrtho();
-		for (int i = 0; i < material.passCount; i++)
-		{
-			material.SetPass(i);
-			Render4TapQuad(dest, offsetX, offsetY);
-		}
-		GL.PopMatrix();
-	}
+    public bool IsSupported()
+    {
+        // Disable if we don't support image effects
+        if (!SystemInfo.supportsImageEffects)
+            return false;
+        // Disable if the shader can't run on the users graphics card
+        if (!material.shader.isSupported)
+            return false;
 
-	private void DownSample4x(RenderTexture source, RenderTexture dest)
-	{
-		RenderTexture.active = dest;
-		source.SetGlobalShaderProperty("__RenderTex");
-		float offsetX = 1f / (float)source.width;
-		float offsetY = 1f / (float)source.height;
-		GL.PushMatrix();
-		GL.LoadOrtho();
-		for (int i = 0; i < material.passCount; i++)
-		{
-			material.SetPass(i);
-			Render4TapQuad(dest, offsetX, offsetY);
-		}
-		GL.PopMatrix();
-	}
+        return true;
+    }
 
-	private void OnRenderImage(RenderTexture source, RenderTexture destination)
-	{
-		RenderTexture temporary = RenderTexture.GetTemporary(source.width / 4, source.height / 4, 0);
-		RenderTexture temporary2 = RenderTexture.GetTemporary(source.width / 4, source.height / 4, 0);
-		DownSample4x(source, temporary);
-		bool flag = true;
-		for (int i = 0; i < iterations; i++)
-		{
-			if (flag)
-			{
-				FourTapCone(temporary, temporary2, i);
-			}
-			else
-			{
-				FourTapCone(temporary2, temporary, i);
-			}
-			flag = !flag;
-		}
-		if (flag)
-		{
-			ImageEffects.Blit(temporary, destination);
-		}
-		else
-		{
-			ImageEffects.Blit(temporary2, destination);
-		}
-		RenderTexture.ReleaseTemporary(temporary);
-		RenderTexture.ReleaseTemporary(temporary2);
-	}
+    protected void Start()
+    {
+        if (!IsSupported())
+            enabled = false;
+    }
 
-	private static void Render4TapQuad(RenderTexture dest, float offsetX, float offsetY)
-	{
-		GL.Begin(7);
-		Vector2 vector = Vector2.zero;
-		if (dest != null)
-		{
-			vector = dest.GetTexelOffset() * 0.75f;
-		}
-		Set4TexCoords(vector.x, vector.y, offsetX, offsetY);
-		GL.Vertex3(0f, 0f, 0.1f);
-		Set4TexCoords(1f + vector.x, vector.y, offsetX, offsetY);
-		GL.Vertex3(1f, 0f, 0.1f);
-		Set4TexCoords(1f + vector.x, 1f + vector.y, offsetX, offsetY);
-		GL.Vertex3(1f, 1f, 0.1f);
-		Set4TexCoords(vector.x, 1f + vector.y, offsetX, offsetY);
-		GL.Vertex3(0f, 1f, 0.1f);
-		GL.End();
-	}
+    // Performs one blur iteration.
+    public void FourTapCone(RenderTexture source, RenderTexture dest, int iteration)
+    {
+        RenderTexture.active = dest;
+        source.SetGlobalShaderProperty("__RenderTex");
 
-	private static void Set4TexCoords(float x, float y, float offsetX, float offsetY)
-	{
-		GL.MultiTexCoord2(0, x - offsetX, y - offsetY);
-		GL.MultiTexCoord2(1, x + offsetX, y - offsetY);
-		GL.MultiTexCoord2(2, x + offsetX, y + offsetY);
-		GL.MultiTexCoord2(3, x - offsetX, y + offsetY);
-	}
+        float offsetX = (.5F + iteration * blurSpread) / (float)source.width;
+        float offsetY = (.5F + iteration * blurSpread) / (float)source.height;
+        GL.PushMatrix();
+        GL.LoadOrtho();
+
+        for (int i = 0; i < material.passCount; i++)
+        {
+            material.SetPass(i);
+            Render4TapQuad(dest, offsetX, offsetY);
+        }
+        GL.PopMatrix();
+    }
+
+    // Downsamples the texture to a quarter resolution.
+    private void DownSample4x(RenderTexture source, RenderTexture dest)
+    {
+        RenderTexture.active = dest;
+        source.SetGlobalShaderProperty("__RenderTex");
+
+        float offsetX = 1.0f / (float)source.width;
+        float offsetY = 1.0f / (float)source.height;
+
+        GL.PushMatrix();
+        GL.LoadOrtho();
+        for (int i = 0; i < material.passCount; i++)
+        {
+            material.SetPass(i);
+            Render4TapQuad(dest, offsetX, offsetY);
+        }
+        GL.PopMatrix();
+    }
+
+    // Called by the camera to apply the image effect
+    void OnRenderImage(RenderTexture source, RenderTexture destination)
+    {
+        RenderTexture buffer = RenderTexture.GetTemporary(source.width / 4, source.height / 4, 0);
+        RenderTexture buffer2 = RenderTexture.GetTemporary(source.width / 4, source.height / 4, 0);
+
+        // Copy source to the 4x4 smaller texture.
+        DownSample4x(source, buffer);
+
+        // Blur the small texture
+        bool oddEven = true;
+        for (int i = 0; i < iterations; i++)
+        {
+            if (oddEven)
+                FourTapCone(buffer, buffer2, i);
+            else
+                FourTapCone(buffer2, buffer, i);
+            oddEven = !oddEven;
+        }
+        if (oddEven)
+            ImageEffects.Blit(buffer, destination);
+        else
+            ImageEffects.Blit(buffer2, destination);
+
+        RenderTexture.ReleaseTemporary(buffer);
+        RenderTexture.ReleaseTemporary(buffer2);
+    }
+
+    private static void Render4TapQuad(RenderTexture dest, float offsetX, float offsetY)
+    {
+        GL.Begin(GL.QUADS);
+
+        // Direct3D needs interesting texel offsets!		
+        Vector2 off = Vector2.zero;
+        if (dest != null)
+            off = dest.GetTexelOffset() * 0.75f;
+
+        Set4TexCoords(off.x, off.y, offsetX, offsetY);
+        GL.Vertex3(0, 0, .1f);
+
+        Set4TexCoords(1.0f + off.x, off.y, offsetX, offsetY);
+        GL.Vertex3(1, 0, .1f);
+
+        Set4TexCoords(1.0f + off.x, 1.0f + off.y, offsetX, offsetY);
+        GL.Vertex3(1, 1, .1f);
+
+        Set4TexCoords(off.x, 1.0f + off.y, offsetX, offsetY);
+        GL.Vertex3(0, 1, .1f);
+
+        GL.End();
+    }
+
+    private static void Set4TexCoords(float x, float y, float offsetX, float offsetY)
+    {
+        GL.MultiTexCoord2(0, x - offsetX, y - offsetY);
+        GL.MultiTexCoord2(1, x + offsetX, y - offsetY);
+        GL.MultiTexCoord2(2, x + offsetX, y + offsetY);
+        GL.MultiTexCoord2(3, x - offsetX, y + offsetY);
+    }
 }
