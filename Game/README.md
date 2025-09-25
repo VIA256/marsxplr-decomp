@@ -1,6 +1,6 @@
+<details closed>
 <summary><h2>Assembly - UnityScript</h2></summary>
 <h3>About</h3>
-<details closed>
 <ul>
   <li>(almost) all of the games compiled unityscripts</li>
   <li>Used ILSpy to decompile dll from marsxplr 2.22 win32 into C#</li>
