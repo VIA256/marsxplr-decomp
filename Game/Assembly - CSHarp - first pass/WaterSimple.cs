@@ -1,29 +1,32 @@
 using UnityEngine;
 
+// Sets up transformation matrices to scale&scroll water waves
+// for the case where graphics card does not support vertex programs.
+
 [ExecuteInEditMode]
 public class WaterSimple : MonoBehaviour
 {
-	private void Update()
-	{
-		if ((bool)base.renderer)
-		{
-			Material sharedMaterial = base.renderer.sharedMaterial;
-			if ((bool)sharedMaterial)
-			{
-				Vector4 vector = sharedMaterial.GetVector("WaveSpeed");
-				float num = sharedMaterial.GetFloat("_WaveScale");
-				float num2 = Time.time / 20f;
-				Vector4 vector2 = vector * (num2 * num);
-				Vector4 vector3 = new Vector4(Mathf.Repeat(vector2.x, 1f), Mathf.Repeat(vector2.y, 1f), Mathf.Repeat(vector2.z, 1f), Mathf.Repeat(vector2.w, 1f));
-				sharedMaterial.SetVector("_WaveOffset", vector3);
-				Vector3 vector4 = new Vector3(1f / num, 1f / num, 1f);
-				Vector3 pos = new Vector3(vector3.x, vector3.y, 0f);
-				Matrix4x4 matrix = Matrix4x4.TRS(pos, Quaternion.identity, vector4);
-				sharedMaterial.SetMatrix("_WaveMatrix", matrix);
-				Vector3 pos2 = new Vector3(vector3.z, vector3.w, 0f);
-				matrix = Matrix4x4.TRS(pos2, Quaternion.identity, vector4 * 0.45f);
-				sharedMaterial.SetMatrix("_WaveMatrix2", matrix);
-			}
-		}
-	}
+    void Update()
+    {
+        if (!renderer)
+            return;
+        Material mat = renderer.sharedMaterial;
+        if (!mat)
+            return;
+
+        Vector4 waveSpeed = mat.GetVector("WaveSpeed");
+        float waveScale = mat.GetFloat("_WaveScale");
+        float t = Time.time / 20.0f;
+
+        Vector4 offset4 = waveSpeed * (t * waveScale);
+        Vector4 offsetClamped = new Vector4(Mathf.Repeat(offset4.x, 1.0f), Mathf.Repeat(offset4.y, 1.0f), Mathf.Repeat(offset4.z, 1.0f), Mathf.Repeat(offset4.w, 1.0f));
+        mat.SetVector("_WaveOffset", offsetClamped);
+
+        Vector3 scale = new Vector3(1.0f / waveScale, 1.0f / waveScale, 1);
+        Matrix4x4 scrollMatrix = Matrix4x4.TRS(new Vector3(offsetClamped.x, offsetClamped.y, 0), Quaternion.identity, scale);
+        mat.SetMatrix("_WaveMatrix", scrollMatrix);
+
+        scrollMatrix = Matrix4x4.TRS(new Vector3(offsetClamped.z, offsetClamped.w, 0), Quaternion.identity, scale * 0.45f);
+        mat.SetMatrix("_WaveMatrix2", scrollMatrix);
+    }
 }

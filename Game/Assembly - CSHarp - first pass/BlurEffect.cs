@@ -1,133 +1,131 @@
 using UnityEngine;
+using System.Collections;
 
 [ExecuteInEditMode]
 [AddComponentMenu("Image Effects/Blur")]
 public class BlurEffect : MonoBehaviour
 {
-	public int iterations = 3;
+    /// Blur iterations - larger number means more blur.
+    public int iterations = 3;
 
-	public float blurSpread = 0.6f;
+    /// Blur spread for each iteration. Lower values
+    /// give better looking blur, but require more iterations to
+    /// get large blurs. Value is usually between 0.5 and 1.0.
+    public float blurSpread = 0.6f;
 
-	private static string blurMatString = "Shader \"BlurConeTap\" {\n\tProperties { _MainTex (\"\", any) = \"\" {} }\n\tSubShader {\n\t\tPass {\n\t\t\tZTest Always Cull Off ZWrite Off Fog { Mode Off }\n\t\t\tSetTexture [_MainTex] {constantColor (0,0,0,0.25) combine texture * constant alpha}\n\t\t\tSetTexture [_MainTex] {constantColor (0,0,0,0.25) combine texture * constant + previous}\n\t\t\tSetTexture [_MainTex] {constantColor (0,0,0,0.25) combine texture * constant + previous}\n\t\t\tSetTexture [_MainTex] {constantColor (0,0,0,0.25) combine texture * constant + previous}\n\t\t}\n\t}\n\tFallback off\n}";
 
-	private static Material m_Material;
+    // --------------------------------------------------------
+    // The blur iteration shader.
+    // Basically it just takes 4 texture samples and averages them.
+    // By applying it repeatedly and spreading out sample locations
+    // we get a Gaussian blur approximation.
 
-	protected static Material material
-	{
-		get
-		{
-			if (m_Material == null)
-			{
-				m_Material = new Material(blurMatString);
-				m_Material.hideFlags = HideFlags.HideAndDontSave;
-				m_Material.shader.hideFlags = HideFlags.HideAndDontSave;
-			}
-			return m_Material;
+    private static string blurMatString =
+@"Shader ""BlurConeTap"" {
+	Properties { _MainTex ("""", any) = """" {} }
+	SubShader {
+		Pass {
+			ZTest Always Cull Off ZWrite Off Fog { Mode Off }
+			SetTexture [_MainTex] {constantColor (0,0,0,0.25) combine texture * constant alpha}
+			SetTexture [_MainTex] {constantColor (0,0,0,0.25) combine texture * constant + previous}
+			SetTexture [_MainTex] {constantColor (0,0,0,0.25) combine texture * constant + previous}
+			SetTexture [_MainTex] {constantColor (0,0,0,0.25) combine texture * constant + previous}
 		}
 	}
+	Fallback off
+}";
 
-	protected void OnDisable()
-	{
-		if ((bool)m_Material)
-		{
-			Object.DestroyImmediate(m_Material.shader);
-			Object.DestroyImmediate(m_Material);
-		}
-	}
+    static Material m_Material = null;
+    protected static Material material
+    {
+        get
+        {
+            if (m_Material == null)
+            {
+                m_Material = new Material(blurMatString);
+                m_Material.hideFlags = HideFlags.HideAndDontSave;
+                m_Material.shader.hideFlags = HideFlags.HideAndDontSave;
+            }
+            return m_Material;
+        }
+    }
 
-	protected void Start()
-	{
-		if (!SystemInfo.supportsImageEffects)
-		{
-			base.enabled = false;
-		}
-		else if (!material.shader.isSupported)
-		{
-			base.enabled = false;
-		}
-	}
+    protected void OnDisable()
+    {
+        if (m_Material)
+        {
+            DestroyImmediate(m_Material.shader);
+            DestroyImmediate(m_Material);
+        }
+    }
 
-	public void FourTapCone(RenderTexture source, RenderTexture dest, int iteration)
-	{
-		float num = 0.5f + (float)iteration * blurSpread;
-		Material mat = material;
-		//error CS8024
-		/*Vector2[] array = new Vector2[4];
-		ref Vector2 reference = ref array[0];
-		Vector2 vector = new Vector2(0f - num, 0f - num);
-		reference = vector;
-		ref Vector2 reference2 = ref array[1];
-		Vector2 vector2 = new Vector2(0f - num, num);
-		reference2 = vector2;
-		ref Vector2 reference3 = ref array[2];
-		Vector2 vector3 = new Vector2(num, num);
-		reference3 = vector3;
-		ref Vector2 reference4 = ref array[3];
-		Vector2 vector4 = new Vector2(num, 0f - num);
-		reference4 = vector4;*/
-		Vector2[] array = new Vector2[4] {
-			new Vector2(0f - num, 0f - num),
-			new Vector2(0f - num, num),
-			new Vector2(num, num),
-			new Vector2(num, 0f - num)
-		};
-		Graphics.BlitMultiTap(source, dest, mat, array);
-	}
+    // --------------------------------------------------------
 
-	private void DownSample4x(RenderTexture source, RenderTexture dest)
-	{
-		float num = 1f;
-		Material mat = material;
-		//error CS8024
-		/*Vector2[] array = new Vector2[4];
-		ref Vector2 reference = ref array[0];
-		Vector2 vector = new Vector2(0f - num, 0f - num);
-		reference = vector;
-		ref Vector2 reference2 = ref array[1];
-		Vector2 vector2 = new Vector2(0f - num, num);
-		reference2 = vector2;
-		ref Vector2 reference3 = ref array[2];
-		Vector2 vector3 = new Vector2(num, num);
-		reference3 = vector3;
-		ref Vector2 reference4 = ref array[3];
-		Vector2 vector4 = new Vector2(num, 0f - num);
-		reference4 = vector4;*/
-		Vector2[] array = new Vector2[4] {
-			new Vector2(0f - num, 0f - num),
-			new Vector2(0f - num, num),
-			new Vector2(num, num),
-			new Vector2(num, 0f - num)
-		};
-		Graphics.BlitMultiTap(source, dest, mat, array);
-	}
+    protected void Start()
+    {
+        // Disable if we don't support image effects
+        if (!SystemInfo.supportsImageEffects)
+        {
+            enabled = false;
+            return;
+        }
+        // Disable if the shader can't run on the users graphics card
+        if (!material.shader.isSupported)
+        {
+            enabled = false;
+            return;
+        }
+    }
 
-	private void OnRenderImage(RenderTexture source, RenderTexture destination)
-	{
-		RenderTexture temporary = RenderTexture.GetTemporary(source.width / 4, source.height / 4, 0);
-		RenderTexture temporary2 = RenderTexture.GetTemporary(source.width / 4, source.height / 4, 0);
-		DownSample4x(source, temporary);
-		bool flag = true;
-		for (int i = 0; i < iterations; i++)
-		{
-			if (flag)
-			{
-				FourTapCone(temporary, temporary2, i);
-			}
-			else
-			{
-				FourTapCone(temporary2, temporary, i);
-			}
-			flag = !flag;
-		}
-		if (flag)
-		{
-			ImageEffects.Blit(temporary, destination);
-		}
-		else
-		{
-			ImageEffects.Blit(temporary2, destination);
-		}
-		RenderTexture.ReleaseTemporary(temporary);
-		RenderTexture.ReleaseTemporary(temporary2);
-	}
+    // Performs one blur iteration.
+    public void FourTapCone(RenderTexture source, RenderTexture dest, int iteration)
+    {
+        float off = 0.5f + iteration * blurSpread;
+        Graphics.BlitMultiTap(source, dest, material,
+            new Vector2(-off, -off),
+            new Vector2(-off, off),
+            new Vector2(off, off),
+            new Vector2(off, -off)
+        );
+    }
+
+    // Downsamples the texture to a quarter resolution.
+    private void DownSample4x(RenderTexture source, RenderTexture dest)
+    {
+        float off = 1.0f;
+        Graphics.BlitMultiTap(source, dest, material,
+            new Vector2(-off, -off),
+            new Vector2(-off, off),
+            new Vector2(off, off),
+            new Vector2(off, -off)
+        );
+    }
+
+    // Called by the camera to apply the image effect
+    void OnRenderImage(RenderTexture source, RenderTexture destination)
+    {
+        RenderTexture buffer = RenderTexture.GetTemporary(source.width / 4, source.height / 4, 0);
+        RenderTexture buffer2 = RenderTexture.GetTemporary(source.width / 4, source.height / 4, 0);
+
+        // Copy source to the 4x4 smaller texture.
+        DownSample4x(source, buffer);
+
+        // Blur the small texture
+        bool oddEven = true;
+        for (int i = 0; i < iterations; i++)
+        {
+            if (oddEven)
+                FourTapCone(buffer, buffer2, i);
+            else
+                FourTapCone(buffer2, buffer, i);
+            oddEven = !oddEven;
+        }
+        if (oddEven)
+            ImageEffects.Blit(buffer, destination);
+        else
+            ImageEffects.Blit(buffer2, destination);
+
+        RenderTexture.ReleaseTemporary(buffer);
+        RenderTexture.ReleaseTemporary(buffer2);
+    }
 }
