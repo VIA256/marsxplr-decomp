@@ -3,11 +3,13 @@ using Boo.Lang.Runtime;
 using UnityEngine;
 
 [Serializable]
-public class BaseSimple : MonoBehaviour {
+public class BaseSimple : MonoBehaviour
+{
 	private Material mat;
 	public bool upMode;
 
-	public void Start(){
+	public void Start()
+    {
 		mat = (Material)RuntimeServices.Coerce(
 			RuntimeServices.GetProperty(
 				GetComponent(typeof(MeshRenderer)),
@@ -21,7 +23,8 @@ public class BaseSimple : MonoBehaviour {
 		mat.mainTextureScale = mts;
 	}
 
-	public void Update(){
+	public void Update()
+    {
 		transform.localScale = Vector3.one * Mathf.Max(
 			0.5f,
 			Mathf.Min(
@@ -32,21 +35,25 @@ public class BaseSimple : MonoBehaviour {
 
 		Vector3 lea = transform.localEulerAngles;
 		lea.y += Time.deltaTime * 10;
-		if(lea.y > 360){
+		if(lea.y > 360)
+        {
 			lea.y -= 360;
 		}
         transform.localEulerAngles = lea;
 
 		Vector3 mto = mat.mainTextureOffset;
 		mto.x += Time.deltaTime * 0.5f;
-		if(mto.x > 1){
+		if(mto.x > 1)
+        {
 			mto.x--;
 		}
 		
-		if(upMode){
+		if(upMode)
+        {
 			//mat.mainTextureOffset.y += Time.deltaTime * 0.1f;
 			mto.y += Time.deltaTime * 0.1f;
-			if(mto.y < 0.4f){
+			if(mto.y < 0.4f)
+            {
 				upMode = true;
 			}
 		}

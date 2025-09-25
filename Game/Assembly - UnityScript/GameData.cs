@@ -2,7 +2,8 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public class GameData : MonoBehaviour{
+public class GameData : MonoBehaviour
+{
 	public static float gameVersion = 2.3f;
 	public static float serverVersion = 0.2f;
 	public static string gameName = "marsxplr";

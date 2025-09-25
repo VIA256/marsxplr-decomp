@@ -2,7 +2,8 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public class GUIPanel{
+public class GUIPanel
+{
 	public string name;
 	public bool active;
 	public bool open;
@@ -16,7 +17,8 @@ public class GUIPanel{
 	public Vector2 scrollPos;
 	public float openTime;
 
-	public GUIPanel(){
+	public GUIPanel()
+    {
 		active = true;
 		minHeight = 300;
 	}

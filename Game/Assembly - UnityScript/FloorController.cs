@@ -3,16 +3,19 @@ using Boo.Lang.Runtime;
 using UnityEngine;
 
 [Serializable]
-public class FloorController : MonoBehaviour {
+public class FloorController : MonoBehaviour
+{
 	public WhirldObject whirldObject;
 	public GameObject floorObject;
 
-	public void OnSceneGenerated(){
+	public void OnSceneGenerated()
+    {
 		if (
 			!whirldObject ||
 			!RuntimeServices.ToBool(whirldObject.@params["Texture"]) ||
 			!floorObject
-		){
+		)
+        {
 			return;
 		}
 

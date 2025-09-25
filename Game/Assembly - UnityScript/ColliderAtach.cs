@@ -3,8 +3,10 @@ using Boo.Lang.Runtime;
 using UnityEngine;
 
 [Serializable]
-public class ColliderAtach : MonoBehaviour{
-	public void Update(){
+public class ColliderAtach : MonoBehaviour
+{
+	public void Update()
+    {
 		Debug.Log(RuntimeServices.GetProperty(RuntimeServices.GetProperty(
 			RuntimeServices.GetProperty(collider, "attachedRigidbody"),
 			"gameObject"

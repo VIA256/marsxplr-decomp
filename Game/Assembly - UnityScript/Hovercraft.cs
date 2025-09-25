@@ -2,23 +2,28 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public class Hovercraft : MonoBehaviour {
+public class Hovercraft : MonoBehaviour
+{
 	public LayerMask thrustMask;
 	public Vehicle vehicle;
 	private RaycastHit hitDown;
 	private float thrustLast;
 	private float hoverHeight;
 
-	public Hovercraft(){
+	public Hovercraft()
+    {
 		thrustMask = -1;
 	}
 
-	public void InitVehicle(Vehicle veh){
+	public void InitVehicle(Vehicle veh)
+    {
 		vehicle = veh;
 	}
 
-	public void FixedUpdate(){
-		if (vehicle.myRigidbody.isKinematic){
+	public void FixedUpdate()
+    {
+		if (vehicle.myRigidbody.isKinematic)
+        {
 			//We are materializing, don't try to manipulate physics
 			return;
 		}
@@ -37,7 +42,8 @@ public class Hovercraft : MonoBehaviour {
 			vehicle.myRigidbody.velocity
 		);
 		
-		if (!vehicle.brakes){
+		if (!vehicle.brakes)
+        {
 			vehicle.myRigidbody.drag = 0f;
 			vehicle.myRigidbody.angularDrag = 4f;
 			vehicle.myRigidbody.AddRelativeForce(new Vector3(
@@ -49,11 +55,14 @@ public class Hovercraft : MonoBehaviour {
 				)
 			));
 		}
-		else {
-			if (vehicle.myRigidbody.velocity.magnitude > 5f){
+		else
+        {
+			if (vehicle.myRigidbody.velocity.magnitude > 5f)
+            {
 				vehicle.myRigidbody.drag = 1.5f;
 			}
-			else {
+			else
+            {
 				vehicle.myRigidbody.drag = 100f;
 			}
 			vehicle.myRigidbody.angularDrag = 20f;
@@ -69,7 +78,8 @@ public class Hovercraft : MonoBehaviour {
 				thrustMask
 			) ||
 			transform.position.y < Game.Settings.lavaAlt + 30f
-		){
+		)
+        {
 			if (
 				hit.distance == 0f ||
 				hit.distance > Mathf.Max(
@@ -77,7 +87,8 @@ public class Hovercraft : MonoBehaviour {
 					transform.position.y - Game.Settings.lavaAlt
 				) ||
 				transform.position.y < Game.Settings.lavaAlt
-			){
+			)
+            {
 				hit.distance = Mathf.Max(
 					0f,
 					transform.position.y - Game.Settings.lavaAlt
@@ -105,11 +116,13 @@ public class Hovercraft : MonoBehaviour {
 				)
 			);
 			
-			if (hit.distance < hoverHeight){
+			if (hit.distance < hoverHeight)
+            {
 				vehicle.myRigidbody.AddForce( //Hover force
 					transform.up * (hoverHeight - hit.distance) * Game.Settings.hoverHover
 				);
-				if (thrustLast > hit.distance){
+				if (thrustLast > hit.distance)
+                {
 					vehicle.myRigidbody.AddForce( //AntiCollision force
 						hit.normal * Mathf.Min(
 							(thrustLast - hit.distance) * Game.Settings.hoverRepel,
@@ -127,7 +140,8 @@ public class Hovercraft : MonoBehaviour {
 			);
 			thrustLast = hit.distance;
 		}
-		else {
+		else
+        {
 			vehicle.myRigidbody.angularDrag = 0.5f;
 		}
 
