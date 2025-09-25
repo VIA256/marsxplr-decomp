@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 
 namespace UnityEngine
 {
-	public struct NetworkViewID
+	public class NetworkViewID
 	{
 		private int a;
 
@@ -10,7 +10,7 @@ namespace UnityEngine
 
 		private int c;
 
-		public static extern NetworkViewID unassigned
+	    public static extern NetworkViewID unassigned
 		{
 			[MethodImpl(MethodImplOptions.InternalCall)]
 			get;

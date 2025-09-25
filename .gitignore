@@ -20,6 +20,7 @@ marsxplr_build/
 UnityEngine/obj/
 UnityEngine/bin/
 UnityEngine/.vs/
+UnityEngine/UnityEngine.suo
 Boo.Lang/obj/
 Boo.Lang/bin/
 Boo.Lang/.vs/
