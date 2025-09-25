@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 
 namespace UnityEngine
 {
-	public class NetworkViewID
+	public struct NetworkViewID
 	{
 		private int a;
 
@@ -10,10 +10,16 @@ namespace UnityEngine
 
 		private int c;
 
-	    public static extern NetworkViewID unassigned
+	    public static NetworkViewID unassigned //FUCK idk if this implimentation is safe at all lmao
 		{
-			[MethodImpl(MethodImplOptions.InternalCall)]
-			get;
+            get
+            {
+                NetworkViewID result = default(NetworkViewID);
+                result.a = -1;
+                result.b = -1;
+                result.c = -1;
+                return result;
+            }
 		}
 
 		public bool isMine

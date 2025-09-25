@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace UnityEngine
 {
-	public class Matrix4x4
+	public struct Matrix4x4
 	{
 		public float m00;
 
@@ -165,10 +165,12 @@ namespace UnityEngine
 			}
 		}
 
-	    public extern bool isIdentity
-		{
-			[MethodImpl(MethodImplOptions.InternalCall)]
-			get;
+	    public bool isIdentity
+        {
+            get
+            {
+                return Equals(identity);
+            }
 		}
 
 		public static Matrix4x4 zero
@@ -327,12 +329,12 @@ namespace UnityEngine
 
 		public void SetTRS(Vector3 pos, Quaternion q, Vector3 s)
 		{
-			//this = TRS(pos, q, s);
-            Matrix4x4 newmat = TRS(pos, q, s);
+			this = TRS(pos, q, s);
+            /*Matrix4x4 newmat = TRS(pos, q, s);
             for (int i = 0; i < 4; i++)
             {
                 SetRow(i, newmat.GetRow(i));
-            }
+            }*/
 		}
 
         [MethodImpl(MethodImplOptions.InternalCall)]
