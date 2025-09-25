@@ -884,7 +884,7 @@ public class Lobby : MonoBehaviour
 				float num3 = (color4.a = a);
 				Color color5 = (GUI.color = color4);
 				GUIStyle style = GUI.skin.GetStyle("serverDetailsBox");
-				GUILayout.Window(2, new Rect(Input.mousePosition.x - style.fixedWidth - 1f, (float)Screen.height - Input.mousePosition.y - style.fixedHeight - 4f, style.fixedWidth, style.fixedHeight), _0024adaptor_0024__Lobby_OnGUI_0024callable0_0024274_261___0024WindowFunction_00240.Adapt(serverDetailsWindow), string.Empty, "serverDetailsBox");
+				GUILayout.Window(2, new Rect(Input.mousePosition.x - style.fixedWidth - 1f, (float)Screen.height - Input.mousePosition.y - style.fixedHeight - 4f, style.fixedWidth, style.fixedHeight), MethodToWindowFunction.Adapt(serverDetailsWindow), string.Empty, "serverDetailsBox");
 				GUI.BringWindowToFront(2);
 			}
 		}

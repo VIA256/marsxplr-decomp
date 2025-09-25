@@ -13,7 +13,7 @@ public static class CompilerGeneratedExtensions {
 
 	[Extension]
 	public static IAsyncResult BeginInvoke(
-		this __Lobby_OnGUI_0024callable0_0024274_261__ self,
+		this adaptableMethod self,
 		AsyncCallback callback
 	){
 		return self.BeginInvoke(callback, null);
@@ -21,7 +21,7 @@ public static class CompilerGeneratedExtensions {
 
 	[Extension]
 	public static IAsyncResult BeginInvoke(
-		this __Lobby_OnGUI_0024callable0_0024274_261__ self
+		this adaptableMethod self
 	){
 		return self.BeginInvoke(null, null);
 	}

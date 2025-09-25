@@ -56,8 +56,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CompilerGenerated\*.cs" />
     <Compile Include="*.cs" />
+    <Compile Include="CompilerGenerated\GUIAdaptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
