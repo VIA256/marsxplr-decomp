@@ -1,5 +1,4 @@
 using System;
-using Boo.Lang.Runtime;
 using UnityEngine;
 
 [Serializable]
@@ -315,10 +314,9 @@ public class CameraVehicle : MonoBehaviour
 					transform.position + Vector3.up * 50f,
 					transform.position + Vector3.down * 1f, out hit,
 					1 << 8
-				) && !RuntimeServices.EqualityOperator(
-					RuntimeServices.GetProperty(hit.collider, "type"),
-					typeof(TerrainCollider)
-				))
+				) && 
+                    hit.collider.GetType() != typeof(TerrainCollider)
+				)
                 {
 					Vector3 tpos = transform.position;
 					float y = tpos.y + 51 - hit.distance;
@@ -384,10 +382,7 @@ public class CameraVehicle : MonoBehaviour
 						out hit,
 						1 << 8
 					) &&
-					!RuntimeServices.EqualityOperator(
-						RuntimeServices.GetProperty(hit.collider, "type"),
-						typeof(TerrainCollider)
-					)
+					hit.collider.GetType() != typeof(TerrainCollider)
 				)
                 {
 					Vector3 trapos = transform.position;
@@ -455,10 +450,7 @@ public class CameraVehicle : MonoBehaviour
 						50f,
 						1 << 8
 					) &&
-					!RuntimeServices.EqualityOperator(
-						RuntimeServices.GetProperty(hit.collider, "type"),
-						typeof(TerrainCollider)
-					)
+					hit.collider.GetType() != typeof(TerrainCollider)
 				)
                 { //We are under terrain
 					Physics.Linecast( //Determine how far forward we need to go to be out of it
@@ -566,6 +558,4 @@ public class CameraVehicle : MonoBehaviour
 		colorEffect.enabled = glowEffect.enabled;
 		Camera.main.backgroundColor = RenderSettings.fogColor;
 	}
-
-	public void Main(){}
 }

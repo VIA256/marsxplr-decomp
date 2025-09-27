@@ -51,6 +51,4 @@ public class BaseSimple : MonoBehaviour
 		}
 		mat.mainTextureOffset = mto;
 	}
-
-	public void Main(){}
 }
