@@ -6,7 +6,7 @@ public class Hovercraft : MonoBehaviour
 {
 	public LayerMask thrustMask;
 	public Vehicle vehicle;
-	private RaycastHit hitDown;
+	// /*unused*/ private RaycastHit hitDown;
 	private float thrustLast;
 	private float hoverHeight;
 

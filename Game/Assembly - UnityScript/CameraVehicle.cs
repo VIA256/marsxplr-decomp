@@ -18,7 +18,7 @@ public class CameraVehicle : MonoBehaviour
 	public float targetHeight;
 	public Quaternion gyroTation;
 	public Quaternion wr;
-	private bool underwater;
+	// /*unused*/ private bool underwater;
 	public RaycastHit hit;
 	public MotionBlur mb;
 	public GlowEffect glowEffect;
@@ -32,7 +32,7 @@ public class CameraVehicle : MonoBehaviour
 		sensitivityY = 15f;
 		rotationX = 10f;
 		rotationY = 10f;
-		underwater = false;
+		//underwater = false;
 		worldTime = 0f;
 	}
 

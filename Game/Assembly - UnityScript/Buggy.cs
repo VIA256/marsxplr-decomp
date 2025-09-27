@@ -38,12 +38,12 @@ public class Buggy : MonoBehaviour
 					if (thisBuggy0.vehicle.specialInput)
                     {
 						thisBuggy0.wingState = 1f;
-						thisBuggy0.wingFlaps = 0;
+						//thisBuggy0.wingFlaps = 0;
 					}
 					else
                     {
 						thisBuggy0.wingState = -1f;
-						thisBuggy0.wingFlaps = 0;
+						//thisBuggy0.wingFlaps = 0;
 					}
 					Yield(1, null);
 					break;
@@ -87,10 +87,10 @@ public class Buggy : MonoBehaviour
 
 	//Internal Registers
 	private Vector3[] baseVertices;
-	private Vector3[] baseNormals;
+	// /*unused*/ private Vector3[] baseNormals;
 	private Mesh wingMesh;
 	private float wingState;
-	private int wingFlaps;
+	// /*unused*/ private int wingFlaps;
 	private bool wingOpen;
 	private bool isInverted;
 	private Vehicle vehicle;
@@ -121,12 +121,12 @@ public class Buggy : MonoBehaviour
 	private int motorDrag;
 	private int maxAcceleration;
 	private int motorAccel;
-	private float motorSpeedNew;
+	// /*unused*/ private float motorSpeedNew;
 	
 	public Buggy()
     {
 		wingState = 0f;
-		wingFlaps = 0;
+		//wingFlaps = 0;
 		isInverted = false;
 		realComp = new float[4];
 		hitDistance = new float[4];
@@ -146,7 +146,7 @@ public class Buggy : MonoBehaviour
 		motorDrag = 1;
 		maxAcceleration = 60;
 		motorAccel = 60;
-		motorSpeedNew = 0f;
+		//motorSpeedNew = 0f;
 	}
 
 	public void InitVehicle(Vehicle veh)
