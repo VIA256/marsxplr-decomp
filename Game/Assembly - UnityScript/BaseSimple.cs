@@ -1,5 +1,4 @@
 using System;
-using Boo.Lang.Runtime;
 using UnityEngine;
 
 [Serializable]
@@ -10,13 +9,7 @@ public class BaseSimple : MonoBehaviour
 
 	public void Start()
     {
-		mat = (Material)RuntimeServices.Coerce(
-			RuntimeServices.GetProperty(
-				GetComponent(typeof(MeshRenderer)),
-				"material"
-			),
-			typeof(Material)
-		);
+        mat = (Material)((MeshRenderer)this.GetComponent(typeof(MeshRenderer))).material;
 		Vector3 mts = mat.mainTextureScale;
 		mts.x = 1;
 		mts.y = 0.1f;
@@ -50,7 +43,6 @@ public class BaseSimple : MonoBehaviour
 		
 		if(upMode)
         {
-			//mat.mainTextureOffset.y += Time.deltaTime * 0.1f;
 			mto.y += Time.deltaTime * 0.1f;
 			if(mto.y < 0.4f)
             {
