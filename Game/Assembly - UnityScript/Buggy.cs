@@ -1,73 +1,10 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Boo.Lang;
-using Boo.Lang.Runtime;
 using UnityEngine;
-using UnityScript.Lang;
+using System.Threading;
 
 [Serializable]
 public class Buggy : MonoBehaviour
 {
-	[Serializable]
-	[CompilerGenerated]
-	internal sealed class OnSetSpecialInput_0024105 : GenericGenerator<object>
-    {
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<object>, IEnumerator
-        {
-			internal Buggy thisBuggy0;
-
-			public _0024(Buggy self_)
-            {
-				thisBuggy0 = self_;
-			}
-
-			public override bool MoveNext()
-            {
-				switch (_state)
-                {
-				default:
-					if (!thisBuggy0.vehicle)
-                    {
-						return Yield(2, null);
-					}
-					thisBuggy0.vehicle.camSmooth = thisBuggy0.vehicle.specialInput;
-					if (thisBuggy0.vehicle.specialInput)
-                    {
-						thisBuggy0.wingState = 1f;
-						//thisBuggy0.wingFlaps = 0;
-					}
-					else
-                    {
-						thisBuggy0.wingState = -1f;
-						//thisBuggy0.wingFlaps = 0;
-					}
-					Yield(1, null);
-					break;
-				case 1:
-					break;
-				}
-				bool result = default(bool);
-				return result;
-			}
-		}
-
-		internal Buggy thisBuggy1;
-
-		public OnSetSpecialInput_0024105(Buggy self_)
-        {
-			thisBuggy1 = self_;
-		}
-
-		public override IEnumerator<object> GetEnumerator()
-        {
-			return new _0024(thisBuggy1);
-		}
-	}
-	
 	//Object Linkages
 	public MeshFilter wing0;
 	public MeshFilter wing1;
@@ -217,13 +154,11 @@ public class Buggy : MonoBehaviour
 		//Initialize Bouyancy Points
 		i = 0;
 		bouyancyPoints = new Transform[floatPoints.childCount];
-
-		IEnumerator pt = UnityRuntimeServices.GetEnumerator(floatPoints);
-		while (pt.MoveNext())
+        foreach (Transform pt in floatPoints)
         {
-			bouyancyPoints[i] = (Transform)pt.Current;
-			i++;
-		}
+            bouyancyPoints[i] = pt;
+            i++;
+        }
 
 		vehicle.materialAccent = (Material[])materialAccents.ToBuiltin(typeof(Material));
 	}
@@ -746,52 +681,6 @@ public class Buggy : MonoBehaviour
 						suspensionRange + wheelRadius, vehicle.terrainMask
 					))
                     {
-						/* BUCKING BRONCO BUGGY
-						wheelsAreTouchingGround = true;
-						float[] array33 = hitCompress;
-						hitCompress[i] = -(hit.distance / (suspensionRange + wheelRadius)) + 1f;
-						Vector3[] array34 = hitVelocity;
-						//FIXME ref Vector3 reference2 = ref array34[RuntimeServices.NormalizeArrayIndex(array34, i)];
-						Transform[] array35 = wheels;
-						Transform obj9 = array35[RuntimeServices.NormalizeArrayIndex(array35, i)];
-						Rigidbody myRigidbody2 = vehicle.myRigidbody;
-						Transform obj10 = transform;
-						Vector3[] array36 = wheelPositn;
-						//FIXME reference2 = obj9.InverseTransformDirection(myRigidbody2.GetPointVelocity(obj10.TransformPoint(array36[RuntimeServices.NormalizeArrayIndex(array36, i)])));
-						float num20 = Game.Settings.buggyTr * 9f;
-						float b2 = 1f;
-						float[] array37 = hitCompress;
-						float num21 = num20 * Mathf.Lerp(0.5f, b2, array37[RuntimeServices.NormalizeArrayIndex(array37, i)]);
-						float a = 1f;
-						float num22 = 20f;
-						Vector3[] array38 = hitVelocity;
-						friction = num21 * Mathf.Max(a, (num22 - array38[RuntimeServices.NormalizeArrayIndex(array38, i)].magnitude) / 4f);
-						Rigidbody myRigidbody3 = vehicle.myRigidbody;
-						Transform[] array39 = wheels;
-						Transform obj11 = array39[RuntimeServices.NormalizeArrayIndex(array39, i)];
-						Vector3[] array40 = hitVelocity;
-						float x2 = array40[RuntimeServices.NormalizeArrayIndex(array40, i)].x * -1f * friction;
-						float y3 = 0f;
-						Vector3[] array41 = hitVelocity;
-						myRigidbody3.AddForceAtPosition(obj11.TransformDirection(Vector3.Min(new Vector3(x2, y3, (array41[RuntimeServices.NormalizeArrayIndex(array41, i)].z - motorSpeed) * -1f * friction), new Vector3(1000f, 1000f, 1000f))), hit.point);
-						float num23 = motorSpeed;
-						Vector3[] array42 = hitVelocity;
-						motorSpeed = num23 + (array42[RuntimeServices.NormalizeArrayIndex(array42, i)].z - motorSpeed) * friction * Time.fixedDeltaTime / motorTorque;
-						if ((bool)wheelMarks)
-						{
-							int[] array43 = wheelMarkIndex;
-							int num24 = RuntimeServices.NormalizeArrayIndex(array43, i);
-							Skidmarks skidmarks2 = wheelMarks;
-							Vector3 point2 = hit.point;
-							Vector3 normal2 = hit.normal;
-							Vector3[] array44 = hitVelocity;
-							float num25 = Mathf.Abs(array44[RuntimeServices.NormalizeArrayIndex(array44, i)].x);
-							Vector3[] array45 = hitVelocity;
-							float intensity2 = ((!(num25 > Mathf.Abs(array45[RuntimeServices.NormalizeArrayIndex(array45, i)].z) * 0.3f)) ? Mathf.Min(0.5f, friction * 0.05f) : (Mathf.Abs(vehicle.input.y) * 0.5f + 0.25f));
-							int[] array46 = wheelMarkIndex;
-							array43[num24] = skidmarks2.AddSkidMark(point2, normal2, intensity2, array46[RuntimeServices.NormalizeArrayIndex(array46, i)]);
-						}*/
-
 						wheelsAreTouchingGround = true;
 						hitCompress[i] = -((hit.distance) / (suspensionRange + wheelRadius)) + 1;
 						hitVelocity[i] = wheels[i].InverseTransformDirection(
@@ -911,7 +800,7 @@ public class Buggy : MonoBehaviour
 							0f,
 							-bouyancyY * (100f + vehicle.myRigidbody.GetPointVelocity(m[i].position).magnitude * (float)((!(vehicle.myRigidbody.GetPointVelocity(m[i].position).magnitude > 15f)) ? 15 : 100)),
 							0f
-						) + vehicle.myRigidbody.GetPointVelocity(m[i].position) * -200f) / Extensions.get_length((System.Array)bouyancyPoints), m[i].position);
+						) + vehicle.myRigidbody.GetPointVelocity(m[i].position) * -200f) / bouyancyPoints.Length, m[i].position);
 					}
 				}
 				if (vehicle.input.y >= 0f)
@@ -1004,11 +893,22 @@ public class Buggy : MonoBehaviour
 		}
 	}
 
-
-	public IEnumerator OnSetSpecialInput()
+    public void OnSetSpecialInput()
     {
-		return new OnSetSpecialInput_0024105(this).GetEnumerator();
-	}
+        while (!vehicle) Thread.Sleep(500);
+
+        vehicle.camSmooth = vehicle.specialInput;
+        if (vehicle.specialInput)
+        {
+            wingState = 1;
+            //wingFlaps = 0;
+        }
+        else
+        {
+            wingState = -1;
+            //wingFlaps = 0;
+        }
+    }
 
 	public void OnDisable()
     {
@@ -1027,6 +927,4 @@ public class Buggy : MonoBehaviour
 			axels[i].gameObject.SetActiveRecursively(level == 0);
 		}
 	}
-
-	public void Main(){}
 }
