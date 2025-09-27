@@ -1,5 +1,4 @@
 using System;
-using Boo.Lang.Runtime;
 using UnityEngine;
 
 [Serializable]
@@ -12,18 +11,13 @@ public class FloorController : MonoBehaviour
     {
 		if (
 			!whirldObject ||
-			!RuntimeServices.ToBool(whirldObject.@params["Texture"]) ||
+			whirldObject.@params["Texture"] == null ||
 			!floorObject
 		)
         {
 			return;
 		}
 
-		floorObject.renderer.material.mainTexture = (Texture)RuntimeServices.Coerce(
-			whirldObject.@params["Texture"],
-			typeof(Texture)
-		);
+        floorObject.renderer.material.mainTexture = (Texture)whirldObject.@params["Texture"];
 	}
-
-	public void Main(){}
 }

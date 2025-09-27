@@ -11,8 +11,6 @@ namespace System.Runtime.CompilerServices
 
 public static class CompilerGeneratedExtensions
 {
-	/*private CompilerGeneratedExtensions(){}*/
-
 	[Extension]
 	public static IAsyncResult BeginInvoke(
 		this adaptableMethod self,
