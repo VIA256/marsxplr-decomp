@@ -58,7 +58,6 @@
   <ItemGroup>
     <Compile Include="BaseSimple.cs" />
     <Compile Include="Buggy.cs" />
-    <Compile Include="BuggyWheel.cs" />
     <Compile Include="CameraVehicle.cs" />
     <Compile Include="ChatEntry.cs" />
     <Compile Include="ColliderAtach.cs" />
