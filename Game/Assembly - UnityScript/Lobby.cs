@@ -17,117 +17,6 @@ public class Lobby : MonoBehaviour
 {
 	[Serializable]
 	[CompilerGenerated]
-	internal sealed class authenticateUser_0024100 : GenericGenerator<WWW>
-	{
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<WWW>, IEnumerator
-		{
-			internal WWW _0024www_0024534;
-
-			internal string[] _0024data_0024535;
-
-			internal Lobby _0024self_536;
-
-			public _0024(Lobby self_)
-			{
-				_0024self_536 = self_;
-			}
-
-			public override bool MoveNext()
-			{
-				switch (_state)
-				{
-				default:
-					_0024self_536.userAuthenticating = "true";
-					_0024www_0024534 = new WWW("http://marsxplr.com/user/authenticate.atis-u-" + Regex.Replace(WWW.EscapeURL(_0024self_536.userNameTemp), "-", "%2d").Replace(".", "%2e") + "-p-" + Regex.Replace(WWW.EscapeURL(_0024self_536.userPassword), "-", "%2d").Replace(".", "%2e"));
-					return Yield(2, _0024www_0024534);
-				case 2:
-					if (_0024www_0024534 == null || _0024www_0024534.data == string.Empty)
-					{
-						_0024self_536.userAuthenticating = "Authentication server is unreachable";
-					}
-					else if (_0024www_0024534.data == "-1")
-					{
-						_0024self_536.userAuthenticating = string.Empty;
-					}
-					else if (_0024www_0024534.data == "-2")
-					{
-						_0024self_536.userAuthenticating = "Username not found";
-					}
-					else if (_0024www_0024534.data == "-3")
-					{
-						_0024self_536.userAuthenticating = "Incorrect password";
-					}
-					else if (_0024www_0024534.data == "-4")
-					{
-						_0024self_536.userAuthenticating = "Too many login attempts";
-					}
-					else
-					{
-						_0024data_0024535 = _0024www_0024534.data.Split(":"[0]);
-						if (_0024data_0024535[1] != sha1sum(_0024self_536.userNameTemp + "h092hjd82hdkl28djfu83hd82hdu82jfgruy5bg" + _0024self_536.userNameTemp))
-						{
-							_0024self_536.userAuthenticating = "Authcode failed";
-						}
-						else
-						{
-							_0024self_536.userAuthenticating = string.Empty;
-							if (string.Equals(_0024data_0024535[0], _0024self_536.userNameTemp, StringComparison.CurrentCultureIgnoreCase))
-							{
-								_0024self_536.userName = "(" + _0024self_536.userNameTemp + ")+";
-							}
-							else
-							{
-								_0024self_536.userName = string.Empty + _0024data_0024535[0] + " (" + _0024self_536.userNameTemp + ")+";
-							}
-							if (_0024self_536.userCode == "{Code}")
-							{
-								_0024self_536.userCode = string.Empty;
-							}
-							if (_0024self_536.userRemembered)
-							{
-								PlayerPrefs.SetString("userName", _0024self_536.userNameTemp);
-								PlayerPrefs.SetString("userPassword", _0024self_536.userPassword);
-								PlayerPrefs.SetInt("userRemembered", 1);
-								PlayerPrefs.SetInt("userRegistered", 1);
-							}
-							else
-							{
-								PlayerPrefs.SetString("userName", string.Empty);
-								PlayerPrefs.SetString("userPassword", string.Empty);
-								PlayerPrefs.SetInt("userRemembered", 0);
-								PlayerPrefs.SetInt("userRegistered", 0);
-								_0024self_536.userNameTemp = string.Empty;
-								_0024self_536.userPassword = string.Empty;
-							}
-						}
-					}
-					Yield(1, null);
-					break;
-				case 1:
-					break;
-				}
-				bool result = default(bool);
-				return result;
-			}
-		}
-
-		internal Lobby _0024self_537;
-
-		public authenticateUser_0024100(Lobby self_)
-		{
-			_0024self_537 = self_;
-		}
-
-		public override IEnumerator<WWW> GetEnumerator()
-		{
-			return new _0024(_0024self_537);
-		}
-	}
-
-	[Serializable]
-	[CompilerGenerated]
 	internal sealed class Start_0024101 : GenericGenerator<WWW>
 	{
 		[Serializable]
@@ -1474,10 +1363,190 @@ public class Lobby : MonoBehaviour
 		return new LoadGame_0024102(this).GetEnumerator();
 	}
 
-	public IEnumerator authenticateUser()
+    /*[Serializable]
+	[CompilerGenerated]
+	internal sealed class authenticateUser_0024100 : GenericGenerator<WWW>
 	{
-		return new authenticateUser_0024100(this).GetEnumerator();
-	}
+		[Serializable]
+		[CompilerGenerated]
+		private sealed class _0024 : GenericGeneratorEnumerator<WWW>, IEnumerator
+		{
+			internal WWW _0024www_0024534;
+
+			internal string[] _0024data_0024535;
+
+			internal Lobby _0024self_536;
+
+			public _0024(Lobby self_)
+			{
+				_0024self_536 = self_;
+			}
+
+			public override bool MoveNext()
+			{
+				switch (_state)
+				{
+				default:
+					_0024self_536.userAuthenticating = "true";
+					_0024www_0024534 = new WWW("http://marsxplr.com/user/authenticate.atis-u-" + Regex.Replace(WWW.EscapeURL(_0024self_536.userNameTemp), "-", "%2d").Replace(".", "%2e") + "-p-" + Regex.Replace(WWW.EscapeURL(_0024self_536.userPassword), "-", "%2d").Replace(".", "%2e"));
+					return Yield(2, _0024www_0024534);
+				case 2:
+					if (_0024www_0024534 == null || _0024www_0024534.data == string.Empty)
+					{
+						_0024self_536.userAuthenticating = "Authentication server is unreachable";
+					}
+					else if (_0024www_0024534.data == "-1")
+					{
+						_0024self_536.userAuthenticating = string.Empty;
+					}
+					else if (_0024www_0024534.data == "-2")
+					{
+						_0024self_536.userAuthenticating = "Username not found";
+					}
+					else if (_0024www_0024534.data == "-3")
+					{
+						_0024self_536.userAuthenticating = "Incorrect password";
+					}
+					else if (_0024www_0024534.data == "-4")
+					{
+						_0024self_536.userAuthenticating = "Too many login attempts";
+					}
+					else
+					{
+						_0024data_0024535 = _0024www_0024534.data.Split(":"[0]);
+						if (_0024data_0024535[1] != sha1sum(_0024self_536.userNameTemp + "h092hjd82hdkl28djfu83hd82hdu82jfgruy5bg" + _0024self_536.userNameTemp))
+						{
+							_0024self_536.userAuthenticating = "Authcode failed";
+						}
+						else
+						{
+							_0024self_536.userAuthenticating = string.Empty;
+							if (string.Equals(_0024data_0024535[0], _0024self_536.userNameTemp, StringComparison.CurrentCultureIgnoreCase))
+							{
+								_0024self_536.userName = "(" + _0024self_536.userNameTemp + ")+";
+							}
+							else
+							{
+								_0024self_536.userName = string.Empty + _0024data_0024535[0] + " (" + _0024self_536.userNameTemp + ")+";
+							}
+							if (_0024self_536.userCode == "{Code}")
+							{
+								_0024self_536.userCode = string.Empty;
+							}
+							if (_0024self_536.userRemembered)
+							{
+								PlayerPrefs.SetString("userName", _0024self_536.userNameTemp);
+								PlayerPrefs.SetString("userPassword", _0024self_536.userPassword);
+								PlayerPrefs.SetInt("userRemembered", 1);
+								PlayerPrefs.SetInt("userRegistered", 1);
+							}
+							else
+							{
+								PlayerPrefs.SetString("userName", string.Empty);
+								PlayerPrefs.SetString("userPassword", string.Empty);
+								PlayerPrefs.SetInt("userRemembered", 0);
+								PlayerPrefs.SetInt("userRegistered", 0);
+								_0024self_536.userNameTemp = string.Empty;
+								_0024self_536.userPassword = string.Empty;
+							}
+						}
+					}
+					Yield(1, null);
+					break;
+				case 1:
+					break;
+				}
+				bool result = default(bool);
+				return result;
+			}
+		}
+
+		internal Lobby _0024self_537;
+
+		public authenticateUser_0024100(Lobby self_)
+		{
+			_0024self_537 = self_;
+		}
+
+		public override IEnumerator<WWW> GetEnumerator()
+		{
+			return new _0024(_0024self_537);
+		}
+	}*/
+
+    public IEnumerator<WWW> authenticateUser()
+    {
+        userAuthenticating = "true";
+        WWW www = new WWW(
+            "http://marsxplr.com/user/authenticate.atis-u-" +
+            Regex.Replace(
+                WWW.EscapeURL(userNameTemp),
+                "-",
+                "%2d").Replace(".", "%2e") +
+            "-p-" +
+            Regex.Replace(
+                WWW.EscapeURL(userPassword),
+                "-",
+                "%2d").Replace(".", "%2e"));
+        yield return www;
+        if (www == null || www.data == "")
+        {
+            userAuthenticating = "Authentication server is unreachable";
+        }
+        else if (www.data == "-1")
+        {
+            userAuthenticating = "";
+        }
+        else if (www.data == "-2")
+        {
+            userAuthenticating = "Username not found";
+        }
+        else if (www.data == "-3")
+        {
+            userAuthenticating = "Incorrect password";
+        }
+        else if (www.data == "-4")
+        {
+            userAuthenticating = "Too many login attempts";
+        }
+        else {
+            String[] data = www.data.Split(":"[0]);
+            if (
+                String.Equals(
+                    data[0],
+                    userNameTemp,
+                    StringComparison.CurrentCultureIgnoreCase)
+                )
+            {
+                userName = "(" + userNameTemp + ")+";
+            }
+            else
+            {
+                userName = "" + data[0] + " (" + userNameTemp + ")+";
+            }
+            if (userCode == "{Code}")
+            {
+                userCode = "";
+            }
+
+            if (userRemembered)
+            {
+                PlayerPrefs.SetString("userName", userNameTemp);
+                PlayerPrefs.SetString("userPassword", userPassword);
+                PlayerPrefs.SetInt("userRemembered", 1);
+                PlayerPrefs.SetInt("userRegistered", 1);
+            }
+            else
+            {
+                PlayerPrefs.SetString("userName", "");
+                PlayerPrefs.SetString("userPassword", "");
+                PlayerPrefs.SetInt("userRemembered", 0);
+                PlayerPrefs.SetInt("userRegistered", 0);
+                userNameTemp = "";
+                userPassword = "";
+            }
+        }
+    }
 
 	public int sortHostArray(HostData a, HostData b)
 	{
@@ -1537,9 +1606,5 @@ public class Lobby : MonoBehaviour
 			text += Convert.ToString(array[RuntimeServices.NormalizeArrayIndex(array, i)], 16).PadLeft(2, "0"[0]);
 		}
 		return text.PadLeft(32, "0"[0]);
-	}
-
-	public void Main()
-	{
 	}
 }
