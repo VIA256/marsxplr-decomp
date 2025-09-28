@@ -11,7 +11,6 @@ using Boo.Lang.Runtime;
 using CompilerGenerated;
 using UnityEngine;
 using UnityScript.Lang;
-using System.Threading;
 
 [Serializable]
 public class Lobby : MonoBehaviour
@@ -376,7 +375,7 @@ public class Lobby : MonoBehaviour
         }
     }*/
 
-    public IEnumerator<WWW> Start()
+    public IEnumerator Start()
     {
         String adBrightUrl = "";
         String adSenseUrl = "";
@@ -754,7 +753,7 @@ public class Lobby : MonoBehaviour
     {
         disableMasterServer = false;
         probingPublicIP = false;
-        if (timer == null) timer = Time.time + 15;
+        if (timer == 0.0f) timer = Time.time + 15;
         testMessage = "testing";
         doneTesting = false;
         doNetworking = false;
@@ -763,8 +762,7 @@ public class Lobby : MonoBehaviour
         while (natCapable == ConnectionTesterStatus.Undetermined)
         {
             natCapable = Network.TestConnection();
-            yield return null;
-            Thread.Sleep(500);
+            yield return new WaitForSeconds(0.5f);
         }
 
         switch (natCapable)
@@ -1415,12 +1413,11 @@ public class Lobby : MonoBehaviour
     public IEnumerator LoadGame()
     { 
         GuiAnimate = 1;
-        yield return null;
-        Thread.Sleep(750);
+        yield return new WaitForSeconds(0.75f);
         Application.LoadLevel(2);
     }
 
-    public IEnumerator<WWW> authenticateUser()
+    public IEnumerator authenticateUser()
     {
         userAuthenticating = "true";
         WWW www = new WWW(

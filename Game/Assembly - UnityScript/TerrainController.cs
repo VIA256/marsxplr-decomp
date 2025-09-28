@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
-using System.Threading;
+using System.Collections;
+using System.Collections.Generic;
 
 [Serializable]
 public class TerrainController : MonoBehaviour
@@ -59,18 +60,18 @@ public class TerrainController : MonoBehaviour
         ReSplat();
     }
 
-    public void OnPrefsUpdated()
+    public IEnumerator OnPrefsUpdated()
     {
         if (!World.sea ||
             seaLevel == World.sea.position.y)
         {
-            return;
+            yield break;
         }
 
         if (updateTime == -1)
         {
             updateTime = Time.time + 3;
-            while (Time.time < updateTime) Thread.Sleep(500);
+            while (Time.time < updateTime) yield return null;
             ReSplat();
         }
         else

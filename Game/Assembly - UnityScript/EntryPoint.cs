@@ -1,13 +1,14 @@
 using System;
 using UnityEngine;
-using System.Threading;
+using System.Collections;
+using System.Collections.Generic;
 
 [Serializable]
 public class EntryPoint : MonoBehaviour
 {
-    public void Start() 
+    public IEnumerator Start() 
     {
-        Thread.Sleep(15 * 1000);
+        yield return new WaitForSeconds(15.0f);
 
         ParticleEmitter pe = (ParticleEmitter)GetComponent(typeof(ParticleEmitter));
         pe.emit = true;

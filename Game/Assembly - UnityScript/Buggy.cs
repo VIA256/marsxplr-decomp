@@ -1,6 +1,7 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using System.Threading;
 
 [Serializable]
 public class Buggy : MonoBehaviour
@@ -893,9 +894,9 @@ public class Buggy : MonoBehaviour
 		}
 	}
 
-    public void OnSetSpecialInput()
+    public IEnumerator OnSetSpecialInput()
     {
-        while (!vehicle) Thread.Sleep(500);
+        while (!vehicle) yield return null;
 
         vehicle.camSmooth = vehicle.specialInput;
         if (vehicle.specialInput)
