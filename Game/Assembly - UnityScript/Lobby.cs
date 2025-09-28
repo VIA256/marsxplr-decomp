@@ -11,563 +11,125 @@ using Boo.Lang.Runtime;
 using CompilerGenerated;
 using UnityEngine;
 using UnityScript.Lang;
+using System.Threading;
 
 [Serializable]
 public class Lobby : MonoBehaviour
 {
-	[Serializable]
-	[CompilerGenerated]
-	internal sealed class Start_0024101 : GenericGenerator<WWW>
-	{
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<WWW>, IEnumerator
-		{
-			internal UnityScript.Lang.Array _0024msgs_0024506;
-
-			internal UnityScript.Lang.Array _0024wlds_0024507;
-
-			internal WWW _0024www_0024508;
-
-			internal string[] _0024data_0024509;
-
-			internal string[] _0024val_0024510;
-
-			internal string _0024dat_0024511;
-
-			internal string _0024nme_0024512;
-
-			internal string _0024url_0024513;
-
-			internal bool _0024featured_0024514;
-
-			internal string[] _0024wrld_0024515;
-
-			internal string _0024str_0024516;
-
-			internal string[] _0024vals_0024517;
-
-			internal string[] _0024ipStr_0024518;
-
-			internal int _0024___temp166_0024519;
-
-			internal string[] _0024___temp167_0024520;
-
-			internal int _0024___temp168_0024521;
-
-			internal int _0024___temp170_0024522;
-
-			internal string[] _0024___temp171_0024523;
-
-			internal int _0024___temp172_0024524;
-
-			internal Lobby _0024self_525;
-
-			public _0024(Lobby self_)
-			{
-				_0024self_525 = self_;
-			}
-
-			public override bool MoveNext()
-			{
-				checked
-				{
-					switch (_state)
-					{
-					default:
-						_0024self_525.userPassword = PlayerPrefs.GetString("userPassword", string.Empty);
-						_0024self_525.userCode = PlayerPrefs.GetString("userCode", string.Empty);
-						_0024self_525.userRemembered = PlayerPrefs.GetInt("userRemembered", 0) == 1;
-						_0024self_525.userIsRegistered = PlayerPrefs.GetInt("userRegistered", 0) == 1;
-						GameData.masterBlacklist = string.Empty;
-						if (GameData.userName != string.Empty)
-						{
-							_0024self_525.userName = GameData.userName;
-							if (_0024self_525.userRemembered)
-							{
-								_0024self_525.userNameTemp = _0024self_525.userName;
-							}
-						}
-						else if (_0024self_525.userPassword != string.Empty)
-						{
-							_0024self_525.userNameTemp = PlayerPrefs.GetString("userName", string.Empty);
-							_0024self_525.StartCoroutine_Auto(_0024self_525.authenticateUser());
-						}
-						else
-						{
-							_0024self_525.userNameTemp = PlayerPrefs.GetString("userName", string.Empty);
-							_0024self_525.userName = _0024self_525.userNameTemp + ((!(_0024self_525.userNameTemp != string.Empty)) ? string.Empty : "–");
-						}
-						_0024msgs_0024506 = new UnityScript.Lang.Array();
-						_0024wlds_0024507 = new UnityScript.Lang.Array();
-						_0024www_0024508 = new WWW("http://73.189.4.24/upd3");
-						return Yield(2, _0024www_0024508);
-					case 2:
-						if (_0024www_0024508.error == null)
-						{
-							_0024data_0024509 = _0024www_0024508.data.Split("\n"[0]);
-							_0024val_0024510 = null;
-							_0024___temp170_0024522 = 0;
-							_0024___temp171_0024523 = _0024data_0024509;
-							for (_0024___temp172_0024524 = _0024___temp171_0024523.Length; _0024___temp170_0024522 < _0024___temp172_0024524; _0024___temp170_0024522++)
-							{
-								if (!(_0024___temp171_0024523[_0024___temp170_0024522] == string.Empty))
-								{
-									_0024val_0024510 = _0024___temp171_0024523[_0024___temp170_0024522].Split("="[0]);
-									if (_0024val_0024510[0] == "v" && float.Parse(_0024val_0024510[1], CultureInfo.InvariantCulture.NumberFormat) > UnityBuiltins.parseFloat(GameData.gameVersion))
-									{
-										_0024self_525.outdated = _0024val_0024510[1];
-									}
-									else if (_0024val_0024510[0] == "d")
-									{
-										Lobby lobby = _0024self_525;
-										bool num = _0024val_0024510[1] == "1";
-										if (!num)
-										{
-											num = _0024val_0024510[1] == "true";
-										}
-										lobby.hostDedicated = num;
-									}
-									else if (_0024val_0024510[0] == "m")
-									{
-										_0024msgs_0024506.Add(_0024val_0024510[1]);
-									}
-									else if (_0024val_0024510[0] == "w")
-									{
-										_0024nme_0024512 = string.Empty;
-										_0024url_0024513 = string.Empty;
-										_0024featured_0024514 = false;
-										_0024wrld_0024515 = _0024val_0024510[1].Split(";"[0]);
-										_0024___temp166_0024519 = 0;
-										_0024___temp167_0024520 = _0024wrld_0024515;
-										for (_0024___temp168_0024521 = _0024___temp167_0024520.Length; _0024___temp166_0024519 < _0024___temp168_0024521; _0024___temp166_0024519++)
-										{
-											if (!(_0024___temp167_0024520[_0024___temp166_0024519] == string.Empty))
-											{
-												if (_0024___temp167_0024520[_0024___temp166_0024519] == "featured")
-												{
-													_0024featured_0024514 = true;
-												}
-												else
-												{
-													_0024vals_0024517 = _0024___temp167_0024520[_0024___temp166_0024519].Split(":"[0]);
-													if (_0024vals_0024517[0] == "nme")
-													{
-														_0024nme_0024512 = _0024vals_0024517[1];
-													}
-													else if (_0024vals_0024517[0] == "url")
-													{
-														_0024url_0024513 = _0024___temp167_0024520[_0024___temp166_0024519].Substring(4);
-													}
-												}
-											}
-										}
-										_0024wlds_0024507.Add(new GameWorldDesc(_0024nme_0024512, _0024url_0024513, _0024featured_0024514));
-									}
-									else if ((_0024val_0024510[0] == "s" && !_0024self_525.useAlternateServer) || (_0024val_0024510[0] == "s2" && _0024self_525.useAlternateServer))
-									{
-										_0024ipStr_0024518 = _0024val_0024510[1].Split(":"[0]);
-										_0024self_525.listServerIP = _0024ipStr_0024518[0];
-										_0024self_525.listServerPort = UnityBuiltins.parseInt(_0024ipStr_0024518[1]);
-										MasterServer.ipAddress = _0024self_525.listServerIP;
-										MasterServer.port = _0024self_525.listServerPort;
-									}
-									else if ((_0024val_0024510[0] == "f" && !_0024self_525.useAlternateServer) || (_0024val_0024510[0] == "f2" && _0024self_525.useAlternateServer))
-									{
-										_0024ipStr_0024518 = _0024val_0024510[1].Split(":"[0]);
-										Network.natFacilitatorIP = _0024ipStr_0024518[0];
-										Network.natFacilitatorPort = UnityBuiltins.parseInt(_0024ipStr_0024518[1]);
-									}
-									else if ((_0024val_0024510[0] == "t" && !_0024self_525.useAlternateServer) || (_0024val_0024510[0] == "t2" && _0024self_525.useAlternateServer))
-									{
-										_0024ipStr_0024518 = _0024val_0024510[1].Split(":"[0]);
-										Network.connectionTesterIP = _0024ipStr_0024518[0];
-										Network.connectionTesterPort = UnityBuiltins.parseInt(_0024ipStr_0024518[1]);
-									}
-									else if (_0024val_0024510[0] == "b")
-									{
-										GameData.masterBlacklist += ((!(GameData.masterBlacklist != string.Empty)) ? string.Empty : "\n") + _0024val_0024510[1];
-									}
-									else if (_0024val_0024510[0] == "n")
-									{
-										GameData.networkMode = UnityBuiltins.parseInt(_0024val_0024510[1]);
-									}
-								}
-							}
-						}
-						else
-						{
-							GameData.errorMessage = "Alert: Update server is unreachable.\nIf this computer is online, the update server may be down.\n\nYou need to be connected to the internet to play Mars Explorer.\n\nPlease check MarsXPLR.com for news & updates!";
-						}
-						GameData.gameWorlds = (GameWorldDesc[])_0024wlds_0024507.ToBuiltin(typeof(GameWorldDesc));
-						_0024self_525.messages = (string[])_0024msgs_0024506.ToBuiltin(typeof(string));
-						MasterServer.RequestHostList(_0024self_525.gameName);
-						Yield(1, null);
-						break;
-					case 1:
-						break;
-					}
-					bool result = default(bool);
-					return result;
-				}
-			}
-		}
-
-		internal Lobby _0024self_526;
-
-		public Start_0024101(Lobby self_)
-		{
-			_0024self_526 = self_;
-		}
-
-		public override IEnumerator<WWW> GetEnumerator()
-		{
-			return new _0024(_0024self_526);
-		}
-	}
-
-	[Serializable]
-	[CompilerGenerated]
-	internal sealed class LoadGame_0024102 : GenericGenerator<WaitForSeconds>
-	{
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<WaitForSeconds>, IEnumerator
-		{
-			internal Lobby _0024self_532;
-
-			public _0024(Lobby self_)
-			{
-				_0024self_532 = self_;
-			}
-
-			public override bool MoveNext()
-			{
-				switch (_state)
-				{
-				default:
-					_0024self_532.GuiAnimate = 1;
-					return Yield(2, new WaitForSeconds(0.75f));
-				case 2:
-					Application.LoadLevel(2);
-					Yield(1, null);
-					break;
-				case 1:
-					break;
-				}
-				bool result = default(bool);
-				return result;
-			}
-		}
-
-		internal Lobby _0024self_533;
-
-		public LoadGame_0024102(Lobby self_)
-		{
-			_0024self_533 = self_;
-		}
-
-		public override IEnumerator<WaitForSeconds> GetEnumerator()
-		{
-			return new _0024(_0024self_533);
-		}
-	}
-
-	[Serializable]
-	[CompilerGenerated]
-	internal sealed class TestConnection_0024103 : GenericGenerator<WaitForSeconds>
-	{
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<WaitForSeconds>, IEnumerator
-		{
-			internal ConnectionTesterStatus _0024__50_0024527;
-
-			internal bool _0024force528;
-
-			internal Lobby _0024self_529;
-
-			public _0024(bool force, Lobby self_)
-			{
-				_0024force528 = force;
-				_0024self_529 = self_;
-			}
-
-			public override bool MoveNext()
-			{
-				switch (_state)
-				{
-				default:
-					_0024self_529.disableMasterServer = false;
-					_0024self_529.probingPublicIP = false;
-					if (_0024self_529.timer == 0f)
-					{
-						_0024self_529.timer = Time.time + 15f;
-					}
-					_0024self_529.testMessage = "testing";
-					_0024self_529.doneTesting = false;
-					_0024self_529.doNetworking = false;
-					_0024self_529.natCapable = Network.TestConnection(_0024force528);
-					goto case 2;
-				case 2:
-					if (_0024self_529.natCapable == ConnectionTesterStatus.Undetermined)
-					{
-						_0024self_529.natCapable = Network.TestConnection();
-						return Yield(2, new WaitForSeconds(0.5f));
-					}
-					_0024__50_0024527 = _0024self_529.natCapable;
-					if (_0024__50_0024527 == ConnectionTesterStatus.Error)
-					{
-						GameData.errorMessage = "Your computer does not appear to be online...\nNetworking was defaulted to Local Area Network mode.\n\n(You can play with friends over a LAN, but not with people all around the world over the internet)";
-						_0024self_529.testMessage = "Computer is Offline.";
-						_0024self_529.doneTesting = true;
-						_0024self_529.doNetworking = true;
-						_0024self_529.useMasterServer = false;
-					}
-					else if (_0024__50_0024527 == ConnectionTesterStatus.PrivateIPNoNATPunchthrough)
-					{
-						GameData.errorMessage = "You appear to have a private IP and no NAT punchthrough capability...\n\nHit \"Dismiss\" click \"Show Settings\", then click \"Retest Internet Connection\".\nIf you get this message again, read \"How Do I configure My Router\" on the FAQ @ MarsXPLR.com";
-						_0024self_529.testMessage = "Private IP with no NAT punchthrough - Local network, non internet games only.";
-						Network.useNat = true;
-						_0024self_529.doneTesting = true;
-						_0024self_529.doNetworking = true;
-						_0024self_529.useMasterServer = false;
-					}
-					else if (_0024__50_0024527 == ConnectionTesterStatus.PrivateIPHasNATPunchThrough)
-					{
-						if (_0024self_529.probingPublicIP)
-						{
-							_0024self_529.testMessage = "Non-connectable public IP address (port " + _0024self_529.port + " blocked), NAT punchthrough can circumvent the firewall.";
-						}
-						else
-						{
-							_0024self_529.testMessage = "NAT punchthrough enabled.";
-						}
-						Network.useNat = true;
-						_0024self_529.doneTesting = true;
-						_0024self_529.doNetworking = true;
-						_0024self_529.useMasterServer = true;
-					}
-					else if (_0024__50_0024527 == ConnectionTesterStatus.PublicIPIsConnectable)
-					{
-						_0024self_529.testMessage = "Directly connectable public IP address.";
-						Network.useNat = false;
-						_0024self_529.doneTesting = true;
-						_0024self_529.doNetworking = true;
-						_0024self_529.useMasterServer = true;
-					}
-					else if (_0024__50_0024527 == ConnectionTesterStatus.PublicIPPortBlocked)
-					{
-						_0024self_529.testMessage = "Non-connectible public IP address with NAT punchthrough disabled, running a server is impossible.\n\n(Please setup port forwarding for port # " + _0024self_529.port + " in your router)";
-						Network.useNat = false;
-						if (!_0024self_529.probingPublicIP)
-						{
-							Debug.Log("Testing if firewall can be circumvented");
-							_0024self_529.natCapable = Network.TestConnectionNAT();
-							_0024self_529.probingPublicIP = true;
-							_0024self_529.timer = Time.time + 10f;
-						}
-						else if (Time.time > _0024self_529.timer)
-						{
-							_0024self_529.probingPublicIP = false;
-							Network.useNat = true;
-							_0024self_529.doneTesting = true;
-							_0024self_529.doNetworking = true;
-							_0024self_529.useMasterServer = false;
-						}
-					}
-					else if (_0024__50_0024527 == ConnectionTesterStatus.PublicIPNoServerStarted)
-					{
-						_0024self_529.testMessage = "Public IP address but server not initialized, it must be started to check server accessibility. Restart connection test when ready.";
-						_0024self_529.doNetworking = true;
-						_0024self_529.doneTesting = true;
-						_0024self_529.useMasterServer = true;
-					}
-					else
-					{
-						_0024self_529.testMessage = "Error in test routine, got " + _0024self_529.natCapable;
-						_0024self_529.doNetworking = false;
-					}
-					Yield(1, null);
-					break;
-				case 1:
-					break;
-				}
-				bool result = default(bool);
-				return result;
-			}
-		}
-
-		internal bool _0024force530;
-
-		internal Lobby _0024self_531;
-
-		public TestConnection_0024103(bool force, Lobby self_)
-		{
-			_0024force530 = force;
-			_0024self_531 = self_;
-		}
-
-		public override IEnumerator<WaitForSeconds> GetEnumerator()
-		{
-			return new _0024(_0024force530, _0024self_531);
-		}
-	}
-
 	[NonSerialized]
 	public int port;
 
 	private int GuiAnimate;
-
 	[NonSerialized]
 	public float GUIAlpha;
-
 	[NonSerialized]
 	public float GUIHide;
-
 	private string gameName;
-
 	private float timeoutHostList;
-
-	private float lastHostListRequest;
-
+    private float lastHostListRequest;
 	private float lastHostListRefresh;
-
 	private float hostListRefreshTimeout;
 
 	private ConnectionTesterStatus natCapable;
-
 	private bool NATHosts;
-
 	private bool probingPublicIP;
-
 	private bool doneTesting;
-
 	private float timer;
-
 	private bool filterNATHosts;
-
 	private bool forceNAT;
-
 	private bool hideTest;
-
 	private string masterServerMessage;
-
 	private int masterServerConFailures;
-
 	private string testMessage;
-
 	private string[] netConIP;
-
 	private int netConPort;
-
 	private int netConAttempts;
-
 	private bool useMasterServer;
-
 	private bool disableMasterServer;
-
 	private bool doNetworking;
-
 	[NonSerialized]
 	public string userName;
-
 	[NonSerialized]
 	public string userCode;
-
 	private bool userIsRegistered;
-
 	private string remoteIP;
-
 	private string userNameTemp;
-
 	private string userPassword;
-
 	private bool userRemembered;
-
 	private string userAuthenticating;
-
 	[NonSerialized]
 	public Rect windowRect;
-
 	[NonSerialized]
 	public string temp;
-
 	private Vector2 scrollPosition;
-
 	private string outdated;
-
 	private bool hostRegistered;
-
 	private string serverLevel;
-
 	private bool showSettings;
-
 	private bool autoHostListRefresh;
-
 	public bool useAlternateServer;
-
 	[NonSerialized]
 	public string[] messages;
-
 	private string listServerIP;
-
 	private int listServerPort;
-
 	private string backupServerIP;
-
 	private int backupServerPort;
-
 	private float buttonHeight;
-
 	private float buttonHeightTarget;
-
 	private bool mouseInServerList;
-
 	private string serverDetails;
-
 	private float serverDetailsBoxAlpha;
-
 	public GUISkin Skin;
-
 	public GUIStyle serverDetailsBox;
-
 	public LobbyDecor lobbyDecor;
-
 	public int contentWidth;
 
 	private bool hostDedicated;
-
 	private string[] dedicatedIP;
-
 	private int dedicatedPort;
-
 	private bool dedicatedNAT;
-
 	private int dedicatedHostAttempts;
+
+    private bool showAds;
+    adDesc[] gameAds;
+    class adDesc : UnityEngine.Object
+    {
+        public String url = "";
+        public String title = "";
+        public String desc = "";
+
+        public adDesc(String u, String t, String d)
+        {
+            this.url = u;
+            this.title = t;
+            this.desc = d;
+        }
+    }
 
 	public Lobby()
 	{
 		port = 2500;
+
 		GuiAnimate = -1;
 		GUIAlpha = 0f;
 		GUIHide = 0f;
 		gameName = "marsxplr";
-		timeoutHostList = 0f;
-		lastHostListRequest = 1000f * -1f;
-		lastHostListRefresh = 1000f * -1f;
-		hostListRefreshTimeout = 5f;
+		timeoutHostList = 0.0f;
+		lastHostListRequest = -1000.0f;
+		lastHostListRefresh = -1000.0f;
+		hostListRefreshTimeout = 5.0f;
+
 		natCapable = ConnectionTesterStatus.Undetermined;
 		NATHosts = false;
 		probingPublicIP = false;
 		doneTesting = false;
-		timer = 0f;
+		timer = 0.0f;
 		filterNATHosts = false;
 		forceNAT = false;
 		hideTest = false;
-		masterServerMessage = string.Empty;
+		masterServerMessage = "";
 		masterServerConFailures = 0;
-		testMessage = string.Empty;
+		testMessage = "";
 		netConAttempts = 0;
 		useMasterServer = true;
 		disableMasterServer = false;
@@ -590,7 +152,10 @@ public class Lobby : MonoBehaviour
 		backupServerPort = 23456;
 		serverDetails = string.Empty;
 		contentWidth = 0;
+
 		hostDedicated = false;
+
+        showAds = false;
 	}
 
 	public void Awake()
@@ -600,11 +165,411 @@ public class Lobby : MonoBehaviour
 		Application.runInBackground = false;
 	}
 
-	public IEnumerator Start()
-	{
-		return new Start_0024101(this).GetEnumerator();
-	}
+    /*[Serializable]
+    [CompilerGenerated]
+    internal sealed class Start_0024101 : GenericGenerator<WWW>
+    {
+        [Serializable]
+        [CompilerGenerated]
+        private sealed class _0024 : GenericGeneratorEnumerator<WWW>, IEnumerator
+        {
+            internal UnityScript.Lang.Array _0024msgs_0024506;
 
+            internal UnityScript.Lang.Array _0024wlds_0024507;
+
+            internal WWW _0024www_0024508;
+
+            internal string[] _0024data_0024509;
+
+            internal string[] _0024val_0024510;
+
+            internal string _0024dat_0024511;
+
+            internal string _0024nme_0024512;
+
+            internal string _0024url_0024513;
+
+            internal bool _0024featured_0024514;
+
+            internal string[] _0024wrld_0024515;
+
+            internal string _0024str_0024516;
+
+            internal string[] _0024vals_0024517;
+
+            internal string[] _0024ipStr_0024518;
+
+            internal int _0024___temp166_0024519;
+
+            internal string[] _0024___temp167_0024520;
+
+            internal int _0024___temp168_0024521;
+
+            internal int _0024___temp170_0024522;
+
+            internal string[] _0024___temp171_0024523;
+
+            internal int _0024___temp172_0024524;
+
+            internal Lobby _0024self_525;
+
+            public _0024(Lobby self_)
+            {
+                _0024self_525 = self_;
+            }
+
+            public override bool MoveNext()
+            {
+                checked
+                {
+                    switch (_state)
+                    {
+                    default:
+                        _0024self_525.userPassword = PlayerPrefs.GetString("userPassword", string.Empty);
+                        _0024self_525.userCode = PlayerPrefs.GetString("userCode", string.Empty);
+                        _0024self_525.userRemembered = PlayerPrefs.GetInt("userRemembered", 0) == 1;
+                        _0024self_525.userIsRegistered = PlayerPrefs.GetInt("userRegistered", 0) == 1;
+                        GameData.masterBlacklist = string.Empty;
+                        if (GameData.userName != string.Empty)
+                        {
+                            _0024self_525.userName = GameData.userName;
+                            if (_0024self_525.userRemembered)
+                            {
+                                _0024self_525.userNameTemp = _0024self_525.userName;
+                            }
+                        }
+                        else if (_0024self_525.userPassword != string.Empty)
+                        {
+                            _0024self_525.userNameTemp = PlayerPrefs.GetString("userName", string.Empty);
+                            _0024self_525.StartCoroutine_Auto(_0024self_525.authenticateUser());
+                        }
+                        else
+                        {
+                            _0024self_525.userNameTemp = PlayerPrefs.GetString("userName", string.Empty);
+                            _0024self_525.userName = _0024self_525.userNameTemp + ((!(_0024self_525.userNameTemp != string.Empty)) ? string.Empty : "–");
+                        }
+                        _0024msgs_0024506 = new UnityScript.Lang.Array();
+                        _0024wlds_0024507 = new UnityScript.Lang.Array();
+                        _0024www_0024508 = new WWW("http://73.189.4.24/upd3");
+                        return Yield(2, _0024www_0024508);
+                    case 2:
+                        if (_0024www_0024508.error == null)
+                        {
+                            _0024data_0024509 = _0024www_0024508.data.Split("\n"[0]);
+                            _0024val_0024510 = null;
+                            _0024___temp170_0024522 = 0;
+                            _0024___temp171_0024523 = _0024data_0024509;
+                            for (_0024___temp172_0024524 = _0024___temp171_0024523.Length; _0024___temp170_0024522 < _0024___temp172_0024524; _0024___temp170_0024522++)
+                            {
+                                if (!(_0024___temp171_0024523[_0024___temp170_0024522] == string.Empty))
+                                {
+                                    _0024val_0024510 = _0024___temp171_0024523[_0024___temp170_0024522].Split("="[0]);
+                                    if (_0024val_0024510[0] == "v" && float.Parse(_0024val_0024510[1], CultureInfo.InvariantCulture.NumberFormat) > UnityBuiltins.parseFloat(GameData.gameVersion))
+                                    {
+                                        _0024self_525.outdated = _0024val_0024510[1];
+                                    }
+                                    else if (_0024val_0024510[0] == "d")
+                                    {
+                                        Lobby lobby = _0024self_525;
+                                        bool num = _0024val_0024510[1] == "1";
+                                        if (!num)
+                                        {
+                                            num = _0024val_0024510[1] == "true";
+                                        }
+                                        lobby.hostDedicated = num;
+                                    }
+                                    else if (_0024val_0024510[0] == "m")
+                                    {
+                                        _0024msgs_0024506.Add(_0024val_0024510[1]);
+                                    }
+                                    else if (_0024val_0024510[0] == "w")
+                                    {
+                                        _0024nme_0024512 = string.Empty;
+                                        _0024url_0024513 = string.Empty;
+                                        _0024featured_0024514 = false;
+                                        _0024wrld_0024515 = _0024val_0024510[1].Split(";"[0]);
+                                        _0024___temp166_0024519 = 0;
+                                        _0024___temp167_0024520 = _0024wrld_0024515;
+                                        for (_0024___temp168_0024521 = _0024___temp167_0024520.Length; _0024___temp166_0024519 < _0024___temp168_0024521; _0024___temp166_0024519++)
+                                        {
+                                            if (!(_0024___temp167_0024520[_0024___temp166_0024519] == string.Empty))
+                                            {
+                                                if (_0024___temp167_0024520[_0024___temp166_0024519] == "featured")
+                                                {
+                                                    _0024featured_0024514 = true;
+                                                }
+                                                else
+                                                {
+                                                    _0024vals_0024517 = _0024___temp167_0024520[_0024___temp166_0024519].Split(":"[0]);
+                                                    if (_0024vals_0024517[0] == "nme")
+                                                    {
+                                                        _0024nme_0024512 = _0024vals_0024517[1];
+                                                    }
+                                                    else if (_0024vals_0024517[0] == "url")
+                                                    {
+                                                        _0024url_0024513 = _0024___temp167_0024520[_0024___temp166_0024519].Substring(4);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        _0024wlds_0024507.Add(new GameWorldDesc(_0024nme_0024512, _0024url_0024513, _0024featured_0024514));
+                                    }
+                                    else if ((_0024val_0024510[0] == "s" && !_0024self_525.useAlternateServer) || (_0024val_0024510[0] == "s2" && _0024self_525.useAlternateServer))
+                                    {
+                                        _0024ipStr_0024518 = _0024val_0024510[1].Split(":"[0]);
+                                        _0024self_525.listServerIP = _0024ipStr_0024518[0];
+                                        _0024self_525.listServerPort = UnityBuiltins.parseInt(_0024ipStr_0024518[1]);
+                                        MasterServer.ipAddress = _0024self_525.listServerIP;
+                                        MasterServer.port = _0024self_525.listServerPort;
+                                    }
+                                    else if ((_0024val_0024510[0] == "f" && !_0024self_525.useAlternateServer) || (_0024val_0024510[0] == "f2" && _0024self_525.useAlternateServer))
+                                    {
+                                        _0024ipStr_0024518 = _0024val_0024510[1].Split(":"[0]);
+                                        Network.natFacilitatorIP = _0024ipStr_0024518[0];
+                                        Network.natFacilitatorPort = UnityBuiltins.parseInt(_0024ipStr_0024518[1]);
+                                    }
+                                    else if ((_0024val_0024510[0] == "t" && !_0024self_525.useAlternateServer) || (_0024val_0024510[0] == "t2" && _0024self_525.useAlternateServer))
+                                    {
+                                        _0024ipStr_0024518 = _0024val_0024510[1].Split(":"[0]);
+                                        Network.connectionTesterIP = _0024ipStr_0024518[0];
+                                        Network.connectionTesterPort = UnityBuiltins.parseInt(_0024ipStr_0024518[1]);
+                                    }
+                                    else if (_0024val_0024510[0] == "b")
+                                    {
+                                        GameData.masterBlacklist += ((!(GameData.masterBlacklist != string.Empty)) ? string.Empty : "\n") + _0024val_0024510[1];
+                                    }
+                                    else if (_0024val_0024510[0] == "n")
+                                    {
+                                        GameData.networkMode = UnityBuiltins.parseInt(_0024val_0024510[1]);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            GameData.errorMessage = "Alert: Update server is unreachable.\nIf this computer is online, the update server may be down.\n\nYou need to be connected to the internet to play Mars Explorer.\n\nPlease check MarsXPLR.com for news & updates!";
+                        }
+                        GameData.gameWorlds = (GameWorldDesc[])_0024wlds_0024507.ToBuiltin(typeof(GameWorldDesc));
+                        _0024self_525.messages = (string[])_0024msgs_0024506.ToBuiltin(typeof(string));
+                        MasterServer.RequestHostList(_0024self_525.gameName);
+                        Yield(1, null);
+                        break;
+                    case 1:
+                        break;
+                    }
+                    bool result = default(bool);
+                    return result;
+                }
+            }
+        }
+
+        internal Lobby _0024self_526;
+
+        public Start_0024101(Lobby self_)
+        {
+            _0024self_526 = self_;
+        }
+
+        public override IEnumerator<WWW> GetEnumerator()
+        {
+            return new _0024(_0024self_526);
+        }
+    }*/
+
+    public IEnumerator<WWW> Start()
+    {
+        String adBrightUrl = "";
+        String adSenseUrl = "";
+
+        userPassword = PlayerPrefs.GetString("userPassword", "");
+        userCode = PlayerPrefs.GetString("userCode", "");
+        userRemembered = (PlayerPrefs.GetInt("userRemembered", 0) == 1 ? true : false);
+        userIsRegistered = (PlayerPrefs.GetInt("userRegistered", 0) == 1 ? true : false);
+        GameData.masterBlacklist = "";
+
+        if (GameData.userName != "") //They just left a server
+        {
+            userName = GameData.userName;
+            if (userRemembered) userNameTemp = userName;
+        }
+        else if (userPassword != "")
+        {
+            userNameTemp = PlayerPrefs.GetString("userName", "");
+            authenticateUser(); //Attempt Auto Login
+        }
+        else
+        {
+            userNameTemp = PlayerPrefs.GetString("userName", "");
+            userName = userNameTemp + (userNameTemp != "" ? "–" : "");
+        }
+
+        List<String> msgs = new List<String>();
+        List<GameWorldDesc> wlds = new List<GameWorldDesc>();
+        WWW www = new WWW("http://73.189.4.24/upd3");
+        yield return www;
+        if (www.error == null)
+        {
+            String[] data = www.data.Split("\n"[0]);
+            foreach (String dat in data)
+            {
+                if (dat == "") continue;
+
+                int pos = dat.IndexOf("="[0]);
+                if (pos == 0 || pos == -1) continue;
+                List<String> tmp = new List<String>(new String[]{
+                    dat.Substring(0, pos),
+                    dat.Substring(pos + 1)});
+                String[] val = tmp.ToArray();
+
+                if (
+                    val[0] == "v" &&
+                    float.Parse(
+                        val[1],
+                        CultureInfo.InvariantCulture.NumberFormat
+                    ) > (float)GameData.gameVersion)
+                {
+                    outdated = val[1];
+                }
+                else if (val[0] == "d")
+                {
+                    hostDedicated = (val[1] == "1" || val[1] == "true");
+                }
+                else if (val[0] == "a")
+                {
+                    showAds = (val[1] == "1" || val[1] == "true");
+                }
+                else if (val[0] == "m") msgs.Add(val[1]);
+                else if (val[0] == "w")
+                {
+                    String nme = "";
+                    String url = "";
+                    bool featured = false;
+                    String[] wrld = val[1].Split(";"[0]);
+                    foreach (String str in wrld)
+                    {
+                        if (str == "") continue;
+                        if (str == "featured")
+                        {
+                            featured = true;
+                            continue;
+                        }
+                        String[] vals = str.Split(":"[0]);
+                        if (vals[0] == "nme") nme = vals[1];
+                        else if (vals[0] == "url") url = str.Substring(4);
+                    }
+                    wlds.Add(new GameWorldDesc(nme, url, featured));
+                }
+                else if (
+                    (val[0] == "s" && !useAlternateServer) ||
+                    (val[0] == "s2" && useAlternateServer))
+                {
+                    String[] ipStr = val[1].Split(":"[0]);
+                    listServerIP = ipStr[0];
+                    listServerPort = int.Parse(ipStr[1]);
+                    MasterServer.ipAddress = listServerIP;
+                    MasterServer.port = listServerPort;
+                }
+                else if (
+                    (val[0] == "f" && !useAlternateServer) ||
+                    (val[0] == "f2" && useAlternateServer))
+                {
+                    String[] ipStr = val[1].Split(":"[0]);
+                    Network.natFacilitatorIP = ipStr[0];
+                    Network.natFacilitatorPort = int.Parse(ipStr[1]);
+                }
+                else if (
+                    (val[0] == "t" && !useAlternateServer) ||
+                    (val[0] == "t2" && useAlternateServer))
+                {
+                    String[] ipStr = val[1].Split(":"[0]);
+                    Network.connectionTesterIP = ipStr[0];
+                    Network.connectionTesterPort = int.Parse(ipStr[1]);
+                }
+                else if (val[0] == "b")
+                {
+                    GameData.masterBlacklist +=
+                        (GameData.masterBlacklist != "" ? "\n" : "") +
+                        val[1];
+                }
+                else if (val[0] == "n")
+                {
+                    GameData.networkMode = int.Parse(val[1]);
+                }
+                else if (val[0] == "adbr")
+                {
+                    adBrightUrl = val[1];
+                }
+                else if (val[0] == "adsn")
+                {
+                    adSenseUrl = val[1];
+                }
+            }
+        }
+        else
+        {
+            GameData.errorMessage = "Alert: Update server is unreachable.\nIf this computer is online, the update server may be down.\n\nYou need to be connected to the internet to play Mars Explorer.\n\nPlease check MarsXPLR.com for news & updates!";
+        }
+
+        GameData.gameWorlds = wlds.ToArray();
+        messages = msgs.ToArray();
+
+        MasterServer.RequestHostList(gameName);
+
+        if (showAds)
+        { 
+            List<adDesc> ads = new List<adDesc>();
+
+            //Adbrite
+            www = new WWW(adBrightUrl);
+            yield return www;
+            if (www.error == null)
+            {
+                MatchCollection matches = Regex.Matches(
+                    www.data.Replace(
+                        "\\\"",
+                        "\""),
+                    "<a[^>]*?class=\\\"adHeadline\\\"[^>]*?href=\\\"(.*?)\\\"[^>]*?>(.*?)</a>[^.]*?<a[^>]*?class=\\\"adText\\\"[^>]*?>(.*?)</a>");
+                foreach (Match match in matches)
+                {
+                    adDesc ad = new adDesc(
+                        match.Groups[1].ToString(),
+                        htmlDecode(match.Groups[2].ToString()),
+                        htmlDecode(match.Groups[3].ToString()));
+                    if (UnityEngine.Random.value > .5) ads.Add(ad);
+                    else ads.Insert(0, ad);
+                }
+            }
+
+            //Adsense
+            www = new WWW(adSenseUrl);
+            yield return www;
+            if (www.error == null)
+            {
+                MatchCollection matches = Regex.Matches(
+                    www.data.Replace(
+                        "\\\"",
+                        "\""),
+                    "<a[^>]*?class=adt[^>]*?href=\\\"(.*?)\\\"[^>]*?>(.*?)</a>[^.]*?<div[^>]*?class=adb[^>]*?>(.*?)</div>");
+                foreach (Match match in matches)
+                {
+                    adDesc ad = new adDesc(
+                        "http://googleads.g.doubleclick.net" +
+                            match.Groups[1].ToString(),
+                        htmlDecode(match.Groups[2].ToString()),
+                        htmlDecode(match.Groups[3].ToString()));
+                    if (ad.url.IndexOf("&nh=1") == -1) ad.url += "&nh=1";
+                    ads.Insert(0, ad);
+                }
+            }
+
+            //Tally
+            if (ads.Count > 0)
+            {
+                gameAds = ads.ToArray();
+            }
+        }
+    }
+    
 	public void OnFailedToConnectToMasterServer(NetworkConnectionError info)
 	{
 		checked
@@ -785,10 +750,99 @@ public class Lobby : MonoBehaviour
 		GUILayout.Label(serverDetails);
 	}
 
-	public IEnumerator TestConnection(bool force)
-	{
-		return new TestConnection_0024103(force, this).GetEnumerator();
-	}
+    public IEnumerator TestConnection(bool force)
+    {
+        disableMasterServer = false;
+        probingPublicIP = false;
+        if (timer == null) timer = Time.time + 15;
+        testMessage = "testing";
+        doneTesting = false;
+        doNetworking = false;
+
+        natCapable = Network.TestConnection(force);
+        while (natCapable == ConnectionTesterStatus.Undetermined)
+        {
+            natCapable = Network.TestConnection();
+            yield return null;
+            Thread.Sleep(500);
+        }
+
+        switch (natCapable)
+        { 
+            case ConnectionTesterStatus.Error:
+                GameData.errorMessage = "Your computer does not appear to be online...\nNetworking was defaulted to Local Area Network mode.\n\n(You can play with friends over a LAN, but not with people all around the world over the internet)";
+                testMessage = "Computer is Offline.";
+                doneTesting = true;
+                doNetworking = true;
+                useMasterServer = false;
+                break;
+            case ConnectionTesterStatus.PrivateIPNoNATPunchthrough:
+                GameData.errorMessage = "You appear to have a private IP and no NAT punchthrough capability...\n\nHit \"Dismiss\" click \"Show Settings\", then click \"Retest Internet Connection\".\nIf you get this message again, read \"How Do I configure My Router\" on the FAQ @ MarsXPLR.com";
+                testMessage = "Private IP with no NAT punchthrough - Local network, non internet games only.";
+                //filterNATHosts = true;
+                Network.useNat = true;
+                doneTesting = true;
+                doNetworking = true;
+                useMasterServer = false;
+                break;
+            case ConnectionTesterStatus.PrivateIPHasNATPunchThrough:
+                if (probingPublicIP)
+                {
+                    testMessage = "Non-connectable public IP address (port " + port + " blocked), NAT punchthrough can circumvent the firewall.";
+                }
+                else
+                {
+                    testMessage = "NAT punchthrough enabled.";
+                }
+                // NAT functionality is enabled in case a server is started,
+                // clients should enable this based on if the host requires it
+                Network.useNat = true;
+                doneTesting = true;
+                doNetworking = true;
+                useMasterServer = true;
+                break;
+            case ConnectionTesterStatus.PublicIPIsConnectable:
+                testMessage = "Directly connectable public IP address.";
+                Network.useNat = false;
+                doneTesting = true;
+                doNetworking = true;
+                useMasterServer = true;
+                break;
+            // This case is a bit special as we now need to check if we can 
+            // cicrumvent the blocking by using NAT punchthrough
+            case ConnectionTesterStatus.PublicIPPortBlocked:
+                testMessage = "Non-connectible public IP address with NAT punchthrough disabled, running a server is impossible.\n\n(Please setup port forwarding for port # " + port + " in your router)";
+                Network.useNat = false;
+                // If no NAT punchthrough test has been performed on this public IP, force a test
+                if (!probingPublicIP)
+                {
+                    Debug.Log("Testing if firewall can be circumvented");
+                    natCapable = Network.TestConnectionNAT();
+                    probingPublicIP = true;
+                    timer = Time.time + 10;
+                }
+                // NAT punchthrough test was performed but we still get blocked
+                else if (Time.time > timer)
+                {
+                    probingPublicIP = false;    // reset
+                    Network.useNat = true;
+                    doneTesting = true;
+                    doNetworking = true;
+                    useMasterServer = false;
+                }
+                break;
+            case ConnectionTesterStatus.PublicIPNoServerStarted:
+                testMessage = "Public IP address but server not initialized, it must be started to check server accessibility. Restart connection test when ready.";
+                doNetworking = true;
+                doneTesting = true;
+                useMasterServer = true;
+                break;
+            default:
+                testMessage = "Error in test routine, got " + natCapable;
+                doNetworking = false;
+                break;
+        }
+    }
 
 	public void MakeWindow(int id)
 	{
@@ -1358,121 +1412,13 @@ public class Lobby : MonoBehaviour
 		}
 	}
 
-	public IEnumerator LoadGame()
-	{
-		return new LoadGame_0024102(this).GetEnumerator();
-	}
-
-    /*[Serializable]
-	[CompilerGenerated]
-	internal sealed class authenticateUser_0024100 : GenericGenerator<WWW>
-	{
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<WWW>, IEnumerator
-		{
-			internal WWW _0024www_0024534;
-
-			internal string[] _0024data_0024535;
-
-			internal Lobby _0024self_536;
-
-			public _0024(Lobby self_)
-			{
-				_0024self_536 = self_;
-			}
-
-			public override bool MoveNext()
-			{
-				switch (_state)
-				{
-				default:
-					_0024self_536.userAuthenticating = "true";
-					_0024www_0024534 = new WWW("http://marsxplr.com/user/authenticate.atis-u-" + Regex.Replace(WWW.EscapeURL(_0024self_536.userNameTemp), "-", "%2d").Replace(".", "%2e") + "-p-" + Regex.Replace(WWW.EscapeURL(_0024self_536.userPassword), "-", "%2d").Replace(".", "%2e"));
-					return Yield(2, _0024www_0024534);
-				case 2:
-					if (_0024www_0024534 == null || _0024www_0024534.data == string.Empty)
-					{
-						_0024self_536.userAuthenticating = "Authentication server is unreachable";
-					}
-					else if (_0024www_0024534.data == "-1")
-					{
-						_0024self_536.userAuthenticating = string.Empty;
-					}
-					else if (_0024www_0024534.data == "-2")
-					{
-						_0024self_536.userAuthenticating = "Username not found";
-					}
-					else if (_0024www_0024534.data == "-3")
-					{
-						_0024self_536.userAuthenticating = "Incorrect password";
-					}
-					else if (_0024www_0024534.data == "-4")
-					{
-						_0024self_536.userAuthenticating = "Too many login attempts";
-					}
-					else
-					{
-						_0024data_0024535 = _0024www_0024534.data.Split(":"[0]);
-						if (_0024data_0024535[1] != sha1sum(_0024self_536.userNameTemp + "h092hjd82hdkl28djfu83hd82hdu82jfgruy5bg" + _0024self_536.userNameTemp))
-						{
-							_0024self_536.userAuthenticating = "Authcode failed";
-						}
-						else
-						{
-							_0024self_536.userAuthenticating = string.Empty;
-							if (string.Equals(_0024data_0024535[0], _0024self_536.userNameTemp, StringComparison.CurrentCultureIgnoreCase))
-							{
-								_0024self_536.userName = "(" + _0024self_536.userNameTemp + ")+";
-							}
-							else
-							{
-								_0024self_536.userName = string.Empty + _0024data_0024535[0] + " (" + _0024self_536.userNameTemp + ")+";
-							}
-							if (_0024self_536.userCode == "{Code}")
-							{
-								_0024self_536.userCode = string.Empty;
-							}
-							if (_0024self_536.userRemembered)
-							{
-								PlayerPrefs.SetString("userName", _0024self_536.userNameTemp);
-								PlayerPrefs.SetString("userPassword", _0024self_536.userPassword);
-								PlayerPrefs.SetInt("userRemembered", 1);
-								PlayerPrefs.SetInt("userRegistered", 1);
-							}
-							else
-							{
-								PlayerPrefs.SetString("userName", string.Empty);
-								PlayerPrefs.SetString("userPassword", string.Empty);
-								PlayerPrefs.SetInt("userRemembered", 0);
-								PlayerPrefs.SetInt("userRegistered", 0);
-								_0024self_536.userNameTemp = string.Empty;
-								_0024self_536.userPassword = string.Empty;
-							}
-						}
-					}
-					Yield(1, null);
-					break;
-				case 1:
-					break;
-				}
-				bool result = default(bool);
-				return result;
-			}
-		}
-
-		internal Lobby _0024self_537;
-
-		public authenticateUser_0024100(Lobby self_)
-		{
-			_0024self_537 = self_;
-		}
-
-		public override IEnumerator<WWW> GetEnumerator()
-		{
-			return new _0024(_0024self_537);
-		}
-	}*/
+    public IEnumerator LoadGame()
+    { 
+        GuiAnimate = 1;
+        yield return null;
+        Thread.Sleep(750);
+        Application.LoadLevel(2);
+    }
 
     public IEnumerator<WWW> authenticateUser()
     {
@@ -1593,6 +1539,14 @@ public class Lobby : MonoBehaviour
 	{
 		remoteIP = PlayerPrefs.GetString("remoteIP", "127.0.0.1");
 	}
+
+    public String htmlDecode(String str)
+    {
+        return Regex.Replace(str, "<[^>]*?>", "")
+            .Replace("&#34;", "\"")
+            .Replace("&#39;", "'")
+            .Replace("&amp;", "&");
+    }
 
 	public static string sha1sum(object strToEncrypt)
 	{
