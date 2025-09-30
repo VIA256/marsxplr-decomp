@@ -13,6 +13,4 @@ public class GameData : MonoBehaviour
 	public static string masterBlacklist = string.Empty;
 	public static GameWorldDesc[] gameWorlds;
 	public static int networkMode = 0;
-	
-	public void Main(){}
 }
