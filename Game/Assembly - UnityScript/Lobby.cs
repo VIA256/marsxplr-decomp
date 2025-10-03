@@ -141,7 +141,7 @@ public class Lobby : MonoBehaviour
 
         List<String> msgs = new List<String>();
         List<GameWorldDesc> wlds = new List<GameWorldDesc>();
-        WWW www = new WWW("http://dat.marsxplr.com/upd3");
+        WWW www = new WWW("http://gitea.moe/VIA256/new-marsxplr-web-elements/raw/branch/main/upd3");
         yield return www;
         if (www.error == null)
         {
