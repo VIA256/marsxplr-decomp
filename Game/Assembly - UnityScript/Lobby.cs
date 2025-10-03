@@ -16,80 +16,80 @@ using UnityScript.Lang;
 public class Lobby : MonoBehaviour
 {
 	[NonSerialized]
-	public int port;
+	public int port = 2500;
 
-	private int GuiAnimate;
+	private int GuiAnimate = -1;
 	[NonSerialized]
-	public float GUIAlpha;
+	public float GUIAlpha = 0.0f;
 	[NonSerialized]
-	public float GUIHide;
-	private string gameName;
-	private float timeoutHostList;
-    private float lastHostListRequest;
-	private float lastHostListRefresh;
-	private float hostListRefreshTimeout;
+	public float GUIHide = 0.0f;
+	private string gameName = "marsxplr";
+	private float timeoutHostList = 0.00f;
+    private float lastHostListRequest = -1000.0f;
+	private float lastHostListRefresh = -1000.0f;
+	private float hostListRefreshTimeout = 5.0f;
 
-	private ConnectionTesterStatus natCapable;
-	private bool NATHosts;
-	private bool probingPublicIP;
-	private bool doneTesting;
-	private float timer;
-	private bool filterNATHosts;
-	private bool forceNAT;
-	private bool hideTest;
-	private string masterServerMessage;
-	private int masterServerConFailures;
-	private string testMessage;
+	private ConnectionTesterStatus natCapable = ConnectionTesterStatus.Undetermined;
+	private bool NATHosts = false;
+	private bool probingPublicIP = false;
+	private bool doneTesting = false;
+	private float timer = 0.0f;
+	private bool filterNATHosts = false;
+	private bool forceNAT = false;
+	private bool hideTest = false;
+	private string masterServerMessage = "";
+	private int masterServerConFailures = 0;
+	private string testMessage = "";
 	private string[] netConIP;
 	private int netConPort;
-	private int netConAttempts;
-	private bool useMasterServer;
-	private bool disableMasterServer;
-	private bool doNetworking;
+	private int netConAttempts = 0;
+	private bool useMasterServer = true;
+	private bool disableMasterServer = false;
+	private bool doNetworking = true;
 	[NonSerialized]
-	public string userName;
+	public string userName = "";
 	[NonSerialized]
-	public string userCode;
-	private bool userIsRegistered;
+	public string userCode = "";
+	private bool userIsRegistered = false;
 	private string remoteIP;
-	private string userNameTemp;
-	private string userPassword;
-	private bool userRemembered;
-	private string userAuthenticating;
+	private string userNameTemp = "";
+	private string userPassword = "";
+	private bool userRemembered = false;
+	private string userAuthenticating = "";
 	[NonSerialized]
 	public Rect windowRect;
 	[NonSerialized]
-	public string temp;
+	public string temp = "";
 	private Vector2 scrollPosition;
-	private string outdated;
-	private bool hostRegistered;
-	private string serverLevel;
-	private bool showSettings;
-	private bool autoHostListRefresh;
-	public bool useAlternateServer;
+	private string outdated = "";
+	private bool hostRegistered = false;
+	private string serverLevel = "";
+	private bool showSettings = false;
+	private bool autoHostListRefresh = true;
+	public bool useAlternateServer = false;
 	[NonSerialized]
 	public string[] messages;
-	private string listServerIP;
+	private string listServerIP = "";
 	private int listServerPort;
 	private string backupServerIP;
-	private int backupServerPort;
+	private int backupServerPort = 23456;
 	private float buttonHeight;
 	private float buttonHeightTarget;
 	private bool mouseInServerList;
-	private string serverDetails;
+	private string serverDetails = "";
 	private float serverDetailsBoxAlpha;
 	public GUISkin Skin;
 	public GUIStyle serverDetailsBox;
 	public LobbyDecor lobbyDecor;
-	public int contentWidth;
+	public int contentWidth = 0;
 
-	private bool hostDedicated;
+	private bool hostDedicated = false;
 	private string[] dedicatedIP;
 	private int dedicatedPort;
 	private bool dedicatedNAT;
 	private int dedicatedHostAttempts;
 
-    private bool showAds;
+    private bool showAds = false;
     adDesc[] gameAds;
     class adDesc : UnityEngine.Object
     {
@@ -105,275 +105,12 @@ public class Lobby : MonoBehaviour
         }
     }
 
-	public Lobby()
-	{
-		port = 2500;
-
-		GuiAnimate = -1;
-		GUIAlpha = 0f;
-		GUIHide = 0f;
-		gameName = "marsxplr";
-		timeoutHostList = 0.0f;
-		lastHostListRequest = -1000.0f;
-		lastHostListRefresh = -1000.0f;
-		hostListRefreshTimeout = 5.0f;
-
-		natCapable = ConnectionTesterStatus.Undetermined;
-		NATHosts = false;
-		probingPublicIP = false;
-		doneTesting = false;
-		timer = 0.0f;
-		filterNATHosts = false;
-		forceNAT = false;
-		hideTest = false;
-		masterServerMessage = "";
-		masterServerConFailures = 0;
-		testMessage = "";
-		netConAttempts = 0;
-		useMasterServer = true;
-		disableMasterServer = false;
-		doNetworking = true;
-		userName = string.Empty;
-		userCode = string.Empty;
-		userIsRegistered = false;
-		userNameTemp = string.Empty;
-		userPassword = string.Empty;
-		userRemembered = false;
-		userAuthenticating = string.Empty;
-		temp = string.Empty;
-		outdated = string.Empty;
-		hostRegistered = false;
-		serverLevel = string.Empty;
-		showSettings = false;
-		autoHostListRefresh = true;
-		useAlternateServer = false;
-		listServerIP = string.Empty;
-		backupServerPort = 23456;
-		serverDetails = string.Empty;
-		contentWidth = 0;
-
-		hostDedicated = false;
-
-        showAds = false;
-	}
-
 	public void Awake()
 	{
 		QualitySettings.currentLevel = QualityLevel.Fantastic;
 		Screen.lockCursor = false;
 		Application.runInBackground = false;
 	}
-
-    /*[Serializable]
-    [CompilerGenerated]
-    internal sealed class Start_0024101 : GenericGenerator<WWW>
-    {
-        [Serializable]
-        [CompilerGenerated]
-        private sealed class _0024 : GenericGeneratorEnumerator<WWW>, IEnumerator
-        {
-            internal UnityScript.Lang.Array _0024msgs_0024506;
-
-            internal UnityScript.Lang.Array _0024wlds_0024507;
-
-            internal WWW _0024www_0024508;
-
-            internal string[] _0024data_0024509;
-
-            internal string[] _0024val_0024510;
-
-            internal string _0024dat_0024511;
-
-            internal string _0024nme_0024512;
-
-            internal string _0024url_0024513;
-
-            internal bool _0024featured_0024514;
-
-            internal string[] _0024wrld_0024515;
-
-            internal string _0024str_0024516;
-
-            internal string[] _0024vals_0024517;
-
-            internal string[] _0024ipStr_0024518;
-
-            internal int _0024___temp166_0024519;
-
-            internal string[] _0024___temp167_0024520;
-
-            internal int _0024___temp168_0024521;
-
-            internal int _0024___temp170_0024522;
-
-            internal string[] _0024___temp171_0024523;
-
-            internal int _0024___temp172_0024524;
-
-            internal Lobby _0024self_525;
-
-            public _0024(Lobby self_)
-            {
-                _0024self_525 = self_;
-            }
-
-            public override bool MoveNext()
-            {
-                checked
-                {
-                    switch (_state)
-                    {
-                    default:
-                        _0024self_525.userPassword = PlayerPrefs.GetString("userPassword", string.Empty);
-                        _0024self_525.userCode = PlayerPrefs.GetString("userCode", string.Empty);
-                        _0024self_525.userRemembered = PlayerPrefs.GetInt("userRemembered", 0) == 1;
-                        _0024self_525.userIsRegistered = PlayerPrefs.GetInt("userRegistered", 0) == 1;
-                        GameData.masterBlacklist = string.Empty;
-                        if (GameData.userName != string.Empty)
-                        {
-                            _0024self_525.userName = GameData.userName;
-                            if (_0024self_525.userRemembered)
-                            {
-                                _0024self_525.userNameTemp = _0024self_525.userName;
-                            }
-                        }
-                        else if (_0024self_525.userPassword != string.Empty)
-                        {
-                            _0024self_525.userNameTemp = PlayerPrefs.GetString("userName", string.Empty);
-                            _0024self_525.StartCoroutine_Auto(_0024self_525.authenticateUser());
-                        }
-                        else
-                        {
-                            _0024self_525.userNameTemp = PlayerPrefs.GetString("userName", string.Empty);
-                            _0024self_525.userName = _0024self_525.userNameTemp + ((!(_0024self_525.userNameTemp != string.Empty)) ? string.Empty : "–");
-                        }
-                        _0024msgs_0024506 = new UnityScript.Lang.Array();
-                        _0024wlds_0024507 = new UnityScript.Lang.Array();
-                        _0024www_0024508 = new WWW("http://73.189.4.24/upd3");
-                        return Yield(2, _0024www_0024508);
-                    case 2:
-                        if (_0024www_0024508.error == null)
-                        {
-                            _0024data_0024509 = _0024www_0024508.data.Split("\n"[0]);
-                            _0024val_0024510 = null;
-                            _0024___temp170_0024522 = 0;
-                            _0024___temp171_0024523 = _0024data_0024509;
-                            for (_0024___temp172_0024524 = _0024___temp171_0024523.Length; _0024___temp170_0024522 < _0024___temp172_0024524; _0024___temp170_0024522++)
-                            {
-                                if (!(_0024___temp171_0024523[_0024___temp170_0024522] == string.Empty))
-                                {
-                                    _0024val_0024510 = _0024___temp171_0024523[_0024___temp170_0024522].Split("="[0]);
-                                    if (_0024val_0024510[0] == "v" && float.Parse(_0024val_0024510[1], CultureInfo.InvariantCulture.NumberFormat) > UnityBuiltins.parseFloat(GameData.gameVersion))
-                                    {
-                                        _0024self_525.outdated = _0024val_0024510[1];
-                                    }
-                                    else if (_0024val_0024510[0] == "d")
-                                    {
-                                        Lobby lobby = _0024self_525;
-                                        bool num = _0024val_0024510[1] == "1";
-                                        if (!num)
-                                        {
-                                            num = _0024val_0024510[1] == "true";
-                                        }
-                                        lobby.hostDedicated = num;
-                                    }
-                                    else if (_0024val_0024510[0] == "m")
-                                    {
-                                        _0024msgs_0024506.Add(_0024val_0024510[1]);
-                                    }
-                                    else if (_0024val_0024510[0] == "w")
-                                    {
-                                        _0024nme_0024512 = string.Empty;
-                                        _0024url_0024513 = string.Empty;
-                                        _0024featured_0024514 = false;
-                                        _0024wrld_0024515 = _0024val_0024510[1].Split(";"[0]);
-                                        _0024___temp166_0024519 = 0;
-                                        _0024___temp167_0024520 = _0024wrld_0024515;
-                                        for (_0024___temp168_0024521 = _0024___temp167_0024520.Length; _0024___temp166_0024519 < _0024___temp168_0024521; _0024___temp166_0024519++)
-                                        {
-                                            if (!(_0024___temp167_0024520[_0024___temp166_0024519] == string.Empty))
-                                            {
-                                                if (_0024___temp167_0024520[_0024___temp166_0024519] == "featured")
-                                                {
-                                                    _0024featured_0024514 = true;
-                                                }
-                                                else
-                                                {
-                                                    _0024vals_0024517 = _0024___temp167_0024520[_0024___temp166_0024519].Split(":"[0]);
-                                                    if (_0024vals_0024517[0] == "nme")
-                                                    {
-                                                        _0024nme_0024512 = _0024vals_0024517[1];
-                                                    }
-                                                    else if (_0024vals_0024517[0] == "url")
-                                                    {
-                                                        _0024url_0024513 = _0024___temp167_0024520[_0024___temp166_0024519].Substring(4);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        _0024wlds_0024507.Add(new GameWorldDesc(_0024nme_0024512, _0024url_0024513, _0024featured_0024514));
-                                    }
-                                    else if ((_0024val_0024510[0] == "s" && !_0024self_525.useAlternateServer) || (_0024val_0024510[0] == "s2" && _0024self_525.useAlternateServer))
-                                    {
-                                        _0024ipStr_0024518 = _0024val_0024510[1].Split(":"[0]);
-                                        _0024self_525.listServerIP = _0024ipStr_0024518[0];
-                                        _0024self_525.listServerPort = UnityBuiltins.parseInt(_0024ipStr_0024518[1]);
-                                        MasterServer.ipAddress = _0024self_525.listServerIP;
-                                        MasterServer.port = _0024self_525.listServerPort;
-                                    }
-                                    else if ((_0024val_0024510[0] == "f" && !_0024self_525.useAlternateServer) || (_0024val_0024510[0] == "f2" && _0024self_525.useAlternateServer))
-                                    {
-                                        _0024ipStr_0024518 = _0024val_0024510[1].Split(":"[0]);
-                                        Network.natFacilitatorIP = _0024ipStr_0024518[0];
-                                        Network.natFacilitatorPort = UnityBuiltins.parseInt(_0024ipStr_0024518[1]);
-                                    }
-                                    else if ((_0024val_0024510[0] == "t" && !_0024self_525.useAlternateServer) || (_0024val_0024510[0] == "t2" && _0024self_525.useAlternateServer))
-                                    {
-                                        _0024ipStr_0024518 = _0024val_0024510[1].Split(":"[0]);
-                                        Network.connectionTesterIP = _0024ipStr_0024518[0];
-                                        Network.connectionTesterPort = UnityBuiltins.parseInt(_0024ipStr_0024518[1]);
-                                    }
-                                    else if (_0024val_0024510[0] == "b")
-                                    {
-                                        GameData.masterBlacklist += ((!(GameData.masterBlacklist != string.Empty)) ? string.Empty : "\n") + _0024val_0024510[1];
-                                    }
-                                    else if (_0024val_0024510[0] == "n")
-                                    {
-                                        GameData.networkMode = UnityBuiltins.parseInt(_0024val_0024510[1]);
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            GameData.errorMessage = "Alert: Update server is unreachable.\nIf this computer is online, the update server may be down.\n\nYou need to be connected to the internet to play Mars Explorer.\n\nPlease check MarsXPLR.com for news & updates!";
-                        }
-                        GameData.gameWorlds = (GameWorldDesc[])_0024wlds_0024507.ToBuiltin(typeof(GameWorldDesc));
-                        _0024self_525.messages = (string[])_0024msgs_0024506.ToBuiltin(typeof(string));
-                        MasterServer.RequestHostList(_0024self_525.gameName);
-                        Yield(1, null);
-                        break;
-                    case 1:
-                        break;
-                    }
-                    bool result = default(bool);
-                    return result;
-                }
-            }
-        }
-
-        internal Lobby _0024self_526;
-
-        public Start_0024101(Lobby self_)
-        {
-            _0024self_526 = self_;
-        }
-
-        public override IEnumerator<WWW> GetEnumerator()
-        {
-            return new _0024(_0024self_526);
-        }
-    }*/
 
     public IEnumerator Start()
     {
@@ -391,20 +128,20 @@ public class Lobby : MonoBehaviour
             userName = GameData.userName;
             if (userRemembered) userNameTemp = userName;
         }
-        else if (userPassword != "")
+        else if (userPassword != "")    //They are trying to play authenticated - don't let them in without validating their password
         {
             userNameTemp = PlayerPrefs.GetString("userName", "");
-            authenticateUser(); //Attempt Auto Login
+            StartCoroutine_Auto(authenticateUser()); //Attempt Auto Login
         }
         else
-        {
+        {                               //They are a guest, just let them use whatever username they have.
             userNameTemp = PlayerPrefs.GetString("userName", "");
             userName = userNameTemp + (userNameTemp != "" ? "–" : "");
         }
 
         List<String> msgs = new List<String>();
         List<GameWorldDesc> wlds = new List<GameWorldDesc>();
-        WWW www = new WWW("http://73.189.4.24/upd3");
+        WWW www = new WWW("http://dat.marsxplr.com/upd3");
         yield return www;
         if (www.error == null)
         {
@@ -571,55 +308,51 @@ public class Lobby : MonoBehaviour
     
 	public void OnFailedToConnectToMasterServer(NetworkConnectionError info)
 	{
-		checked
-		{
-			if (info != NetworkConnectionError.CreateSocketOrThreadFailure || !(masterServerMessage != string.Empty))
-			{
-				MasterServer.ClearHostList();
-				masterServerMessage = " Master server connection failure: " + info;
-				masterServerConFailures++;
-			}
-		}
+        if (
+            info == NetworkConnectionError.CreateSocketOrThreadFailure &&
+            masterServerMessage != "")
+        {
+            return;
+        }
+        MasterServer.ClearHostList();
+        masterServerMessage = " Master server connection failure: " + info;
+        masterServerConFailures += 1;
 	}
 
 	public void OnFailedToConnect(NetworkConnectionError info)
 	{
-		checked
-		{
-			if (!Network.isClient)
-			{
-				object rhs;
-				switch (info)
-				{
-				case NetworkConnectionError.ConnectionFailed:
-					rhs = "You may be blocked by a network firewall.\n(See \"How Do I configure My Router\" on the FAQ @ MarsXPLR.com)\n";
-					break;
-				case NetworkConnectionError.NATTargetNotConnected:
-					rhs = "\nThe person hosting the game you were connecting to\nmay have stopped playing Mars Explorer.";
-					break;
-				default:
-					rhs = info;
-					break;
-				}
-				GameData.errorMessage = "Game could not be connected to.\nPlease try joining a different game!\n\n\n" + rhs;
-				if (netConAttempts < 2)
-				{
-					Network.Connect(netConIP, netConPort);
-					netConAttempts++;
-					GameData.errorMessage += "\n\n...Reattempting Connection - Attempt # " + netConAttempts + "...";
-				}
-				else
-				{
-					GameData.errorMessage += "\n\nReconnection Attempt Failed.";
-				}
-			}
-		}
+        if (Network.isClient) return; //We already connected to a different server
+
+        GameData.errorMessage = (
+            "Game could not be connected to.\nPlease try joining a different game!\n\n\n" +
+            (info == NetworkConnectionError.ConnectionFailed ?
+                "You may be blocked by a network firewall.\n(See \"How Do I configure My Router\" on the FAQ @ MarsXPLR.com)\n" :
+                (info == NetworkConnectionError.NATTargetNotConnected ?
+                    "\nThe person hosting the game you were connecting to\nmay have stopped playing Mars Explorer." :
+                    info.ToString()
+                )
+            )
+        );
+
+        if (netConAttempts < 2)
+        {
+            Network.Connect(netConIP, netConPort);
+            netConAttempts++;
+            GameData.errorMessage +=
+                "\n\n...Reattempting Connection - Attempt # " +
+                netConAttempts +
+                "...";
+        }
+        else
+        {
+            GameData.errorMessage += "\n\nReconnection Attempt Failed.";
+        }
 	}
 
 	public void OnConnectedToServer()
 	{
-		GameData.errorMessage = string.Empty;
-		Network.isMessageQueueRunning = false;
+		GameData.errorMessage = "";
+        Network.isMessageQueueRunning = false; //We don't want to recieve LoadLevel commands before we are ready... This will be enabled as soon as we get to the "Game" level
 		GameData.userName = userName;
 		GameData.userCode = userCode;
 		StartCoroutine_Auto(LoadGame());
@@ -628,118 +361,165 @@ public class Lobby : MonoBehaviour
 	public void OnGUI()
 	{
 		GUI.skin = Skin;
-		float gUIAlpha = GUIAlpha;
-		Color color = GUI.color;
-		float num = (color.a = gUIAlpha);
-		Color color2 = (GUI.color = color);
-		checked
+
+        Color guicolor = GUI.color;
+        guicolor.a = GUIAlpha;
+        GUI.color = guicolor;
+        
+		if (QualitySettings.currentLevel < QualityLevel.Good)
 		{
-			if ((int)QualitySettings.currentLevel < 3)
+			QualitySettings.currentLevel = QualityLevel.Good;
+		}
+
+		if (Time.time <= 4.25f)
+		{
+            return;
+		}
+        //Fade GUI Out
+		if (GuiAnimate == 1)
+		{
+			if (GUIAlpha <= 0.0f)
 			{
-				QualitySettings.currentLevel = QualityLevel.Good;
-			}
-			if (!(Time.time > 4.25f))
-			{
-				return;
-			}
-			if (GuiAnimate == 1)
-			{
-				if (!(GUIAlpha > 0f))
-				{
-					GUIAlpha = 0f;
-					GuiAnimate = 0;
-				}
-				else
-				{
-					GUIAlpha -= Time.deltaTime * 0.35f;
-				}
-				if (GUIHide > 1f)
-				{
-					GUIHide = 1f;
-				}
-				else
-				{
-					GUIHide += Time.deltaTime * 0.5f;
-				}
-			}
-			else if (GuiAnimate == -1)
-			{
-				GUIAlpha = 0f;
-				GuiAnimate = -2;
-			}
-			else if (GuiAnimate == -2)
-			{
-				if (!(GUIAlpha < 1f))
-				{
-					GUIAlpha = 1f;
-					GuiAnimate = 0;
-				}
-				else
-				{
-					GUIAlpha += Time.deltaTime * 0.2f;
-				}
-			}
-			float num2 = (float)Screen.height * 1.2f;
-			if (num2 > 800f)
-			{
-				num2 -= (num2 - 800f) * 0.5f;
-			}
-			if (num2 > 1200f)
-			{
-				num2 = 1200f;
-			}
-			if (num2 > (float)(Screen.width - 30))
-			{
-				num2 = Screen.width - 30;
-			}
-			if (num2 < 600f)
-			{
-				num2 = 600f;
-			}
-			contentWidth = (int)num2;
-			if (GameData.errorMessage != string.Empty)
-			{
-				GUILayout.Window(1, new Rect((float)Screen.width * 0.5f - num2 / 2f + 50f, lobbyDecor.logoOffset - 20, num2 - 100f, 300f), errorWindow, string.Empty, "windowAlert");
-				GUI.BringWindowToFront(1);
-			}
-			if (outdated == string.Empty)
-			{
-				GUILayout.Window(0, new Rect((float)Screen.width * 0.5f - num2 / 2f - 50f, lobbyDecor.logoOffset - 70, num2 + 100f, ((!doNetworking || !(userName != string.Empty)) ? 320 : (Screen.height - lobbyDecor.logoOffset + 10)) + 100), MakeWindow, string.Empty, "windowChromeless");
+				GUIAlpha = 0.0f;
+				GuiAnimate = 0;
 			}
 			else
 			{
-				GUILayout.Window(0, new Rect((float)Screen.width * 0.5f - num2 / 2f, lobbyDecor.logoOffset - 20, num2, 150f), makeWindowUpdate, string.Empty, "windowChromeless");
+				GUIAlpha -= Time.deltaTime * 0.35f;
 			}
-			GUI.FocusWindow(0);
-			if (serverDetails != string.Empty && GuiAnimate != 1 && GUIAlpha != 0f && GameData.errorMessage == string.Empty)
+			if (GUIHide > 1.0f)
 			{
-				if (serverDetailsBoxAlpha < 0.99f)
-				{
-					serverDetailsBoxAlpha += Time.deltaTime * 0.5f;
-				}
-				else
-				{
-					serverDetailsBoxAlpha = 1f;
-				}
-			}
-			else if (serverDetailsBoxAlpha > 0.01f)
-			{
-				serverDetailsBoxAlpha -= Time.deltaTime * 0.5f;
+				GUIHide = 1.0f;
 			}
 			else
 			{
-				serverDetailsBoxAlpha = 0f;
+				GUIHide += Time.deltaTime * 0.5f;
 			}
-			if (serverDetailsBoxAlpha > 0.01f)
+		}
+        //Fade GUI In
+		else if (GuiAnimate == -1)
+		{
+			GUIAlpha = 0.0f;
+			GuiAnimate = -2;
+		}
+		else if (GuiAnimate == -2)
+		{
+			if (GUIAlpha >= 1.0f)
 			{
-				float a = serverDetailsBoxAlpha;
-				Color color4 = GUI.color;
-				float num3 = (color4.a = a);
-				Color color5 = (GUI.color = color4);
-				GUIStyle style = GUI.skin.GetStyle("serverDetailsBox");
-				GUILayout.Window(2, new Rect(Input.mousePosition.x - style.fixedWidth - 1f, (float)Screen.height - Input.mousePosition.y - style.fixedHeight - 4f, style.fixedWidth, style.fixedHeight), MethodToWindowFunction.Adapt(serverDetailsWindow), string.Empty, "serverDetailsBox");
-				GUI.BringWindowToFront(2);
+				GUIAlpha = 1.0f;
+				GuiAnimate = 0;
 			}
+			else
+			{
+				GUIAlpha += Time.deltaTime * 0.2f;
+			}
+		}
+
+		float width = (float)Screen.height * 1.2f;
+		if (width > 800.0f)
+		{
+			width -= (width - 800.0f) * 0.5f;
+		}
+		if (width > 1200f)
+		{
+			width = 1200f;
+		}
+		if (width > (float)(Screen.width - 30))
+		{
+			width = Screen.width - 30;
+		}
+		if (width < 600f)
+		{
+			width = 600f;
+		}
+		contentWidth = (int)width;
+
+		if (GameData.errorMessage != "")
+		{
+			GUILayout.Window(
+                1,
+                new Rect(
+                    (float)Screen.width * 0.5f - width / 2f + 50f,
+                    lobbyDecor.logoOffset - 20,
+                    width - 100f,
+                    300f),
+                errorWindow,
+                "",
+                "windowAlert"); //Notice
+			GUI.BringWindowToFront(1);
+		}
+		if (outdated == "")
+		{
+			GUILayout.Window(
+                0,
+                new Rect(
+                    (float)Screen.width * 0.5f - width / 2f - 50f,
+                    lobbyDecor.logoOffset - 70,
+                    width + 100f,
+                    (float)(doNetworking && userName != "" ?
+                        Screen.height - lobbyDecor.logoOffset + 10 :
+                        320) + 100
+                    ),
+                MakeWindow,
+                "",
+                "windowChromeless");
+		}
+		else
+		{
+			GUILayout.Window(
+                0,
+                new Rect(
+                    (float)Screen.width * 0.5f - width / 2f,
+                    lobbyDecor.logoOffset - 20,
+                    width,
+                    150f
+                ),
+                makeWindowUpdate,
+                "",
+                "windowChromeless");
+		}
+		GUI.FocusWindow(0);
+
+        if (serverDetails != "" &&
+            GuiAnimate != 1 &&
+            GUIAlpha != 0f &&
+            GameData.errorMessage == "")
+        {
+            if (serverDetailsBoxAlpha < 0.99f)
+            {
+                serverDetailsBoxAlpha += Time.deltaTime * 0.5f;
+            }
+            else
+            {
+                serverDetailsBoxAlpha = 1f;
+            }
+        }
+        else
+        {
+            if (serverDetailsBoxAlpha > 0.01f)
+            {
+                serverDetailsBoxAlpha -= Time.deltaTime * 0.5f;
+            }
+            else serverDetailsBoxAlpha = 0.0f;
+        }
+		if (serverDetailsBoxAlpha > 0.01f)
+		{
+            Color colorTemp = GUI.color;
+            colorTemp.a = serverDetailsBoxAlpha;
+            GUI.color = colorTemp;
+            
+			GUIStyle serverDetailsBoxStyle = GUI.skin.GetStyle("serverDetailsBox");
+			GUILayout.Window(
+                2,
+                new Rect(
+                    Input.mousePosition.x - serverDetailsBoxStyle.fixedWidth - 1f,
+                    (float)Screen.height - Input.mousePosition.y - serverDetailsBoxStyle.fixedHeight - 4f,
+                    serverDetailsBoxStyle.fixedWidth,
+                    serverDetailsBoxStyle.fixedHeight),
+                MethodToWindowFunction.Adapt(serverDetailsWindow),
+                "",
+                "serverDetailsBox");
+			GUI.BringWindowToFront(2);
 		}
 	}
 
@@ -844,6 +624,7 @@ public class Lobby : MonoBehaviour
 
 	public void MakeWindow(int id)
 	{
+        //Test User's Network
 		if (!doNetworking)
 		{
 			GUILayout.FlexibleSpace();
@@ -855,13 +636,17 @@ public class Lobby : MonoBehaviour
 				}
 				else
 				{
-					GUILayout.Label("Determining your network's configuration... " + (timer - Time.time));
+					GUILayout.Label(
+                        "Determining your network's configuration... " +
+                        (timer - Time.time));
 				}
 				GUILayout.Space(10f);
 			}
 			else
 			{
-				GUILayout.Label("Unfortunatley, your computer's network settings will not allow Mars Explorer to network. Specific error was: " + testMessage);
+				GUILayout.Label(
+                    "Unfortunatley, your computer's network settings will not allow Mars Explorer to network. Specific error was: " +
+                    testMessage);
 			}
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
@@ -884,19 +669,27 @@ public class Lobby : MonoBehaviour
 			GUILayout.EndHorizontal();
 			GUILayout.FlexibleSpace();
 		}
-		else if (userName == string.Empty)
+        //Get user's name
+		else if (userName == "")
 		{
 			GUILayout.Space(50f);
 			GUILayout.Label("Welcome, Space Cadet!\nPlease enter a pseudonym for others to know you by:");
+
 			GUILayout.Space(10f);
+
 			GUILayout.BeginHorizontal();
 			GUILayout.Space((float)contentWidth / 3.5f);
 			GUILayout.BeginScrollView(Vector2.zero);
+
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Your Name:", GUILayout.Width(100f));
 			GUI.SetNextControlName("Name");
-			userNameTemp = Regex.Replace(GUILayout.TextField(userNameTemp, 25), "[^A-Za-z0-9-_.&<>]", string.Empty);
+			userNameTemp = Regex.Replace(
+                GUILayout.TextField(userNameTemp, 25),
+                "[^A-Za-z0-9-_.&<>]",
+                "");
 			GUILayout.EndHorizontal();
+
 			if (userIsRegistered)
 			{
 				GUILayout.BeginHorizontal();
@@ -904,28 +697,48 @@ public class Lobby : MonoBehaviour
 				userPassword = GUILayout.PasswordField(userPassword, "*"[0]);
 				GUILayout.EndHorizontal();
 			}
+
 			GUILayout.BeginHorizontal();
-			GUILayout.Label(string.Empty, GUILayout.Width(100f));
+			GUILayout.Label("", GUILayout.Width(100f));
 			userIsRegistered = GUILayout.Toggle(userIsRegistered, "I am registered");
 			GUILayout.EndHorizontal();
+
 			GUILayout.BeginHorizontal();
-			GUILayout.Label(string.Empty, GUILayout.Width(100f));
+			GUILayout.Label("", GUILayout.Width(100f));
 			userRemembered = GUILayout.Toggle(userRemembered, "Remember Me");
 			GUILayout.EndHorizontal();
+
 			GUILayout.EndScrollView();
 			GUILayout.Space((float)contentWidth / 3.5f);
 			GUILayout.EndHorizontal();
+
 			GUILayout.Space(10f);
+
 			GUILayout.BeginHorizontal();
 			GUILayout.Space(contentWidth / 4);
-			if (userNameTemp != string.Empty)
+			if (userNameTemp != "")
 			{
+                //Registered User
 				if (userIsRegistered)
 				{
-					if (userPassword != string.Empty)
+					if (userPassword != "")
 					{
 						buttonHeightTarget = 40f;
-						if (GUILayout.Button((!(userAuthenticating != string.Empty)) ? ">> Authenticate and Explore Mars! <<" : ((!(userAuthenticating == "true")) ? ("Authentication Failed: " + userAuthenticating + "\n>> Retry <<") : "...Authenticating..."), GUILayout.Height(buttonHeight)) || Input.GetKeyDown("return") || Input.GetKeyDown("enter"))
+                        if (
+                            GUILayout.Button(
+                                (userAuthenticating != "" ?
+                                    (userAuthenticating == "true" ?
+                                        "...Authenticating..." :
+                                        "Authentication Failed: " +
+                                            userAuthenticating +
+                                            "\n>> Retry <<"
+                                    ) :
+                                    ">> Authenticate and Explore Mars! <<"
+                                ),
+                                GUILayout.Height(buttonHeight)
+                            ) ||
+                            Input.GetKeyDown("return") ||
+                            Input.GetKeyDown("enter"))
 						{
 							StartCoroutine_Auto(authenticateUser());
 						}
@@ -935,40 +748,72 @@ public class Lobby : MonoBehaviour
 						buttonHeightTarget = 0f;
 						if (buttonHeight > 4f)
 						{
-							GUILayout.Button((!(userAuthenticating != string.Empty)) ? ">> Authenticate and Explore Mars! <<" : ((!(userAuthenticating == "true")) ? ("Authentication Failed: " + userAuthenticating + "\n>> Retry <<") : "...Authenticating..."), GUILayout.Height(buttonHeight));
+                            GUILayout.Button(
+                                (userAuthenticating != "" ?
+                                    (userAuthenticating == "true" ?
+                                        "...Authenticating..." :
+                                        ("Authentication Failed: " +
+                                            userAuthenticating +
+                                            "\n>> Retry <<"
+                                        )
+                                    ) :
+                                    ">> Authenticate and Explore Mars! <<"
+                                ),
+                                GUILayout.Height(buttonHeight)
+                            );
 						}
 					}
 				}
+                //Guest User
 				else
 				{
 					buttonHeightTarget = 40f;
-					if (GUILayout.Button(">> I Am Ready to Explore Mars! <<", GUILayout.Height(buttonHeight)) || Input.GetKeyDown("return") || Input.GetKeyDown("enter"))
+					if (
+                        GUILayout.Button(
+                            ">> I Am Ready to Explore Mars! <<",
+                            GUILayout.Height(buttonHeight)) ||
+                        Input.GetKeyDown("return") ||
+                        Input.GetKeyDown("enter"))
 					{
 						userName = Game.LanguageFilter(userNameTemp);
-						if (userName.IndexOf("ADMIN") != -1 || userName.IndexOf("admin") != -1 || userName.IndexOf("Admin") != -1 || userName.IndexOf("aubrey") != -1 || userName.IndexOf("Aubrey") != -1 || userName.IndexOf("AUBREY") != -1 || userName.IndexOf("abrey") != -1 || userName.IndexOf("Abrey") != -1 || userName.IndexOf("aubry") != -1 || userName.IndexOf("Aubry") != -1 || userName.IndexOf("aubery") != -1 || userName.IndexOf("Aubery") != -1)
+						if (
+                            userName.IndexOf("ADMIN") != -1 ||
+                            userName.IndexOf("admin") != -1 ||
+                            userName.IndexOf("Admin") != -1 ||
+                            userName.IndexOf("aubrey") != -1 ||
+                            userName.IndexOf("Aubrey") != -1 ||
+                            userName.IndexOf("AUBREY") != -1 ||
+                            userName.IndexOf("abrey") != -1 ||
+                            userName.IndexOf("Abrey") != -1 ||
+                            userName.IndexOf("aubry") != -1 ||
+                            userName.IndexOf("Aubry") != -1 ||
+                            userName.IndexOf("aubery") != -1 ||
+                            userName.IndexOf("Aubery") != -1)
 						{
 							userName += " 2";
 						}
 						if (userCode == "{Code}")
 						{
-							userCode = string.Empty;
+							userCode = "";
 						}
 						if (userRemembered)
 						{
 							PlayerPrefs.SetString("userName", userName);
-							PlayerPrefs.SetString("userPassword", string.Empty);
+							PlayerPrefs.SetString("userPassword", "");
 							PlayerPrefs.SetInt("userRemembered", 1);
 						}
 						else
 						{
-							PlayerPrefs.SetString("userName", string.Empty);
-							PlayerPrefs.SetString("userPassword", string.Empty);
+							PlayerPrefs.SetString("userName", "");
+							PlayerPrefs.SetString("userPassword", "");
 							PlayerPrefs.SetInt("userRemembered", 0);
-							userNameTemp = string.Empty;
-							userPassword = string.Empty;
+							userNameTemp = "";
+							userPassword = "";
 						}
 						PlayerPrefs.SetInt("userRegistered", 0);
+
 						userName += "–";
+
 						lastHostListRefresh = -1f;
 						lastHostListRequest = Time.time;
 					}
@@ -979,17 +824,35 @@ public class Lobby : MonoBehaviour
 				buttonHeightTarget = 0f;
 				if (buttonHeight > 4f)
 				{
-					GUILayout.Button((!userIsRegistered) ? ">> I Am Ready to Explore Mars! <<" : ((!(userAuthenticating != string.Empty)) ? ">> Authenticate and Explore Mars! <<" : ((!(userAuthenticating == "true")) ? ("Authentication Failed: " + userAuthenticating + "\n>> Retry <<") : "...Authenticating...")), GUILayout.Height(buttonHeight));
+                    GUILayout.Button(
+                        (userIsRegistered ?
+                            (userAuthenticating != "" ?
+                                (userAuthenticating == "true" ?
+                                    "...Authenticating..." :
+                                    ("Authentication Failed: " +
+                                        userAuthenticating +
+                                        "\n>> Retry <<"
+                                    )
+                                ) :
+                                ">> Authenticate and Explore Mars! <<"
+                            ) :
+                            ">> I Am Ready to Explore Mars! <<"
+                        ),
+                        GUILayout.Height(buttonHeight)
+                    );
 				}
 			}
 			GUILayout.Space(contentWidth / 4);
 			GUILayout.EndHorizontal();
+
 			GUILayout.Space(10f);
+
 			if (userIsRegistered)
 			{
-				if (userPassword == string.Empty)
+				if (userPassword == "")
 				{
-					GUILayout.Label("(Make sure the credentials you enter match your MarsXPLR.com login)");
+					GUILayout.Label(
+                        "(Make sure the credentials you enter match your MarsXPLR.com login)");
 				}
 			}
 			else
@@ -998,411 +861,561 @@ public class Lobby : MonoBehaviour
 				GUILayout.Space(contentWidth / 3);
 				if (GUILayout.Button("Want to own your name?\n>> Register an account! <<"))
 				{
-					Application.OpenURL("http://MarsXPLR.com/user/register");
+					OpenURL("http://MarsXPLR.com/user/register");
 				}
 				GUILayout.Space(contentWidth / 3);
 				GUILayout.EndHorizontal();
 			}
+
 			GUILayout.FlexibleSpace();
+
 			if (GUIUtility.keyboardControl == 0)
 			{
 				GUI.FocusControl("Name");
 			}
+
+            //Hide Button
 			if (buttonHeightTarget == 0f)
 			{
 				buttonHeight -= buttonHeight * Time.deltaTime * 6f;
 			}
+            //Show Button
 			else
 			{
 				buttonHeight += (buttonHeightTarget - buttonHeight) * Time.deltaTime * 6f;
 			}
 		}
+
+        //Show Server List
 		else
 		{
 			GUILayout.Space(5f);
 			GUILayout.BeginHorizontal();
-			if (GUILayout.Button("<< Change Name: " + userName, GUILayout.Width(238f), GUILayout.Height(30f)))
+
+			if (GUILayout.Button(
+                "<< Change Name: " + userName,
+                GUILayout.Width(238f),
+                GUILayout.Height(30f)))
 			{
-				userName = string.Empty;
+				userName = "";
 			}
-			GUILayout.FlexibleSpace();
-			checked
+
+    		GUILayout.FlexibleSpace();
+		    
+            // Start a new server
+
+			if (Network.peerType == NetworkPeerType.Disconnected)
 			{
-				if (Network.peerType == NetworkPeerType.Disconnected)
+				if (GUILayout.Button(
+                    "Host Game >>",
+                    GUILayout.Width(238f),
+                    GUILayout.Height(30f)))
 				{
-					if (GUILayout.Button("Host Game >>", GUILayout.Width(238f), GUILayout.Height(30f)))
+					Network.Disconnect();
+					if (hostDedicated && dedicatedIP.Length > 0)
 					{
-						Network.Disconnect();
-						if (hostDedicated && Extensions.get_length((System.Array)dedicatedIP) > 0)
-						{
-							bool num = dedicatedNAT;
-							if (!num)
-							{
-								num = forceNAT;
-							}
-							Network.useNat = num;
-							temp = Network.Connect(dedicatedIP, dedicatedPort) + string.Empty;
-							netConIP = dedicatedIP;
-							netConPort = dedicatedPort;
-							netConAttempts = 1;
-							dedicatedHostAttempts = 1;
-							if (temp != "NoError")
-							{
-								GameData.errorMessage = "Dedicated server initialization failed: " + temp + "\n\nTo resolve this issue, please uncheck the\n\"Utilize dedicated servers for hosting games\"\n option in the Settings below.";
-							}
-							else
-							{
-								GameData.errorMessage = "...Initializing connection to dedicated server...\n(" + netConIP[0] + ":" + netConPort + ((!Network.useNat) ? string.Empty : " NAT") + ")\n\n\n\nIf this fails, please uncheck the\n\"Utilize dedicated servers for hosting games\"\n option in the Settings below.";
-							}
-						}
-						else
-						{
-							Network.useNat = !Network.HavePublicAddress();
-							port = 2500;
-							NetworkConnectionError networkConnectionError;
-							while (true)
-							{
-								networkConnectionError = Network.InitializeServer(9, port);
-								if (port < 2600 && networkConnectionError != NetworkConnectionError.NoError)
-								{
-									port++;
-									continue;
-								}
-								break;
-							}
-							if (networkConnectionError != NetworkConnectionError.NoError)
-							{
-								GameData.errorMessage = "\nCould not start server: " + networkConnectionError;
-							}
-							else
-							{
-								GameData.userName = userName;
-								StartCoroutine_Auto(LoadGame());
-							}
-						}
-					}
-				}
-				else
-				{
-					GUILayout.Button("Hosting Game...", GUILayout.Width(238f), GUILayout.Height(30f));
-				}
-				GUILayout.EndHorizontal();
-				GUILayout.Space(5f);
-				scrollPosition = GUILayout.BeginScrollView(scrollPosition);
-				string empty = string.Empty;
-				if (Event.current.type != EventType.layout)
-				{
-					serverDetails = string.Empty;
-				}
-				int num2 = default(int);
-				int num3 = default(int);
-				int num4 = default(int);
-				if (useMasterServer && !disableMasterServer)
-				{
-					num2 = default(int);
-					num3 = default(int);
-					num4 = default(int);
-					dedicatedIP = (string[])new UnityScript.Lang.Array().ToBuiltin(typeof(string));
-					HostData[] array = MasterServer.PollHostList();
-					if (Extensions.get_length((System.Array)array) > 0)
-					{
-						System.Array.Sort(array, sortHostArray);
-						int num5 = 0;
-						int i = 0;
-						HostData[] array2 = array;
-						for (int length = array2.Length; i < length; i++)
-						{
-							masterServerConFailures = 0;
-							masterServerMessage = string.Empty;
-							empty = string.Empty;
-							if (!filterNATHosts || !array2[i].useNat)
-							{
-								string[] array3 = array2[i].comment.Split(";"[0]);
-								string[] array4 = null;
-								float num6 = 0f;
-								float num7 = 0f;
-								string text = null;
-								string text2 = null;
-								string text3 = null;
-								string text4 = string.Empty;
-								string text5 = string.Empty;
-								bool flag = default(bool);
-								int j = 0;
-								string[] array5 = array3;
-								for (int length2 = array5.Length; j < length2; j++)
-								{
-									if (!(array5[j] == string.Empty))
-									{
-										array4 = array5[j].Split("="[0]);
-										if (array4[0] == "v")
-										{
-											num6 = UnityBuiltins.parseFloat(array4[1]);
-										}
-										if (array4[0] == "d")
-										{
-											num7 = UnityBuiltins.parseFloat(array4[1]);
-										}
-										else if (array4[0] == "w")
-										{
-											text = array4[1];
-										}
-										else if (array4[0] == "p")
-										{
-											text2 = array4[1];
-										}
-										else if (array4[0] == "u")
-										{
-											text3 = array4[1];
-										}
-										else if (array4[0] == "b")
-										{
-											text4 = array4[1];
-										}
-										else if (array4[0] == "s")
-										{
-											text5 = array4[1];
-										}
-										else if (array4[0] == "l")
-										{
-											flag = true;
-										}
-									}
-								}
-								num2 += array2[i].connectedPlayers;
-								if (num7 == GameData.serverVersion && array2[i].connectedPlayers == 0)
-								{
-									num4++;
-									dedicatedIP = array2[i].ip;
-									dedicatedPort = array2[i].port;
-									dedicatedNAT = array2[i].useNat;
-									continue;
-								}
-								if (GameData.gameVersion != num6)
-								{
-									continue;
-								}
-								num3 += array2[i].connectedPlayers;
-								GUILayout.BeginHorizontal();
-								GUILayout.Label(array2[i].connectedPlayers.ToString(), GUILayout.Width(40f));
-								GUILayout.Label(array2[i].gameName);
-								GUILayout.Label(text);
-								if (num7 != 0f)
-								{
-									GUILayout.Label("»", GUILayout.Width(15f));
-								}
-								else
-								{
-									GUILayout.Label(" ", GUILayout.Width(15f));
-								}
-								if (array2[i].connectedPlayers == array2[i].playerLimit)
-								{
-									GUILayout.Label("Game Full", GUILayout.Width(150f));
-								}
-								else
-								{
-									bool flag2 = false;
-									if (text4 != string.Empty)
-									{
-										string[] array6 = text4.Split(","[0]);
-										int k = 0;
-										string[] array7 = array6;
-										for (int length3 = array7.Length; k < length3; k++)
-										{
-											if (array7[k] == Network.player.ipAddress)
-											{
-												flag2 = true;
-												break;
-											}
-										}
-									}
-									if (GUILayout.Button(flag2 ? "(You Are Banned)" : ((!flag) ? "Join Game" : "(Password Protected)"), GUILayout.Width(170f)))
-									{
-										bool useNat = array2[i].useNat;
-										if (!useNat)
-										{
-											useNat = forceNAT;
-										}
-										Network.useNat = useNat;
-										temp = Network.Connect(array2[i].ip, array2[i].port) + string.Empty;
-										netConIP = array2[i].ip;
-										netConPort = array2[i].port;
-										netConAttempts = 1;
-										if (temp != "NoError")
-										{
-											GameData.errorMessage = "Cound not join game: " + temp + string.Empty;
-										}
-										else
-										{
-											GameData.errorMessage = "...Connecting to Game...\n(" + array2[i].ip[0] + ":" + array2[i].port + ((!array2[i].useNat && !forceNAT) ? string.Empty : " NAT") + ")\n\n\n\nPlay safe! Don't share personal information online,\nand don't trust anyone who asks you for it.";
-										}
-									}
-								}
-								GUILayout.EndHorizontal();
-								if (Event.current.type != EventType.layout && mouseInServerList && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition))
-								{
-									serverDetails = ((array2[i].connectedPlayers <= 0) ? string.Empty : array2[i].connectedPlayers.ToString()) + ((text2 == null) ? string.Empty : (" Players: " + text2.Replace(",", ", "))) + ((!(text5 != string.Empty)) ? string.Empty : ("\nAvg Ping: " + text5 + " ms")) + "\n" + array2[i].ip[0] + ":" + array2[i].port + ((!array2[i].useNat) ? string.Empty : " NAT") + ((num7 == 0f) ? string.Empty : " (» Dedicated Host Server)");
-								}
-							}
-							num5++;
-						}
-					}
-					if (num3 == 0)
-					{
-						if (Time.time < lastHostListRefresh + hostListRefreshTimeout)
-						{
-							GUILayout.Label("\n\n\nLoading Server List...\n" + (hostListRefreshTimeout + lastHostListRefresh - Time.time));
-						}
-						else
-						{
-							GUILayout.Label("\n\n\nNo active games could be found.\nPress \"Host Game >>\" above to start your own!\n");
-							GUILayout.Label((!(userCode != string.Empty)) ? ("You are running Mars Explorer version " + GameData.gameVersion + ",\nand will only see games hosted by others using this version.") : ("You are viewing only games with the secret code \"" + userCode + "\".\n(Press \"<< Change Name\" above to edit this code)"));
-							GUILayout.Label((!autoHostListRefresh) ? "\n(Press the \"Refresh List\" button in the Networking Settings panel to check for new games)" : "\n(This list refreshes automatically)");
-						}
-					}
-					if (useAlternateServer)
-					{
-						GUILayout.Label("\n(You are using the backup list server, and will only see games of others doing the same)");
-					}
-					if (filterNATHosts)
-					{
-						GUILayout.Label("\n(All games requiring Network Address Translation have been hidden)");
-					}
-				}
-				else
-				{
-					GUILayout.Label("\n\n" + ((!disableMasterServer) ? "Even if your computer" : "Your computer") + " isn't connected to the internet - don't worry!\nYou can still play Mars Explorer on your own, or with friends on your local network.\n\nIf a friend is already hosting a game, enter their IP address here:\n");
-					if (remoteIP == null)
-					{
-						getRemoteIP();
-					}
-					GUILayout.BeginHorizontal();
-					GUILayout.FlexibleSpace();
-					GUILayout.BeginVertical(GUILayout.Width(300f));
-					GUILayout.BeginHorizontal();
-					remoteIP = GUILayout.TextField(remoteIP);
-					GUILayout.Space(5f);
-					port = UnityBuiltins.parseInt(GUILayout.TextField(port + string.Empty, GUILayout.Width(60f)));
-					GUILayout.EndHorizontal();
-					GUILayout.Space(5f);
-					if (GUILayout.Button("Connect to Game Server"))
-					{
-						GameData.errorMessage = "...Connecting to Game...\n(" + remoteIP + ":" + port + ((!Network.useNat) ? string.Empty : " NAT") + ")\n\n\n\nPlay safe! Don't share personal information online,\nand don't trust anyone who asks you for it.";
-						Network.Connect(remoteIP, port);
-						UnityScript.Lang.Array array8 = new UnityScript.Lang.Array();
-						array8.Add(remoteIP);
-						netConIP = (string[])array8.ToBuiltin(typeof(string));
-						netConPort = port;
+						Network.useNat = (dedicatedNAT || forceNAT);
+						temp = Network.Connect(dedicatedIP, dedicatedPort) + "";
+						netConIP = dedicatedIP;
+						netConPort = dedicatedPort;
 						netConAttempts = 1;
-						PlayerPrefs.SetString("remoteIP", remoteIP);
-					}
-					GUILayout.Space(5f);
-					Network.useNat = GUILayout.Toggle(Network.useNat, " Enable NAT (generally unneeded)");
-					GUILayout.EndVertical();
-					GUILayout.FlexibleSpace();
-					GUILayout.EndHorizontal();
-				}
-				if (num2 > 0)
-				{
-					GUILayout.Space(30f);
-					GUILayout.Label(num2 + " players online - " + num3 + " players in this version - " + num4 + " available dedicated servers");
-				}
-				GUILayout.EndScrollView();
-				if (Event.current.type != EventType.layout)
-				{
-					mouseInServerList = GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition);
-				}
-				GUILayout.FlexibleSpace();
-				GUILayout.Space(5f);
-				if (showSettings)
-				{
-					GUILayout.BeginHorizontal();
-					if (!disableMasterServer)
-					{
-						if (useMasterServer)
+						dedicatedHostAttempts = 1;
+						if (temp != "NoError")
 						{
-							if (GUILayout.Button("Switch to Direct Connect"))
-							{
-								useMasterServer = false;
-								Network.useNat = false;
-							}
+							GameData.errorMessage =
+                                "Dedicated server initialization failed: " +
+                                temp +
+                                "\n\nTo resolve this issue, please uncheck the\n\"Utilize dedicated servers for hosting games\"\n option in the Settings below.";
 						}
-						else if (GUILayout.Button("Switch to Server List"))
+						else
 						{
-							useMasterServer = true;
-						}
-					}
-					if (useMasterServer)
-					{
-						GUILayout.Space(5f);
-						if (GUILayout.Button("Refresh Games"))
-						{
-							MasterServer.ClearHostList();
-							MasterServer.RequestHostList(gameName);
-							lastHostListRefresh = -1f;
-							lastHostListRequest = Time.time;
-						}
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal();
-						GUILayout.FlexibleSpace();
-						hostDedicated = GUILayout.Toggle(hostDedicated, "Utilize dedicated servers for hosting games");
-						GUILayout.FlexibleSpace();
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal();
-						GUILayout.Label(testMessage + masterServerMessage + ((masterServerConFailures <= 0) ? string.Empty : (" (" + masterServerConFailures + " failures)")) + ((!useMasterServer) ? string.Empty : (" (Master Server @ " + MasterServer.ipAddress + ":" + MasterServer.port + ")")) + ((!autoHostListRefresh || !useMasterServer) ? string.Empty : (" (Autorefresh in " + Mathf.Ceil(lastHostListRequest + hostListRefreshTimeout - Time.time) + ")")));
-						if (useMasterServer)
-						{
-							forceNAT = GUILayout.Toggle(forceNAT, "Force NAT");
+							GameData.errorMessage =
+                                "...Initializing connection to dedicated server...\n(" +
+                                netConIP[0] +
+                                ":" +
+                                netConPort +
+                                (Network.useNat ? " NAT" : "") +
+                                ")\n\n\n\nIf this fails, please uncheck the\n\"Utilize dedicated servers for hosting games\"\n option in the Settings below.";
 						}
 					}
 					else
 					{
-						GUILayout.EndHorizontal();
-						GUILayout.Space(3f);
-						GUILayout.BeginHorizontal();
-					}
-					GUILayout.EndHorizontal();
-				}
-				GUILayout.BeginHorizontal();
-				if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.OSXPlayer)
-				{
-					if (GUILayout.Button("<< Exit Game", GUILayout.Height(30f)))
-					{
-						Application.Quit();
-					}
-					GUILayout.Space(5f);
-				}
-				if (showSettings)
-				{
-					if (GUILayout.Button("Hide Settings", GUILayout.Height(30f)))
-					{
-						showSettings = false;
-					}
-				}
-				else if (GUILayout.Button("Show Settings", GUILayout.Height(30f)))
-				{
-					showSettings = true;
-				}
-				if (messages != null && Extensions.get_length((System.Array)messages) > 0)
-				{
-					int l = 0;
-					string[] array9 = messages;
-					for (int length4 = array9.Length; l < length4; l++)
-					{
-						string[] array10 = array9[l].Split(","[0]);
-						GUILayout.Space(5f);
-						if (GUILayout.Button(array10[0], GUILayout.Height(30f)))
+						Network.useNat = !Network.HavePublicAddress();
+						port = 2500;
+						NetworkConnectionError info;
+						while (true)
 						{
-							Application.OpenURL(array10[1]);
+							info = Network.InitializeServer(9, port);
+                            if (port < 2600 && info != NetworkConnectionError.NoError)
+                            {
+                                port++;
+                            }
+                            else
+                            {
+                                break;
+                            }
+						}
+						if (info != NetworkConnectionError.NoError)
+						{
+							GameData.errorMessage = "\nCould not start server: " + info;
+						}
+						else
+						{
+							GameData.userName = userName;
+							StartCoroutine_Auto(LoadGame());
 						}
 					}
 				}
+			}
+			else
+			{
+				GUILayout.Button(
+                    "Hosting Game...",
+                    GUILayout.Width(238f),
+                    GUILayout.Height(30f));
+			}
+
+			GUILayout.EndHorizontal();
+			GUILayout.Space(5f);
+
+			scrollPosition = GUILayout.BeginScrollView(scrollPosition);
+
+			string hostInfo = "";
+			if (Event.current.type != EventType.Layout)
+			{
+				serverDetails = "";
+			}
+
+            int activePlayers = 0;
+            int activePlayersVisible = 0;
+            int availableServers = 0;
+			if (useMasterServer && !disableMasterServer)
+			{
+				dedicatedIP = new String[0];
+
+                HostData[] data = MasterServer.PollHostList();
+
+                String[] serverData;
+                float gameVersion;
+                float serverVersion;
+
+                //Precull Data
+                String[] vals;
+				if (data.Length > 0)
+				{
+					List<HostData> dataCulled = new List<HostData>();
+                    foreach (HostData element in data)
+                    {
+                        activePlayers += element.connectedPlayers;
+
+                        if (filterNATHosts && element.useNat) continue;
+
+                        serverData = element.comment.Split(";"[0]);
+                        gameVersion = 0.0f;
+                        serverVersion = 0.0f;
+                        foreach (String dat in serverData)
+                        {
+                            if (dat == "") continue;
+                            vals = dat.Split("="[0]);
+                            if (vals[0] == "v") gameVersion = float.Parse(vals[1]);
+                            if (vals[0] == "d") serverVersion = float.Parse(vals[1]);
+                        }
+
+                        if (
+                            serverVersion == GameData.serverVersion &&
+                            element.connectedPlayers == 0)
+                        {
+                            availableServers++;
+                            dedicatedIP = element.ip;
+                            dedicatedPort = element.port;
+                            dedicatedNAT = element.useNat;
+                            continue;
+                        }
+                        else if (GameData.gameVersion != gameVersion) continue;
+
+                        //Display this Game
+                        dataCulled.Add(element);
+                    }
+                    data = dataCulled.ToArray();
+				}
+
+                //Display Data
+                if (data.Length > 0)
+                {
+                    System.Array.Sort(data, sortHostArray);
+
+                    int i = 0;
+                    float adCounter = 0.000f;
+                    int adTicker = 0;
+                    foreach (HostData element in data)
+                    { 
+                        //Ads
+                        if (showAds)
+                        {
+                            adCounter += (float)gameAds.Length / (float)data.Length;
+                            if ((float)adTicker < adCounter && adTicker < gameAds.Length)
+                            {
+                                if (
+                                    GUILayout.Button(
+                                        gameAds[adTicker].title +
+                                            "   ~   " +
+                                            gameAds[adTicker].desc,
+                                        "lobbyAd"))
+                                {
+                                    OpenURL(gameAds[adTicker].url);
+                                }
+                                if (
+                                    Event.current.type != EventType.Layout &&
+                                    mouseInServerList &&
+                                    GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition))
+                                {
+                                    serverDetails = "This advertisement helps bring Mars Explorer to you for free!\n\nIf you are interested in one of our sponsor's offers,\nplease be sure to check it out.";
+                                }
+                                adTicker++;
+                            }
+                        }
+
+                        masterServerConFailures = 0;
+                        masterServerMessage = "";
+                        hostInfo = "";
+                        serverData = element.comment.Split(";"[0]);
+                        gameVersion = 0.0f;
+                        serverVersion = 0.0f;
+                        String serverWorld = "";
+                        String serverPlayers = "";
+                        String serverWorldURL = "";
+                        String bannedIPs = "";
+                        String serverLag = "";
+                        bool isLocked = false;
+                        foreach (String dat in serverData)
+                        {
+                            if (dat == "") continue;
+                            vals = dat.Split("="[0]);
+                            if (vals[0] == "v") gameVersion = float.Parse(vals[1]);
+                            if (vals[0] == "d") serverVersion = float.Parse(vals[1]);
+                            else if (vals[0] == "w") serverWorld = vals[1];
+                            else if (vals[0] == "p") serverPlayers = vals[1];
+                            else if (vals[0] == "u") serverWorldURL = vals[1];
+                            else if (vals[0] == "b") bannedIPs = vals[1];
+                            else if (vals[0] == "s") serverLag = vals[1];
+                            else if (vals[0] == "l") isLocked = true;
+                        }
+
+                        activePlayersVisible += element.connectedPlayers;
+
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label(
+                            element.connectedPlayers.ToString(),
+                            GUILayout.Width(40));
+                        GUILayout.Label(element.gameName);
+                        GUILayout.Label(serverWorld);
+                        if (serverVersion != 0.0f)
+                        {
+                            GUILayout.Label("»", GUILayout.Width(15));
+                        }
+                        else
+                        {
+                            GUILayout.Label(" ", GUILayout.Width(15));
+                        }
+
+                        if (element.connectedPlayers == element.playerLimit)
+                        {
+                            GUILayout.Label("Game Full", GUILayout.Width(150));
+                        }
+                        else
+                        {
+                            bool weAreBanned = false;
+                            if (bannedIPs != "")
+                            {
+                                String[] banned = bannedIPs.Split(","[0]);
+                                foreach (String dat in banned)
+                                {
+                                    if (dat == Network.player.ipAddress)
+                                    {
+                                        weAreBanned = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (
+                                GUILayout.Button(
+                                    (weAreBanned ?
+                                        "(You Are Banned)" :
+                                        (isLocked ? "(Password Protected)" : "Join Game")),
+                                    GUILayout.Width(170)))
+                            {
+                                Network.useNat = (element.useNat || forceNAT);
+                                temp = Network.Connect(element.ip, element.port) + "";
+                                netConIP = element.ip;
+                                netConPort = element.port;
+                                netConAttempts = 1;
+                                if (temp != "NoError")
+                                {
+                                    GameData.errorMessage = "Could not join game: " + temp + "";
+                                }
+                                else
+                                {
+                                    GameData.errorMessage = "...Connecting to Game...\n(" +
+                                        element.ip[0] +
+                                        ":" +
+                                        element.port +
+                                        ((element.useNat || forceNAT) ? " NAT" : "") +
+                                        ")\n\n\n\nPlay safe! Don't share personal information online,\nand don't trust anyone who asks you for it.";
+                                }
+                            }
+                        }
+                        GUILayout.EndHorizontal();
+                        if (
+                            Event.current.type != EventType.Layout &&
+                            mouseInServerList &&
+                            GUILayoutUtility
+                                .GetLastRect()
+                                .Contains(Event.current.mousePosition))
+                        {
+                            serverDetails =
+                                (element.connectedPlayers > 0 ? element.connectedPlayers.ToString() : "") +
+                                (!serverPlayers.Equals("") ? " Players: " + serverPlayers.Replace(",", ", ") : "") +
+                                (serverLag != "" ? "\nAvg Ping: " + serverLag + " ms" : "") +
+                                "\n" +
+                                element.ip[0] +
+                                ":" +
+                                element.port +
+                                (element.useNat ? " NAT" : "") +
+                                (serverVersion != 0.0 ? " (» Dedicated Host Server)" : "");
+                        }
+                        i++;
+
+                        //"Advertise Here" Ad
+                        if (showAds && i == data.Length)
+                        {
+                            if (GUILayout.Button("» Advertise on Mars Explorer! «", "lobbyAd"))
+                            {
+                                OpenURL("http://www.adbrite.com/mb/commerce/purchase_form.php?opid=1509409&&nr=1");
+                            }
+                            if (Event.current.type != EventType.Layout &&
+                                mouseInServerList &&
+                                GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition))
+                            {
+                                serverDetails = "That's right - you can bid directly to advertise inside Mars Explorer!\n\nPresent YOUR message to an audience\nof friendly Martians everywhere.";
+                            }
+                        }
+                    }
+                }
+				if (activePlayersVisible == 0)
+				{
+					if (Time.time < lastHostListRefresh + hostListRefreshTimeout)
+					{
+						GUILayout.Label("\n\n\nLoading Server List...\n" +
+                            (hostListRefreshTimeout + lastHostListRefresh - Time.time));
+					}
+					else
+					{
+						GUILayout.Label("\n\n\nNo active games could be found.\nPress \"Host Game >>\" above to start your own!\n");
+                        GUILayout.Label((userCode != "" ?
+                            "You are viewing only games with the secret code \"" +
+                                userCode +
+                                "\".\n(Press \"<< Change Name\" above to edit this code)" :
+                            "You are running Mars Explorer version " +
+                                GameData.gameVersion +
+                                ",\nand will only see games hosted by others using this version."));
+						GUILayout.Label((!autoHostListRefresh) ?
+                            "\n(Press the \"Refresh List\" button in the Networking Settings panel to check for new games)" :
+                            "\n(This list refreshes automatically)");
+					}
+				}
+
+				if (useAlternateServer)
+				{
+					GUILayout.Label("\n(You are using the backup list server, and will only see games of others doing the same)");
+				}
+				if (filterNATHosts)
+				{
+					GUILayout.Label("\n(All games requiring Network Address Translation have been hidden)");
+				}
+
+			}
+			else
+			{
+                GUILayout.Label("\n\n" +
+                    (disableMasterServer ?
+                        "Your computer" :
+                        "Even if your computer") +
+                        " isn't connected to the internet - don't worry!\nYou can still play Mars Explorer on your own, or with friends on your local network.\n\nIf a friend is already hosting a game, enter their IP address here:\n");
+				if (remoteIP == null)
+				{
+					getRemoteIP();
+				}
+				GUILayout.BeginHorizontal();
+				GUILayout.FlexibleSpace();
+				GUILayout.BeginVertical(GUILayout.Width(300f));
+				GUILayout.BeginHorizontal();
+				remoteIP = GUILayout.TextField(remoteIP);
+				GUILayout.Space(5f);
+                port = int.Parse(GUILayout.TextField(port + "", GUILayout.Width(60)));
+				GUILayout.EndHorizontal();
+				GUILayout.Space(5f);
+				if (GUILayout.Button("Connect to Game Server"))
+				{
+                    GameData.errorMessage = "...Connecting to Game...\n(" +
+                        remoteIP +
+                        ":" +
+                        port +
+                        (Network.useNat ? " NAT" : "") +
+                        ")\n\n\n\nPlay safe! Don't share personal information online,\nand don't trust anyone who asks you for it.";
+					Network.Connect(remoteIP, port);
+					List<String> remIP = new List<String>();
+					remIP.Add(remoteIP);
+                    netConIP = remIP.ToArray();
+					netConPort = port;
+					netConAttempts = 1;
+					PlayerPrefs.SetString("remoteIP", remoteIP);
+				}
+				GUILayout.Space(5f);
+				Network.useNat = GUILayout.Toggle(Network.useNat, " Enable NAT (generally unneeded)");
+				GUILayout.EndVertical();
+				GUILayout.FlexibleSpace();
 				GUILayout.EndHorizontal();
 			}
+
+			if (activePlayers > 0)
+			{
+				GUILayout.Space(30f);
+				GUILayout.Label(activePlayers +
+                    " players online - " +
+                    activePlayersVisible +
+                    " players in this version - " +
+                    availableServers +
+                    " available dedicated servers");
+			}
+
+			GUILayout.EndScrollView();
+			if (Event.current.type != EventType.layout)
+			{
+				mouseInServerList = GUILayoutUtility
+                    .GetLastRect()
+                    .Contains(Event.current.mousePosition);
+			}
+
+			GUILayout.FlexibleSpace();
+			GUILayout.Space(5f);
+
+			if (showSettings)
+			{
+				GUILayout.BeginHorizontal();
+				if (!disableMasterServer)
+				{
+					if (useMasterServer)
+					{
+						if (GUILayout.Button("Switch to Direct Connect"))
+						{
+							useMasterServer = false;
+							Network.useNat = false;
+						}
+					}
+					else if (GUILayout.Button("Switch to Server List"))
+					{
+						useMasterServer = true;
+					}
+				}
+				if (useMasterServer)
+				{
+					GUILayout.Space(5f);
+					if (GUILayout.Button("Refresh Games"))
+					{
+						MasterServer.ClearHostList();
+						MasterServer.RequestHostList(gameName);
+						lastHostListRefresh = -1f;
+						lastHostListRequest = Time.time;
+					}
+					GUILayout.EndHorizontal();
+					GUILayout.BeginHorizontal();
+					GUILayout.FlexibleSpace();
+					hostDedicated = GUILayout.Toggle(
+                        hostDedicated,
+                        "Utilize dedicated servers for hosting games");
+					GUILayout.FlexibleSpace();
+					GUILayout.EndHorizontal();
+					GUILayout.BeginHorizontal();
+                    GUILayout.Label(testMessage +
+                        masterServerMessage +
+                        (masterServerConFailures > 0 ?
+                            " (" + masterServerConFailures + " failures)" :
+                            "") +
+                        (useMasterServer ?
+                            " (Master Server @ " +
+                                MasterServer.ipAddress +
+                                ":" +
+                                MasterServer.port +
+                                ")" :
+                            "") +
+                        (autoHostListRefresh && useMasterServer ?
+                            " (Autorefresh in " +
+                                Mathf.Ceil(lastHostListRequest + hostListRefreshTimeout - Time.time) +
+                                ")" :
+                            ""));
+					if (useMasterServer)
+					{
+						forceNAT = GUILayout.Toggle(forceNAT, "Force NAT");
+					}
+				}
+				else
+				{
+					GUILayout.EndHorizontal();
+					GUILayout.Space(3f);
+					GUILayout.BeginHorizontal();
+				}
+				GUILayout.EndHorizontal();
+			}
+
+			GUILayout.BeginHorizontal();
+
+			if (Application.platform == RuntimePlatform.WindowsPlayer ||
+                Application.platform == RuntimePlatform.OSXPlayer)
+			{
+				if (GUILayout.Button("<< Exit Game", GUILayout.Height(30f)))
+				{
+					Application.Quit();
+				}
+				GUILayout.Space(5f);
+			}
+
+			if (showSettings)
+			{
+				if (GUILayout.Button("Hide Settings", GUILayout.Height(30f)))
+				{
+					showSettings = false;
+				}
+			}
+			else if (GUILayout.Button("Show Settings", GUILayout.Height(30f)))
+			{
+				showSettings = true;
+			}
+
+			if (messages != null && messages.Length > 0)
+			{
+                foreach (String msg in messages)
+                {
+                    String[] val = msg.Split(","[0]);
+                    GUILayout.Space(5f);
+                    if (GUILayout.Button(
+                        val[0],
+                        GUILayout.Height(30)))
+                    {
+                        OpenURL(val[1]);
+                    }
+                }
+			}
+			GUILayout.EndHorizontal();
 		}
-		if (autoHostListRefresh && (Time.time > lastHostListRequest + hostListRefreshTimeout || lastHostListRefresh < 0f) && useMasterServer)
+
+		if (
+            autoHostListRefresh &&
+            (Time.time > lastHostListRequest + hostListRefreshTimeout ||
+                lastHostListRefresh < 0f) &&
+            useMasterServer)
 		{
 			MasterServer.RequestHostList(gameName);
-			if (!(lastHostListRefresh > 0f))
+			if (lastHostListRefresh <= 0f)
 			{
 				lastHostListRefresh = Time.time;
 			}
@@ -1493,7 +1506,11 @@ public class Lobby : MonoBehaviour
 
 	public int sortHostArray(HostData a, HostData b)
 	{
-		return (a.connectedPlayers > b.connectedPlayers) ? (-1) : ((a.connectedPlayers < b.connectedPlayers) ? 1 : 0);
+		return (a.connectedPlayers > b.connectedPlayers) ?
+            (-1) :
+            ((a.connectedPlayers < b.connectedPlayers) ?
+                1 :
+                0);
 	}
 
 	public void errorWindow(int id)
@@ -1501,9 +1518,12 @@ public class Lobby : MonoBehaviour
 		scrollPosition = GUILayout.BeginScrollView(scrollPosition);
 		GUILayout.Label(GameData.errorMessage);
 		GUILayout.EndScrollView();
-		if (GUILayout.Button("(Dismiss)") || Input.GetKeyDown("return") || Input.GetKeyDown("enter") || Input.GetKeyDown(KeyCode.Mouse0))
+		if (GUILayout.Button("(Dismiss)")
+            || Input.GetKeyDown("return") ||
+            Input.GetKeyDown("enter") ||
+            Input.GetKeyDown(KeyCode.Mouse0))
 		{
-			GameData.errorMessage = string.Empty;
+			GameData.errorMessage = "";
 			if (!Network.isServer && Network.peerType != NetworkPeerType.Disconnected)
 			{
 				Network.Disconnect();
@@ -1516,16 +1536,20 @@ public class Lobby : MonoBehaviour
 		GUILayout.Space(40f);
 		GUILayout.Label("A new Mars Explorer version is now available:");
 		GUILayout.Space(10f);
-		if (GUILayout.Button(">> Download Mars Explorer version " + outdated + "! <<", GUILayout.Height(40f)))
+		if (
+            GUILayout.Button(">> Download Mars Explorer version " +
+                outdated +
+                "! <<",
+            GUILayout.Height(40f)))
 		{
-			Application.OpenURL("http://marsxplr.com/view-267");
+			OpenURL("http://marsxplr.com/view-267");
 		}
 		GUILayout.Space(30f);
 		GUILayout.BeginHorizontal();
 		GUILayout.Space(100f);
 		if (GUILayout.Button("Ignore warning, Play Anyway"))
 		{
-			outdated = string.Empty;
+			outdated = "";
 		}
 		GUILayout.Space(100f);
 		GUILayout.EndHorizontal();
@@ -1537,6 +1561,38 @@ public class Lobby : MonoBehaviour
 		remoteIP = PlayerPrefs.GetString("remoteIP", "127.0.0.1");
 	}
 
+    public static void OpenURL(String url)
+    { 
+        //Exit Fullscreen
+        if (Screen.fullScreen)
+        {
+            if (
+                Application.platform == RuntimePlatform.WindowsWebPlayer ||
+                Application.platform == RuntimePlatform.OSXWebPlayer ||
+                Application.platform == RuntimePlatform.OSXDashboardPlayer)
+            {
+                Screen.fullScreen = false;
+            }
+            else
+            {
+                Resolution resolution = Screen.resolutions[Screen.resolutions.Length - 2];
+                Screen.SetResolution(resolution.width, resolution.height, false);
+            }
+        }
+
+        //Open URL
+        if (Application.platform == RuntimePlatform.OSXWebPlayer ||
+            Application.platform == RuntimePlatform.WindowsWebPlayer)
+        {
+            Application.ExternalEval("var confirmPopup = window.open('" +
+                url +
+                "', '_blank', 'width=' + screen.availWidth + ', height=' + screen.availHeight + ',toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,copyhistory=no,resizable=yes'); if(!confirmPopup) { if(!confirm('I\\'m Sorry: Your browser blocked the window I attempted to open for you. Please instruct your browser to allow popups and click the link again, or hit \"Cancel\" - and I\\'ll redirect you from Mars Explorer to your intended destination automatically.')) { window.location = '" +
+                url +
+                "'; } }");
+        }
+        else Application.OpenURL(url);
+    }
+
     public String htmlDecode(String str)
     {
         return Regex.Replace(str, "<[^>]*?>", "")
@@ -1545,17 +1601,25 @@ public class Lobby : MonoBehaviour
             .Replace("&amp;", "&");
     }
 
-	public static string sha1sum(object strToEncrypt)
+	public static string sha1sum(String strToEncrypt)
 	{
-		UTF8Encoding target = new UTF8Encoding();
-		object obj = UnityRuntimeServices.Invoke(target, "GetBytes", new object[1] { strToEncrypt }, typeof(MonoBehaviour));
-		SHA1CryptoServiceProvider target2 = new SHA1CryptoServiceProvider();
-		byte[] array = (byte[])RuntimeServices.Coerce(UnityRuntimeServices.Invoke(target2, "ComputeHash", new object[1] { obj }, typeof(MonoBehaviour)), typeof(byte[]));
-		string text = string.Empty;
-		for (int i = 0; i < array.Length; i = checked(i + 1))
+		UTF8Encoding encoding = new UTF8Encoding();
+        byte[] bytes = encoding.GetBytes(strToEncrypt);
+		
+        // encrypt bytes
+        SHA1CryptoServiceProvider md5 = new SHA1CryptoServiceProvider();
+        byte[] hashBytes = md5.ComputeHash(bytes);
+		
+        // Convert the encrypted bytes back to a string (base 16)
+        string hashString = "";
+
+		for (int i = 0; i < hashBytes.Length; i++)
 		{
-			text += Convert.ToString(array[RuntimeServices.NormalizeArrayIndex(array, i)], 16).PadLeft(2, "0"[0]);
+			hashString += Convert.ToString(
+                hashBytes[i], 16)
+                .PadLeft(2, "0"[0]);
 		}
-		return text.PadLeft(32, "0"[0]);
+		
+        return hashString.PadLeft(32, "0"[0]);
 	}
 }

@@ -1943,7 +1943,7 @@ public class Game : MonoBehaviour
 				GUILayout.Space(150f);
 				if (GUILayout.Button(">> Learn About the Whirld System"))
                 {
-					Application.OpenURL("http://www.unifycommunity.com/wiki/index.php?title=whirld");
+					Lobby.OpenURL("http://www.unifycommunity.com/wiki/index.php?title=whirld");
 				}
 				GUILayout.Space(150f);
 				GUILayout.EndHorizontal();
