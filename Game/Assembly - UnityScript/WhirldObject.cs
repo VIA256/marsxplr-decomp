@@ -40,8 +40,4 @@ public class WhirldObject : MonoBehaviour
 			}
 		}
 	}
-
-	public void Main()
-	{
-	}
 }

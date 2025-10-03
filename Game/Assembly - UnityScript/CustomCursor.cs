@@ -20,6 +20,4 @@ public class CustomCursor : MonoBehaviour
 			), cursor);
 		}
 	}
-
-	public void Main(){}
 }

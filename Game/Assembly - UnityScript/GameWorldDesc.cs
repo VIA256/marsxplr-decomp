@@ -7,25 +7,25 @@ public class GameWorldDesc
 	public string url;
 	public bool featured;
 
-	private bool _0024initialized__GameWorldDesc_0024;
+	private bool initialized;
 
 	public GameWorldDesc()
     {
-		if (!_0024initialized__GameWorldDesc_0024)
+		if (!initialized)
 		{
-			name = string.Empty;
-			url = string.Empty;
-			_0024initialized__GameWorldDesc_0024 = true;
+			name = "";
+			url = "";
+			initialized = true;
 		}
 	}
 
 	public GameWorldDesc(string n, string u, bool feat)
     {
-		if (!_0024initialized__GameWorldDesc_0024)
+		if (!initialized)
 		{
-			name = string.Empty;
-			url = string.Empty;
-			_0024initialized__GameWorldDesc_0024 = true;
+			name = "";
+			url = "";
+			initialized = true;
 		}
 		name = n;
 		url = u;

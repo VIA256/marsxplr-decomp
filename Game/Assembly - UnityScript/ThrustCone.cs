@@ -61,8 +61,4 @@ public class ThrustCone : MonoBehaviour
 			Vector3 vector9 = (transform.localScale = localScale2);
 		}
 	}
-
-	public void Main()
-	{
-	}
 }

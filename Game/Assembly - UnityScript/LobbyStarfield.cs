@@ -32,8 +32,4 @@ public class LobbyStarfield : MonoBehaviour
 			}
 		}
 	}
-
-	public void Main()
-	{
-	}
 }

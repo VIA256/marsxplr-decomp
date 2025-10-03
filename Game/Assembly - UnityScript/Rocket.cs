@@ -239,8 +239,4 @@ public class Rocket : MonoBehaviour
 			UnityEngine.Object.Instantiate(explosion, pos, Quaternion.FromToRotation(Vector3.up, norm));
 		}
 	}
-
-	public void Main()
-	{
-	}
 }

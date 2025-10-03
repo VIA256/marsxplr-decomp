@@ -9,8 +9,4 @@ public class WhirldData
 	public string v;
 
 	public UnityEngine.Object o;
-
-	public void Main()
-	{
-	}
 }

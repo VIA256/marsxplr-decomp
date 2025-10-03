@@ -129,8 +129,4 @@ public class VehicleLocal : MonoBehaviour
 		m = 0;
 		stream.Serialize(ref m);
 	}
-
-	public void Main()
-	{
-	}
 }

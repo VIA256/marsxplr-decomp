@@ -181,8 +181,4 @@ public class VehicleMe : MonoBehaviour
 			}
 		}
 	}
-
-	public void Main()
-	{
-	}
 }

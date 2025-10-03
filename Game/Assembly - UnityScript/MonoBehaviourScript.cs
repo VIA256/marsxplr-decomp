@@ -7,8 +7,4 @@ public class MonoBehaviourScript : MonoBehaviour
 	public void Start()
 	{
 	}
-
-	public void Main()
-	{
-	}
 }

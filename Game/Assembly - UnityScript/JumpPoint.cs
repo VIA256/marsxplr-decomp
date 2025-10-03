@@ -72,8 +72,4 @@ public class JumpPoint : MonoBehaviour
 			}
 		}
 	}
-
-	public void Main()
-	{
-	}
 }

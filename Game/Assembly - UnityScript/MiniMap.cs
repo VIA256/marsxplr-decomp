@@ -118,8 +118,4 @@ public class MiniMap : MonoBehaviour
 			camHeight = GUI.HorizontalSlider(new Rect((float)Screen.width * 0.01f + 25f, (float)checked(Screen.height - 20) - (float)Screen.height * 0.001f, (float)Screen.width * 0.25f - 50f, 20f), camHeight, 200f, 1300f);
 		}
 	}
-
-	public void Main()
-	{
-	}
 }

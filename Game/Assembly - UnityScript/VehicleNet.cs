@@ -229,8 +229,4 @@ public class VehicleNet : MonoBehaviour
 			}
 		}
 	}
-
-	public void Main()
-	{
-	}
 }

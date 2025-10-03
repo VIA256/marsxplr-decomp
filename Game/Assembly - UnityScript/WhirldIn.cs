@@ -1983,8 +1983,4 @@ public class WhirldIn
 		}
 		return url;
 	}
-
-	public void Main()
-	{
-	}
 }

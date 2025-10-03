@@ -15,8 +15,4 @@ public class World : MonoBehaviour
 	public static Color seaFogColor;
 
 	public static Color seaGlowColor;
-
-	public void Main()
-	{
-	}
 }

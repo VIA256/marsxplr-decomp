@@ -97,8 +97,4 @@ public class LobbyDecor : MonoBehaviour
 		object rhs = RuntimeServices.InvokeBinaryOperator("op_Subtraction", t, RuntimeServices.InvokeBinaryOperator("op_Division", d, 2));
 		return RuntimeServices.InvokeBinaryOperator("op_Addition", RuntimeServices.InvokeBinaryOperator("op_Addition", RuntimeServices.InvokeBinaryOperator("op_Addition", RuntimeServices.InvokeBinaryOperator("op_Division", RuntimeServices.InvokeBinaryOperator("op_Multiply", RuntimeServices.InvokeBinaryOperator("op_Multiply", RuntimeServices.InvokeBinaryOperator("op_Multiply", -2, c), rhs), rhs), RuntimeServices.InvokeBinaryOperator("op_Multiply", d, d)), RuntimeServices.InvokeBinaryOperator("op_Division", RuntimeServices.InvokeBinaryOperator("op_Multiply", RuntimeServices.InvokeBinaryOperator("op_Multiply", 2, c), rhs), d)), RuntimeServices.InvokeBinaryOperator("op_Division", c, 2)), b);
 	}
-
-	public void Main()
-	{
-	}
 }

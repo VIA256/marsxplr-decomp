@@ -64,8 +64,4 @@ public class VehicleData : MonoBehaviour
 			UnityEngine.Object.Destroy(this);
 		}
 	}
-
-	public void Main()
-	{
-	}
 }

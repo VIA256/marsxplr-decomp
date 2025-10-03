@@ -171,6 +171,4 @@ public class Hovercraft : MonoBehaviour
 			) * -200f
 		));
 	}
-
-	public void Main(){}
 }

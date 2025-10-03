@@ -169,8 +169,4 @@ public class RamoSphere : MonoBehaviour
 		float num2 = (color.a = num);
 		Color color2 = (shield.renderer.material.color = color);
 	}
-
-	public void Main()
-	{
-	}
 }

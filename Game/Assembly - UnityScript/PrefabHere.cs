@@ -12,8 +12,4 @@ public class PrefabHere : MonoBehaviour
 		gameObject.transform.parent = transform.parent.transform;
 		UnityEngine.Object.Destroy(this.gameObject);
 	}
-
-	public void Main()
-	{
-	}
 }

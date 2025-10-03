@@ -5,8 +5,4 @@ using UnityEngine;
 public class WhirldLibrary : MonoBehaviour
 {
 	public static float version = 3.1f;
-
-	public void Main()
-	{
-	}
 }

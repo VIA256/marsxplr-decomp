@@ -80,8 +80,4 @@ public class SeaData : MonoBehaviour
 			World.seaGlowColor = array8[RuntimeServices.NormalizeArrayIndex(array8, UnityBuiltins.parseInt((int)SeaMode))].glowColor;
 		}
 	}
-
-	public void Main()
-	{
-	}
 }

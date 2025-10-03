@@ -2048,8 +2048,4 @@ public class Settings : MonoBehaviour
 			}
 		}
 	}
-
-	public void Main()
-	{
-	}
 }

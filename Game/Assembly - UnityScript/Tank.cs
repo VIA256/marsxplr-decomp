@@ -140,8 +140,4 @@ public class Tank : MonoBehaviour
 			}
 		}
 	}
-
-	public void Main()
-	{
-	}
 }

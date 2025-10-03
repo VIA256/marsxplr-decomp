@@ -180,8 +180,4 @@ public class Messaging : MonoBehaviour
 	{
 		Game.Controller.networkView.RPC("msg", RPCMode.All, str, UnityBuiltins.parseInt(2));
 	}
-
-	public void Main()
-	{
-	}
 }

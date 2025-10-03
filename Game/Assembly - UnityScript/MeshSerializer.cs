@@ -333,8 +333,4 @@ public class MeshSerializer : MonoBehaviour
 		byte[] bytes = download.bytes;
 		return ReadMesh(bytes);
 	}
-
-	public void Main()
-	{
-	}
 }

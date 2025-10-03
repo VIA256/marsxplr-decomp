@@ -41,8 +41,4 @@ public class JetThruster : MonoBehaviour
 			particleRenderer.particleRenderMode = ParticleRenderMode.Stretch;
 		}
 	}
-
-	public void Main()
-	{
-	}
 }

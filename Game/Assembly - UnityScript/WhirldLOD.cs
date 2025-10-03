@@ -60,8 +60,4 @@ public class WhirldLOD : MonoBehaviour
 			lastLevel = level;
 		}
 	}
-
-	public void Main()
-	{
-	}
 }

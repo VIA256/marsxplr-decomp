@@ -72,8 +72,4 @@ public class TankMe : MonoBehaviour
 	public void OnSetSpecialInput()
 	{
 	}
-
-	public void Main()
-	{
-	}
 }

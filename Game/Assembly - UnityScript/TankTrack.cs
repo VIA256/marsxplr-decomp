@@ -203,8 +203,4 @@ public class TankTrack : MonoBehaviour
 		Vector3 vector2 = new Vector3(vector.x * (float)(sideSlipDragForce * -1), 10f, (!(motorPower < 0.1f * -1f) && !(motorPower > 0.1f)) ? (vector.z * (float)(linearDragForce * -1)) : motorPower);
 		rigidbody.AddForceAtPosition(Quaternion.LookRotation(Vector3.Cross(transform.right, hit.normal)) * vector2, new Vector3(transform.position.x, hit.point.y, hit.point.z) + transform.TransformDirection(Vector3.up * Game.Settings.tankGrip));
 	}
-
-	public void Main()
-	{
-	}
 }

@@ -34,6 +34,4 @@ public class HoverThrustMoonOrBust : MonoBehaviour
 			particleRenderer.particleRenderMode = ParticleRenderMode.Stretch;
 		}
 	}
-
-	public void Main(){}
 }

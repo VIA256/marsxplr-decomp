@@ -24,8 +24,4 @@ public class TankTrackSimple : MonoBehaviour
 	public void FixedUpdate()
 	{
 	}
-
-	public void Main()
-	{
-	}
 }

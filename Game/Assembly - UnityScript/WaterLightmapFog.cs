@@ -105,8 +105,4 @@ public class WaterLightmapFog : MonoBehaviour
 			UnityEngine.Object.DestroyImmediate(texture2D);
 		}
 	}
-
-	public void Main()
-	{
-	}
 }

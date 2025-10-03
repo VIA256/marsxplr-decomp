@@ -25,6 +25,4 @@ public class HoverThrustClustOfDust : MonoBehaviour
 			particleEmitter.emit = false;
 		}
 	}
-
-	public void Main(){}
 }

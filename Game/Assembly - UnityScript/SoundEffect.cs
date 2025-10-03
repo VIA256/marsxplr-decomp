@@ -11,8 +11,4 @@ public class SoundEffect : MonoBehaviour
 			UnityEngine.Object.Destroy(gameObject.GetComponent(typeof(AudioSource)));
 		}
 	}
-
-	public void Main()
-	{
-	}
 }

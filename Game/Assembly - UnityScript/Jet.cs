@@ -6,74 +6,38 @@ using UnityEngine;
 public class Jet : MonoBehaviour
 {
 	public Vehicle vehicle;
-
 	public GameObject[] landingGear;
-
 	public float landingGearScale;
-
 	public Transform[] hoverThrusters;
-
 	public ParticleRenderer mainThrusterParticles;
-
 	public ThrustCone mainThrusterCone;
-
 	public Transform[] mainThruster;
-
 	public LayerMask thrustMask;
-
 	public MeshCollider bodyCollider;
-
 	public WhirldLOD lod;
 
-	public int hoverThrustFactor;
-
-	public float hoverSteerFactor;
-
-	public float hoverAngDrag;
-
-	public float hoverLevelForceFactor;
-
-	public int flightThrustFactor;
-
-	public float flightAngDrag;
+	public int hoverThrustFactor = 1;
+	public float hoverSteerFactor = 0.1f;
+	public float hoverAngDrag = 0.1f;
+	public float hoverLevelForceFactor = 0.2f;
+	public int flightThrustFactor = 5;
+	public float flightAngDrag = 0.1f;
 
 	public float atmosDensity;
-
 	public Vector3 locvel;
-
 	public float speed;
-
 	public float pitch;
-
 	public float roll;
-
 	public float angleOfAttack;
-
 	public float stallFactor;
 
 	private float grav;
-
 	private float mass;
-
 	private Vector3 inertiaTensor;
-
 	private Quaternion inertiaTensorRotation;
 
-	public float lavaFloat;
-
+	public float lavaFloat = 0.1f;
 	public RaycastHit hit;
-
-	public Jet()
-	{
-		thrustMask = -1;
-		hoverThrustFactor = 1;
-		hoverSteerFactor = 0.1f;
-		hoverAngDrag = 0.1f;
-		hoverLevelForceFactor = 0.2f;
-		flightThrustFactor = 5;
-		flightAngDrag = 0.01f;
-		lavaFloat = 0.1f;
-	}
 
 	public void InitVehicle(Vehicle veh)
 	{
@@ -319,9 +283,5 @@ public class Jet : MonoBehaviour
 				vehicle.myRigidbody.AddForceAtPosition((Vector3.up * lavaFloat * Mathf.Min(6f, 3f + num6) * Mathf.Lerp(1.3f, 5f, new Vector2(pointVelocity.x, pointVelocity.z).magnitude / 20f) + pointVelocity * (Game.Settings.jetDrag * -1f) * 70f) / bodyCollider.sharedMesh.vertexCount, vertices[i], ForceMode.VelocityChange);
 			}
 		}
-	}
-
-	public void Main()
-	{
 	}
 }

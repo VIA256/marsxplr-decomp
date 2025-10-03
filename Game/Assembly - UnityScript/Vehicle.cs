@@ -839,8 +839,4 @@ public class Vehicle : MonoBehaviour
 	{
 		netKillMode = rsn;
 	}
-
-	public void Main()
-	{
-	}
 }

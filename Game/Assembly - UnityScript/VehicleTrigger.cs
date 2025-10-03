@@ -18,8 +18,4 @@ public class VehicleTrigger : MonoBehaviour
 			vehicle.OnRam(other.attachedRigidbody.gameObject);
 		}
 	}
-
-	public void Main()
-	{
-	}
 }
