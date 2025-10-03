@@ -6,11 +6,8 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using Boo.Lang;
-using Boo.Lang.Runtime;
 using CompilerGenerated;
 using UnityEngine;
-using UnityScript.Lang;
 
 [Serializable]
 public class Lobby : MonoBehaviour
@@ -24,19 +21,19 @@ public class Lobby : MonoBehaviour
 	[NonSerialized]
 	public float GUIHide = 0.0f;
 	private string gameName = "marsxplr";
-	private float timeoutHostList = 0.00f;
+	// /*UNUSED*/ private float timeoutHostList = 0.00f;
     private float lastHostListRequest = -1000.0f;
 	private float lastHostListRefresh = -1000.0f;
 	private float hostListRefreshTimeout = 5.0f;
 
 	private ConnectionTesterStatus natCapable = ConnectionTesterStatus.Undetermined;
-	private bool NATHosts = false;
+	// /*UNUSED*/ private bool NATHosts = false;
 	private bool probingPublicIP = false;
-	private bool doneTesting = false;
+	//private bool doneTesting = false;
 	private float timer = 0.0f;
 	private bool filterNATHosts = false;
 	private bool forceNAT = false;
-	private bool hideTest = false;
+	// /*UNUSED*/ private bool hideTest = false;
 	private string masterServerMessage = "";
 	private int masterServerConFailures = 0;
 	private string testMessage = "";
@@ -62,8 +59,8 @@ public class Lobby : MonoBehaviour
 	public string temp = "";
 	private Vector2 scrollPosition;
 	private string outdated = "";
-	private bool hostRegistered = false;
-	private string serverLevel = "";
+	// /*UNUSED*/ private bool hostRegistered = false;
+	// /*UNUSED*/ private string serverLevel = "";
 	private bool showSettings = false;
 	private bool autoHostListRefresh = true;
 	public bool useAlternateServer = false;
@@ -71,8 +68,8 @@ public class Lobby : MonoBehaviour
 	public string[] messages;
 	private string listServerIP = "";
 	private int listServerPort;
-	private string backupServerIP;
-	private int backupServerPort = 23456;
+	// /*UNUSED*/ private string backupServerIP;
+	// /*UNUSED*/ private int backupServerPort = 23456;
 	private float buttonHeight;
 	private float buttonHeightTarget;
 	private bool mouseInServerList;
@@ -87,7 +84,7 @@ public class Lobby : MonoBehaviour
 	private string[] dedicatedIP;
 	private int dedicatedPort;
 	private bool dedicatedNAT;
-	private int dedicatedHostAttempts;
+	// /*UNUSED*/ private int dedicatedHostAttempts;
 
     private bool showAds = false;
     adDesc[] gameAds;
@@ -535,7 +532,7 @@ public class Lobby : MonoBehaviour
         probingPublicIP = false;
         if (timer == 0.0f) timer = Time.time + 15;
         testMessage = "testing";
-        doneTesting = false;
+        // /*UNUSED*/ doneTesting = false;
         doNetworking = false;
 
         natCapable = Network.TestConnection(force);
@@ -550,7 +547,7 @@ public class Lobby : MonoBehaviour
             case ConnectionTesterStatus.Error:
                 GameData.errorMessage = "Your computer does not appear to be online...\nNetworking was defaulted to Local Area Network mode.\n\n(You can play with friends over a LAN, but not with people all around the world over the internet)";
                 testMessage = "Computer is Offline.";
-                doneTesting = true;
+                // /*UNUSED*/ doneTesting = true;
                 doNetworking = true;
                 useMasterServer = false;
                 break;
@@ -559,7 +556,7 @@ public class Lobby : MonoBehaviour
                 testMessage = "Private IP with no NAT punchthrough - Local network, non internet games only.";
                 //filterNATHosts = true;
                 Network.useNat = true;
-                doneTesting = true;
+                // /*UNUSED*/ doneTesting = true;
                 doNetworking = true;
                 useMasterServer = false;
                 break;
@@ -575,14 +572,14 @@ public class Lobby : MonoBehaviour
                 // NAT functionality is enabled in case a server is started,
                 // clients should enable this based on if the host requires it
                 Network.useNat = true;
-                doneTesting = true;
+                // /*UNUSED*/ doneTesting = true;
                 doNetworking = true;
                 useMasterServer = true;
                 break;
             case ConnectionTesterStatus.PublicIPIsConnectable:
                 testMessage = "Directly connectable public IP address.";
                 Network.useNat = false;
-                doneTesting = true;
+                // /*UNUSED*/ doneTesting = true;
                 doNetworking = true;
                 useMasterServer = true;
                 break;
@@ -604,7 +601,7 @@ public class Lobby : MonoBehaviour
                 {
                     probingPublicIP = false;    // reset
                     Network.useNat = true;
-                    doneTesting = true;
+                    // /*UNUSED*/ doneTesting = true;
                     doNetworking = true;
                     useMasterServer = false;
                 }
@@ -612,7 +609,7 @@ public class Lobby : MonoBehaviour
             case ConnectionTesterStatus.PublicIPNoServerStarted:
                 testMessage = "Public IP address but server not initialized, it must be started to check server accessibility. Restart connection test when ready.";
                 doNetworking = true;
-                doneTesting = true;
+                // /*UNUSED*/ doneTesting = true;
                 useMasterServer = true;
                 break;
             default:
@@ -659,7 +656,7 @@ public class Lobby : MonoBehaviour
 			if (GUILayout.Button("Force Enable Networking (May Not Work)"))
 			{
 				Network.useNat = true;
-				doneTesting = true;
+				// /*UNUSED*/ doneTesting = true;
 				doNetworking = true;
 				useMasterServer = true;
 				testMessage = "Network testing failed, networking force enabled";
@@ -919,7 +916,7 @@ public class Lobby : MonoBehaviour
 						netConIP = dedicatedIP;
 						netConPort = dedicatedPort;
 						netConAttempts = 1;
-						dedicatedHostAttempts = 1;
+						// /*UNUSED*/ dedicatedHostAttempts = 1;
 						if (temp != "NoError")
 						{
 							GameData.errorMessage =
@@ -980,7 +977,6 @@ public class Lobby : MonoBehaviour
 
 			scrollPosition = GUILayout.BeginScrollView(scrollPosition);
 
-			string hostInfo = "";
 			if (Event.current.type != EventType.Layout)
 			{
 				serverDetails = "";
@@ -1077,7 +1073,6 @@ public class Lobby : MonoBehaviour
 
                         masterServerConFailures = 0;
                         masterServerMessage = "";
-                        hostInfo = "";
                         serverData = element.comment.Split(";"[0]);
                         gameVersion = 0.0f;
                         serverVersion = 0.0f;
