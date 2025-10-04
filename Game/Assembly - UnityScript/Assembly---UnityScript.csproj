@@ -80,7 +80,6 @@
     <Compile Include="Lobby.cs" />
     <Compile Include="LobbyDecor.cs" />
     <Compile Include="LobbyStarfield.cs" />
-    <Compile Include="markSection.cs" />
     <Compile Include="MeshSerializer.cs" />
     <Compile Include="Messaging.cs" />
     <Compile Include="MiniMap.cs" />
