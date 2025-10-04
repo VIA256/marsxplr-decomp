@@ -1529,15 +1529,15 @@ public class Lobby : MonoBehaviour
 	public void makeWindowUpdate(int id)
 	{
 		GUILayout.Space(40f);
-		GUILayout.Label("A new Mars Explorer version is now available:");
+		GUILayout.Label("A new Mars Explorer version is now available on the Discord Server:");
 		GUILayout.Space(10f);
 		if (
-            GUILayout.Button(">> Download Mars Explorer version " +
+            GUILayout.Button(">> Ask in the #marsxplr channel to Download Mars Explorer version " +
                 outdated +
                 "! <<",
             GUILayout.Height(40f)))
 		{
-            OpenURL("http://web.archive.org/web/20190525045905/http://marsxplr.com/view-267");
+            OpenURL("https://discord.gg/dxTFZRM");
 		}
 		GUILayout.Space(30f);
 		GUILayout.BeginHorizontal();
