@@ -1,75 +1,63 @@
 using System;
-using Boo.Lang.Runtime;
 using UnityEngine;
-using UnityScript.Lang;
 
 [Serializable]
 public class JumpPoint : MonoBehaviour
 {
-	public WhirldObject whirldObject;
+    public WhirldObject whirldObject;
+    private int time = 1;
+    private int randMin = 0;
+    private int randMax = 0;
+    private int velocity = 50;
+    private float lastBlast;
 
-	private int time;
+    public void Start()
+    {
+        if (!(bool)whirldObject || whirldObject.@params == null)
+        {
+            return;
+        }
+        if ((bool)whirldObject.@params["JumpTime"])
+        {
+            time = (int)whirldObject.@params["JumpTime"];
+        }
+        if ((bool)whirldObject.@params["JumpRandMin"])
+        {
+            randMin = (int)whirldObject.@params["JumpRandMin"];
+        }
+        if ((bool)whirldObject.@params["JumpRandMax"])
+        {
+            randMax = (int)whirldObject.@params["JumpRandMax"];
+        }
+        if ((bool)whirldObject.@params["JumpVelocity"])
+        {
+            velocity = (int)whirldObject.@params["JumpVelocity"];
+        }
+    }
 
-	private int randMin;
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == 14) return;
+        lastBlast = Time.time + (float)time;
+    }
 
-	private int randMax;
-
-	private int velocity;
-
-	private float lastBlast;
-
-	public JumpPoint()
-	{
-		time = 1;
-		randMin = 0;
-		randMax = 0;
-		velocity = 50;
-	}
-
-	public void Start()
-	{
-		if ((bool)whirldObject && whirldObject.@params != null)
-		{
-			if (RuntimeServices.ToBool(whirldObject.@params["JumpTime"]))
-			{
-				time = RuntimeServices.UnboxInt32(UnityRuntimeServices.Invoke(typeof(UnityBuiltins), "parseFloat", new object[1] { whirldObject.@params["JumpTime"] }, typeof(MonoBehaviour)));
-			}
-			if (RuntimeServices.ToBool(whirldObject.@params["JumpRandMin"]))
-			{
-				randMin = RuntimeServices.UnboxInt32(UnityRuntimeServices.Invoke(typeof(UnityBuiltins), "parseFloat", new object[1] { whirldObject.@params["JumpRandMin"] }, typeof(MonoBehaviour)));
-			}
-			if (RuntimeServices.ToBool(whirldObject.@params["JumpRandMax"]))
-			{
-				randMax = RuntimeServices.UnboxInt32(UnityRuntimeServices.Invoke(typeof(UnityBuiltins), "parseFloat", new object[1] { whirldObject.@params["JumpRandMax"] }, typeof(MonoBehaviour)));
-			}
-			if (RuntimeServices.ToBool(whirldObject.@params["JumpVelocity"]))
-			{
-				velocity = RuntimeServices.UnboxInt32(UnityRuntimeServices.Invoke(typeof(UnityBuiltins), "parseFloat", new object[1] { whirldObject.@params["JumpVelocity"] }, typeof(MonoBehaviour)));
-			}
-		}
-	}
-
-	public void OnTriggerEnter(Collider other)
-	{
-		if (other.gameObject.layer != 14)
-		{
-			lastBlast = Time.time + (float)time;
-		}
-	}
-
-	public void OnTriggerStay(Collider other)
-	{
-		if (other.gameObject.layer != 14 && !(Time.time - 0.1f < lastBlast))
-		{
-			lastBlast = Time.time;
-			if (randMin != 0 && randMax != 0)
-			{
-				other.attachedRigidbody.AddForce(transform.up * UnityEngine.Random.Range(randMin, randMax), ForceMode.VelocityChange);
-			}
-			else
-			{
-				other.attachedRigidbody.AddForce(transform.up * velocity, ForceMode.VelocityChange);
-			}
-		}
-	}
+    public void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.layer == 14) return;
+        if (Time.time - 0.1f < lastBlast) return;
+        lastBlast = Time.time;
+        if (randMin != 0 && randMax != 0)
+        {
+            other.attachedRigidbody.AddForce(
+                transform.up * UnityEngine.Random.Range(randMin, randMax),
+                ForceMode.VelocityChange);
+        }
+        else
+        {
+            other.attachedRigidbody.AddForce(
+                transform.up * velocity,
+                ForceMode.VelocityChange);
+        }
+    }
 }
+
