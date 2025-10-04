@@ -59,7 +59,6 @@
     <Compile Include="BaseSimple.cs" />
     <Compile Include="Buggy.cs" />
     <Compile Include="CameraVehicle.cs" />
-    <Compile Include="ChatEntry.cs" />
     <Compile Include="ColliderAtach.cs" />
     <Compile Include="CompilerGeneratedExtensions.cs" />
     <Compile Include="CompilerGenerated\GUIAdaptor.cs" />
