@@ -858,7 +858,7 @@ public class Lobby : MonoBehaviour
 				GUILayout.Space(contentWidth / 3);
 				if (GUILayout.Button("Want to own your name?\n>> Register an account! <<"))
 				{
-					OpenURL("http://MarsXPLR.com/user/register");
+                    OpenURL("http://web.archive.org/web/20190525045905/http://marsxplr.com/user/login");
 				}
 				GUILayout.Space(contentWidth / 3);
 				GUILayout.EndHorizontal();
@@ -1537,7 +1537,7 @@ public class Lobby : MonoBehaviour
                 "! <<",
             GUILayout.Height(40f)))
 		{
-			OpenURL("http://marsxplr.com/view-267");
+            OpenURL("http://web.archive.org/web/20190525045905/http://marsxplr.com/view-267");
 		}
 		GUILayout.Space(30f);
 		GUILayout.BeginHorizontal();
