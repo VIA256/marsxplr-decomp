@@ -2,6 +2,9 @@ using System;
 using Boo.Lang.Runtime;
 using UnityEngine;
 
+[RequireComponent(typeof(MeshFilter))]
+[RequireComponent(typeof(MeshRenderer))]
+
 [Serializable]
 public class markSection
 {
@@ -196,11 +199,5 @@ public class Skidmarks : MonoBehaviour
 			newTrackFlag = true;
 			updateTime -= updateRate;
 		}
-	}
-
-	public void Main()
-	{
-		new RequireComponent(typeof(MeshFilter));
-		new RequireComponent(typeof(MeshRenderer));
 	}
 }
