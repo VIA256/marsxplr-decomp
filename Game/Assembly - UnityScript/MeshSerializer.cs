@@ -3,334 +3,396 @@ using System.IO;
 using Boo.Lang.Runtime;
 using UnityEngine;
 
+// A simple mesh saving/loading functionality.
+// This is an utility script, you don't need to add it to any objects.
+// See SaveMeshForWeb and LoadMeshFromWeb for example of use.
+//
+// Uses a custom binary format:
+//
+//    2 bytes vertex count
+//    2 bytes triangle count
+//    1 bytes vertex format (bits: 0=vertices, 1=normals, 2=tangents, 3=uvs)
+//
+//    After that come vertex component arrays, each optional except for positions.
+//    Which ones are present depends on vertex format:
+//        Positions
+//            Bounding box is before the array (xmin,xmax,ymin,ymax,zmin,zmax)
+//            Then each vertex component is 2 byte unsigned short, interpolated between the bound axis
+//        Normals
+//            One byte per component
+//        Tangents
+//            One byte per component
+//        UVs (8 bytes/vertex - 2 floats)
+//            Bounding box is before the array (xmin,xmax,ymin,ymax)
+//            Then each UV component is 2 byte unsigned short, interpolated between the bound axis
+//
+//    Finally the triangle indices array: 6 bytes per triangle (3 unsigned short indices)
+
 [Serializable]
 public class MeshSerializer : MonoBehaviour
 {
+    // Reads mesh from an array of bytes. Can return null
+    // if the bytes seem invalid.
 	public static Mesh ReadMesh(byte[] bytes)
 	{
 		if (bytes == null || bytes.Length < 5)
 		{
-			MonoBehaviour.print("Invalid mesh file!");
+			print("Invalid mesh file!");
 			return null;
 		}
-		BinaryReader binaryReader = new BinaryReader(new MemoryStream(bytes));
-		ushort num = binaryReader.ReadUInt16();
-		ushort num2 = binaryReader.ReadUInt16();
-		byte b = binaryReader.ReadByte();
-		if ((int)num < 0 || (int)num > 64000)
+
+		BinaryReader buf = new BinaryReader(new MemoryStream(bytes));
+		
+        // read header
+        UInt16 vertCount = buf.ReadUInt16();
+		UInt16 triCount = buf.ReadUInt16();
+		byte format = buf.ReadByte();
+
+        // sanity check
+		if ((int)vertCount < 0 || (int)vertCount > 64000)
 		{
-			MonoBehaviour.print("Invalid vertex count in the mesh data!");
+			print("Invalid vertex count in the mesh data!");
 			return null;
 		}
-		if ((int)num2 < 0 || (int)num2 > 64000)
+		if ((int)triCount < 0 || (int)triCount > 64000)
 		{
-			MonoBehaviour.print("Invalid triangle count in the mesh data!");
+			print("Invalid triangle count in the mesh data!");
 			return null;
 		}
-		if ((int)b < 1 || ((int)b & 1) == 0 || (int)b > 15)
+		if ((int)format < 1 || ((int)format & 1) == 0 || (int)format > 15)
 		{
-			MonoBehaviour.print("Invalid vertex format in the mesh data!");
+			print("Invalid vertex format in the mesh data!");
 			return null;
 		}
+
 		Mesh mesh = new Mesh();
-		int num3 = default(int);
-		Vector3[] array = new Vector3[(int)num];
-		ReadVector3Array16bit(array, binaryReader);
-		mesh.vertices = array;
-		if (((int)b & 2) != 0)
+		int i;
+
+        // positions
+		Vector3[] verts = new Vector3[(int)vertCount];
+		ReadVector3Array16bit(verts, buf);
+		mesh.vertices = verts;
+
+		if (((int)format & 2) != 0) // have normals
 		{
-			Vector3[] array2 = new Vector3[(int)num];
-			ReadVector3ArrayBytes(array2, binaryReader);
-			mesh.normals = array2;
+			Vector3[] normals = new Vector3[(int)vertCount];
+			ReadVector3ArrayBytes(normals, buf);
+			mesh.normals = normals;
 		}
-		if (((int)b & 4) != 0)
+
+		if (((int)format & 4) != 0) // have tangents
 		{
-			Vector4[] array3 = new Vector4[(int)num];
-			ReadVector4ArrayBytes(array3, binaryReader);
-			mesh.tangents = array3;
+			Vector4[] tangents = new Vector4[(int)vertCount];
+			ReadVector4ArrayBytes(tangents, buf);
+			mesh.tangents = tangents;
 		}
-		if (((int)b & 8) != 0)
+
+		if (((int)format & 8) != 0) // have UVs
 		{
-			Vector2[] array4 = new Vector2[(int)num];
-			ReadVector2Array16bit(array4, binaryReader);
-			mesh.uv = array4;
+			Vector2[] uvs = new Vector2[(int)vertCount];
+			ReadVector2Array16bit(uvs, buf);
+			mesh.uv = uvs;
 		}
-		checked
+        // triangle indices
+		int[] tris = new int[(int)triCount * 3];
+		for (i = 0; i < (int)triCount; i++)
 		{
-			int[] array5 = new int[unchecked((int)num2) * 3];
-			for (num3 = 0; num3 < unchecked((int)num2); num3++)
-			{
-				array5[RuntimeServices.NormalizeArrayIndex(array5, num3 * 3 + 0)] = binaryReader.ReadUInt16();
-				array5[RuntimeServices.NormalizeArrayIndex(array5, num3 * 3 + 1)] = binaryReader.ReadUInt16();
-				array5[RuntimeServices.NormalizeArrayIndex(array5, num3 * 3 + 2)] = binaryReader.ReadUInt16();
-			}
-			mesh.triangles = array5;
-			binaryReader.Close();
-			return mesh;
+            tris[i * 3 + 0] = buf.ReadUInt16();
+            tris[i * 3 + 1] = buf.ReadUInt16();
+            tris[i * 3 + 2] = buf.ReadUInt16();
 		}
+		mesh.triangles = tris;
+
+		buf.Close();
+
+		return mesh;
 	}
 
 	public static void ReadVector3Array16bit(Vector3[] arr, BinaryReader buf)
 	{
-		int length = arr.Length;
-		if (length != 0)
-		{
-			Vector3 vector = default(Vector3);
-			Vector3 vector2 = default(Vector3);
-			vector.x = buf.ReadSingle();
-			vector2.x = buf.ReadSingle();
-			vector.y = buf.ReadSingle();
-			vector2.y = buf.ReadSingle();
-			vector.z = buf.ReadSingle();
-			vector2.z = buf.ReadSingle();
-			for (int i = 0; i < length; i = checked(i + 1))
-			{
-				ushort num = buf.ReadUInt16();
-				ushort num2 = buf.ReadUInt16();
-				ushort num3 = buf.ReadUInt16();
-				float x = (float)(int)num / 65535f * (vector2.x - vector.x) + vector.x;
-				float y = (float)(int)num2 / 65535f * (vector2.y - vector.y) + vector.y;
-				float z = (float)(int)num3 / 65535f * (vector2.z - vector.z) + vector.z;
-				arr[RuntimeServices.NormalizeArrayIndex(arr, i)] = new Vector3(x, y, z);
-			}
-		}
-	}
+		int n = arr.Length;
+        if (n == 0) return;
+
+        // Read bounding box
+        Vector3 bmin;
+        Vector3 bmax;
+        bmin.x = buf.ReadSingle();
+        bmax.x = buf.ReadSingle();
+        bmin.y = buf.ReadSingle();
+        bmax.y = buf.ReadSingle();
+        bmin.z = buf.ReadSingle();
+        bmax.z = buf.ReadSingle();
+
+        // Decode vectors as 16 bit integer components between the bounds
+        for (int i = 0; i < n; ++i)
+        {
+            UInt16 ix = buf.ReadUInt16();
+            UInt16 iy = buf.ReadUInt16();
+            UInt16 iz = buf.ReadUInt16();
+            float xx = ix / 65535.0f * (bmax.x - bmin.x) + bmin.x;
+            float yy = iy / 65535.0f * (bmax.y - bmin.y) + bmin.y;
+            float zz = iz / 65535.0f * (bmax.z - bmin.z) + bmin.z;
+            arr[i] = new Vector3(xx, yy, zz);
+        }
+    }
 
 	public static void WriteVector3Array16bit(Vector3[] arr, BinaryWriter buf)
 	{
-		checked
-		{
-			if (arr.Length != 0)
-			{
-				Bounds bounds = new Bounds(arr[0], new Vector3(0.001f, 0.001f, 0.001f));
-				int i = 0;
-				for (int length = arr.Length; i < length; i++)
-				{
-					bounds.Encapsulate(arr[i]);
-				}
-				Vector3 min = bounds.min;
-				Vector3 max = bounds.max;
-				buf.Write(min.x);
-				buf.Write(max.x);
-				buf.Write(min.y);
-				buf.Write(max.y);
-				buf.Write(min.z);
-				buf.Write(max.z);
-				int j = 0;
-				for (int length2 = arr.Length; j < length2; j++)
-				{
-					float num = Mathf.Clamp((arr[j].x - min.x) / (max.x - min.x) * 65535f, 0f, 65535f);
-					float num2 = Mathf.Clamp((arr[j].y - min.y) / (max.y - min.y) * 65535f, 0f, 65535f);
-					float num3 = Mathf.Clamp((arr[j].z - min.z) / (max.z - min.z) * 65535f, 0f, 65535f);
-					ushort value = (ushort)num;
-					ushort value2 = (ushort)num2;
-					ushort value3 = (ushort)num3;
-					buf.Write(value);
-					buf.Write(value2);
-					buf.Write(value3);
-				}
-			}
-		}
+        if (arr.Length == 0) return;
+
+        // Calculate bounding box of the array
+        Bounds bounds = new Bounds(arr[0], new Vector3(0.001f, 0.001f, 0.001f));
+        foreach (Vector3 v in arr)
+        {
+            bounds.Encapsulate(v);
+        }
+
+        // Write bounds to stream
+        Vector3 bmin = bounds.min;
+        Vector3 bmax = bounds.max;
+        buf.Write(bmin.x);
+        buf.Write(bmax.x);
+        buf.Write(bmin.y);
+        buf.Write(bmax.y);
+        buf.Write(bmin.z);
+        buf.Write(bmax.z);
+
+        // Encode vectors as 16 bit integer components between the bounds
+        foreach (Vector3 v in arr)
+        {
+            int xx = (int)Mathf.Clamp(
+                (v.x - bmin.x) / (bmax.x - bmin.x) * 65535.0f,
+                0.0f,
+                65535.0f);
+            int yy = (int)Mathf.Clamp(
+                (v.y - bmin.y) / (bmax.y - bmin.y) * 65535.0f,
+                0.0f,
+                65535.0f);
+            int zz = (int)Mathf.Clamp(
+                (v.z - bmin.z) / (bmax.z - bmin.z) * 65535.0f,
+                0.0f,
+                65535.0f);
+            UInt16 ix = (UInt16)xx;
+            UInt16 iy = (UInt16)yy;
+            UInt16 iz = (UInt16)zz;
+            buf.Write(ix);
+            buf.Write(iy);
+            buf.Write(iz);
+        }
 	}
 
 	public static void ReadVector2Array16bit(Vector2[] arr, BinaryReader buf)
 	{
-		int length = arr.Length;
-		if (length != 0)
-		{
-			Vector2 vector = default(Vector2);
-			Vector2 vector2 = default(Vector2);
-			vector.x = buf.ReadSingle();
-			vector2.x = buf.ReadSingle();
-			vector.y = buf.ReadSingle();
-			vector2.y = buf.ReadSingle();
-			for (int i = 0; i < length; i = checked(i + 1))
-			{
-				ushort num = buf.ReadUInt16();
-				ushort num2 = buf.ReadUInt16();
-				float x = (float)(int)num / 65535f * (vector2.x - vector.x) + vector.x;
-				float y = (float)(int)num2 / 65535f * (vector2.y - vector.y) + vector.y;
-				arr[RuntimeServices.NormalizeArrayIndex(arr, i)] = new Vector2(x, y);
-			}
-		}
+        int n = arr.Length;
+        if (n == 0) return;
+
+        // Read bounding box
+        Vector2 bmin;
+        Vector2 bmax;
+        bmin.x = buf.ReadSingle();
+        bmax.x = buf.ReadSingle();
+        bmin.y = buf.ReadSingle();
+        bmax.y = buf.ReadSingle();
+
+        // Decode vectors as 16 bit integer components between the bounds
+        for (int i = 0; i < n; ++i)
+        {
+            UInt16 ix = buf.ReadUInt16();
+            UInt16 iy = buf.ReadUInt16();
+            float xx = ix / 65535.0f * (bmax.x - bmin.x) + bmin.x;
+            float yy = iy / 65535.0f * (bmax.y - bmin.y) + bmin.y;
+            arr[i] = new Vector2(xx, yy);
+        }
 	}
 
 	public static void WriteVector2Array16bit(Vector2[] arr, BinaryWriter buf)
 	{
-		checked
-		{
-			if (arr.Length != 0)
-			{
-				Vector2 vector = arr[0] - new Vector2(0.001f, 0.001f);
-				Vector2 vector2 = arr[0] + new Vector2(0.001f, 0.001f);
-				int i = 0;
-				for (int length = arr.Length; i < length; i++)
-				{
-					vector.x = Mathf.Min(vector.x, arr[i].x);
-					vector.y = Mathf.Min(vector.y, arr[i].y);
-					vector2.x = Mathf.Max(vector2.x, arr[i].x);
-					vector2.y = Mathf.Max(vector2.y, arr[i].y);
-				}
-				buf.Write(vector.x);
-				buf.Write(vector2.x);
-				buf.Write(vector.y);
-				buf.Write(vector2.y);
-				int j = 0;
-				for (int length2 = arr.Length; j < length2; j++)
-				{
-					float num = (arr[j].x - vector.x) / (vector2.x - vector.x) * 65535f;
-					float num2 = (arr[j].y - vector.y) / (vector2.y - vector.y) * 65535f;
-					ushort value = (ushort)num;
-					ushort value2 = (ushort)num2;
-					buf.Write(value);
-					buf.Write(value2);
-				}
-			}
-		}
+        if (arr.Length == 0) return;
+
+        // Calculate bounding box of the array
+        Bounds bounds = new Bounds(arr[0], new Vector2(0.001f, 0.001f));
+        foreach (Vector2 v in arr)
+        {
+            bounds.Encapsulate(v);
+        }
+
+        // Write bounds to stream
+        Vector2 bmin = bounds.min;
+        Vector2 bmax = bounds.max;
+        buf.Write(bmin.x);
+        buf.Write(bmax.x);
+        buf.Write(bmin.y);
+        buf.Write(bmax.y);
+
+        // Encode vectors as 16 bit integer components between the bounds
+        foreach (Vector3 v in arr)
+        {
+            int xx = (int)Mathf.Clamp(
+                (v.x - bmin.x) / (bmax.x - bmin.x) * 65535.0f,
+                0.0f,
+                65535.0f);
+            int yy = (int)Mathf.Clamp(
+                (v.y - bmin.y) / (bmax.y - bmin.y) * 65535.0f,
+                0.0f,
+                65535.0f);
+            UInt16 ix = (UInt16)xx;
+            UInt16 iy = (UInt16)yy;
+            buf.Write(ix);
+            buf.Write(iy);
+        }
 	}
 
 	public static void ReadVector3ArrayBytes(Vector3[] arr, BinaryReader buf)
 	{
-		int length = arr.Length;
-		for (int i = 0; i < length; i = checked(i + 1))
+        //Decode vectors as 8 bit integer components in -1.0 .. 1.0 range
+		int n = arr.Length;
+		for (int i = 0; i < n; ++i)
 		{
-			byte b = buf.ReadByte();
-			byte b2 = buf.ReadByte();
-			byte b3 = buf.ReadByte();
-			float x = ((float)(int)b - 128f) / 127f;
-			float y = ((float)(int)b2 - 128f) / 127f;
-			float z = ((float)(int)b3 - 128f) / 127f;
-			arr[RuntimeServices.NormalizeArrayIndex(arr, i)] = new Vector3(x, y, z);
+			byte ix = buf.ReadByte();
+			byte iy = buf.ReadByte();
+			byte iz = buf.ReadByte();
+			float xx = ((float)(int)ix - 128f) / 127f;
+			float yy = ((float)(int)iy - 128f) / 127f;
+			float zz = ((float)(int)iz - 128f) / 127f;
+			arr[i] = new Vector3(xx, yy, zz);
 		}
 	}
 
 	public static void WriteVector3ArrayBytes(Vector3[] arr, BinaryWriter buf)
 	{
-		int i = 0;
-		checked
-		{
-			for (int length = arr.Length; i < length; i++)
-			{
-				byte value = (byte)Mathf.Clamp(arr[i].x * 127f + 128f, 0f, 255f);
-				byte value2 = (byte)Mathf.Clamp(arr[i].y * 127f + 128f, 0f, 255f);
-				byte value3 = (byte)Mathf.Clamp(arr[i].z * 127f + 128f, 0f, 255f);
-				buf.Write(value);
-				buf.Write(value2);
-				buf.Write(value3);
-			}
+        // Encode vectors as 8 bit integer components in -1.0 .. 1.0 range
+		foreach(Vector3 v in arr)
+        {
+			byte ix = (byte)Mathf.Clamp(v.x * 127f + 128f, 0f, 255f);
+			byte iy = (byte)Mathf.Clamp(v.y * 127f + 128f, 0f, 255f);
+			byte iz = (byte)Mathf.Clamp(v.z * 127f + 128f, 0f, 255f);
+			buf.Write(ix);
+			buf.Write(iy);
+			buf.Write(iz);
 		}
 	}
 
 	public static void ReadVector4ArrayBytes(Vector4[] arr, BinaryReader buf)
 	{
-		int length = arr.Length;
-		for (int i = 0; i < length; i = checked(i + 1))
-		{
-			byte b = buf.ReadByte();
-			byte b2 = buf.ReadByte();
-			byte b3 = buf.ReadByte();
-			byte b4 = buf.ReadByte();
-			float x = ((float)(int)b - 128f) / 127f;
-			float y = ((float)(int)b2 - 128f) / 127f;
-			float z = ((float)(int)b3 - 128f) / 127f;
-			float w = ((float)(int)b4 - 128f) / 127f;
-			arr[RuntimeServices.NormalizeArrayIndex(arr, i)] = new Vector4(x, y, z, w);
-		}
+        //Decode vectors as 8 bit integer components in -1.0 .. 1.0 range
+        int n = arr.Length;
+        for (int i = 0; i < n; ++i)
+        {
+            byte ix = buf.ReadByte();
+            byte iy = buf.ReadByte();
+            byte iz = buf.ReadByte();
+            byte iw = buf.ReadByte();
+            float xx = ((float)(int)ix - 128f) / 127f;
+            float yy = ((float)(int)iy - 128f) / 127f;
+            float zz = ((float)(int)iz - 128f) / 127f;
+            float ww = ((float)(int)iz - 128f) / 127f;
+            arr[i] = new Vector4(xx, yy, zz, ww);
+        }
 	}
 
 	public static void WriteVector4ArrayBytes(Vector4[] arr, BinaryWriter buf)
 	{
-		int i = 0;
-		checked
-		{
-			for (int length = arr.Length; i < length; i++)
-			{
-				byte value = (byte)Mathf.Clamp(arr[i].x * 127f + 128f, 0f, 255f);
-				byte value2 = (byte)Mathf.Clamp(arr[i].y * 127f + 128f, 0f, 255f);
-				byte value3 = (byte)Mathf.Clamp(arr[i].z * 127f + 128f, 0f, 255f);
-				byte value4 = (byte)Mathf.Clamp(arr[i].w * 127f + 128f, 0f, 255f);
-				buf.Write(value);
-				buf.Write(value2);
-				buf.Write(value3);
-				buf.Write(value4);
-			}
-		}
+        // Encode vectors as 8 bit integer components in -1.0 .. 1.0 range
+        foreach (Vector4 v in arr)
+        {
+            byte ix = (byte)Mathf.Clamp(v.x * 127f + 128f, 0f, 255f);
+            byte iy = (byte)Mathf.Clamp(v.y * 127f + 128f, 0f, 255f);
+            byte iz = (byte)Mathf.Clamp(v.z * 127f + 128f, 0f, 255f);
+            byte iw = (byte)Mathf.Clamp(v.z * 127f + 128f, 0f, 255f);
+            buf.Write(ix);
+            buf.Write(iy);
+            buf.Write(iz);
+            buf.Write(iw);
+        }
 	}
 
+    // Writes mesh to an array of bytes.
 	public static byte[] WriteMesh(Mesh mesh, bool saveTangents)
 	{
 		if (!mesh)
 		{
-			MonoBehaviour.print("No mesh given!");
+			print("No mesh given!");
 			return null;
 		}
-		Vector3[] vertices = mesh.vertices;
+
+		Vector3[] verts = mesh.vertices;
 		Vector3[] normals = mesh.normals;
 		Vector4[] tangents = mesh.tangents;
-		Vector2[] uv = mesh.uv;
-		int[] triangles = mesh.triangles;
-		byte b = (byte)1;
-		checked
+		Vector2[] uvs = mesh.uv;
+		int[] tris = mesh.triangles;
+
+        // figure out vertex format
+		byte format = (byte)1;
+		if (normals.Length > 0)
 		{
-			if (normals.Length > 0)
-			{
-				b = (byte)(unchecked((int)b) | 2);
-			}
-			if (saveTangents && tangents.Length > 0)
-			{
-				b = (byte)(unchecked((int)b) | 4);
-			}
-			if (uv.Length > 0)
-			{
-				b = (byte)(unchecked((int)b) | 8);
-			}
-			MemoryStream memoryStream = new MemoryStream();
-			BinaryWriter binaryWriter = new BinaryWriter(memoryStream);
-			ushort value = (ushort)vertices.Length;
-			ushort value2 = (ushort)unchecked(triangles.Length / 3);
-			binaryWriter.Write(value);
-			binaryWriter.Write(value2);
-			binaryWriter.Write(b);
-			WriteVector3Array16bit(vertices, binaryWriter);
-			WriteVector3ArrayBytes(normals, binaryWriter);
-			if (saveTangents)
-			{
-				WriteVector4ArrayBytes(tangents, binaryWriter);
-			}
-			WriteVector2Array16bit(uv, binaryWriter);
-			int i = 0;
-			int[] array = triangles;
-			for (int length = array.Length; i < length; i++)
-			{
-				ushort value3 = (ushort)array[i];
-				binaryWriter.Write(value3);
-			}
-			binaryWriter.Close();
-			return memoryStream.ToArray();
+            format |= 2;
 		}
+		if (saveTangents && tangents.Length > 0)
+		{
+            format |= 4;
+		}
+		if (uvs.Length > 0)
+		{
+            format |= 8;
+		}
+
+		MemoryStream stream = new MemoryStream();
+		BinaryWriter buf = new BinaryWriter(stream);
+
+        // write header
+		UInt16 vertCount = (UInt16)verts.Length;
+		UInt16 triCount = (UInt16)(tris.Length / 3);
+		buf.Write(vertCount);
+		buf.Write(triCount);
+		buf.Write(format);
+        // vertex components
+		WriteVector3Array16bit(verts, buf);
+		WriteVector3ArrayBytes(normals, buf);
+		if (saveTangents)
+		{
+			WriteVector4ArrayBytes(tangents, buf);
+		}
+		WriteVector2Array16bit(uvs, buf);
+        // triangle indices
+        foreach (int idx in tris)
+        {
+            UInt16 idx16 = (UInt16)idx;
+            buf.Write(idx16);
+        }
+		buf.Close();
+
+		return stream.ToArray();
 	}
 
+    // Writes mesh to a local file, for loading with WWW interface later.
 	public static void WriteMeshToFileForWeb(Mesh mesh, string name, bool saveTangents)
 	{
-		byte[] array = WriteMesh(mesh, saveTangents);
-		FileStream fileStream = new FileStream(name, FileMode.Create);
-		fileStream.Write(array, 0, array.Length);
-		fileStream.Close();
+		// Write mesh to regular bytes
+        byte[] bytes = WriteMesh(mesh, saveTangents);
+
+        // Write to file
+        FileStream fs = new FileStream(name, FileMode.Create);
+        fs.Write(bytes, 0, bytes.Length);
+        fs.Close();
 	}
 
+    // Reads mesh from the given WWW (that is finished downloading already)
 	public static Mesh ReadMeshFromWWW(WWW download)
 	{
 		if (download.error != null)
 		{
-			MonoBehaviour.print("Error downloading mesh: " + download.error);
+			print("Error downloading mesh: " + download.error);
 			return null;
 		}
+
 		if (!download.isDone)
 		{
-			MonoBehaviour.print("Download must be finished already");
+			print("Download must be finished already");
 			return null;
 		}
+
 		byte[] bytes = download.bytes;
+
 		return ReadMesh(bytes);
 	}
 }
