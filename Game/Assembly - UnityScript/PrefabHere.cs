@@ -8,8 +8,8 @@ public class PrefabHere : MonoBehaviour
 
 	public void Awake()
 	{
-		GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate(prefab, transform.position, transform.rotation);
-		gameObject.transform.parent = transform.parent.transform;
-		UnityEngine.Object.Destroy(this.gameObject);
+		GameObject newObject = (GameObject)Instantiate(prefab, transform.position, transform.rotation);
+		newObject.transform.parent = transform.parent.transform;
+		Destroy(this.gameObject);
 	}
 }
