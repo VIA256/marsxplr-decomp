@@ -983,7 +983,7 @@ public class Game : MonoBehaviour
 	[NonSerialized]
 	public static Hashtable Players;
 
-	public UnityScript.Lang.Array unauthPlayers;
+	public List<unauthPlayer> unauthPlayers;
 
 	public Color vehicleIsItColor;
 
@@ -1021,7 +1021,7 @@ public class Game : MonoBehaviour
 		serverHidden = false;
 		authenticatedPlayers = new Hashtable();
 		authenticatingPlayers = new UnityScript.Lang.Array();
-		unauthPlayers = new UnityScript.Lang.Array();
+		unauthPlayers = new List<unauthPlayer>();
 		heavyTickRate = 2;
 	}
 
@@ -1166,7 +1166,7 @@ public class Game : MonoBehaviour
 			fpsFrames = 0;
 			if (isHost)
             {
-				for (int i = 0; i < unauthPlayers.length; i++)
+				for (int i = 0; i < unauthPlayers.Count; i++)
                 {
 					if (RuntimeServices.ToBool(RuntimeServices.InvokeBinaryOperator("op_GreaterThan", RuntimeServices.InvokeBinaryOperator("op_Subtraction", Time.time, RuntimeServices.GetProperty(unauthPlayers[i], "t")), 2)))
                     {
@@ -1463,9 +1463,9 @@ public class Game : MonoBehaviour
 						text += " (" + fps.ToString("f0") + " FPS)";
 						break;
 					case 3:
-						if (isHost && unauthPlayers.length > 0)
+						if (isHost && unauthPlayers.Count > 0)
                         {
-							text = "* " + text + " (" + unauthPlayers.length + ") *";
+							text = "* " + text + " (" + unauthPlayers.Count + ") *";
 						}
 						break;
 					}
@@ -2546,7 +2546,7 @@ public class Game : MonoBehaviour
         {
 			return;
 		}
-		for (int i = 0; i < unauthPlayers.length; i = checked(i + 1))
+		for (int i = 0; i < unauthPlayers.Count; i = checked(i + 1))
         {
 			if (RuntimeServices.EqualityOperator(RuntimeServices.GetProperty(RuntimeServices.GetProperty(unauthPlayers[i], "p"), "externalIP"), p.externalIP) && RuntimeServices.EqualityOperator(RuntimeServices.GetProperty(unauthPlayers[i], "n"), n))
             {

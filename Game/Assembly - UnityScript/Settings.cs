@@ -646,141 +646,202 @@ public class Settings : MonoBehaviour
 	public void showDialogPlayers()
 	{
 		GUILayout.FlexibleSpace();
-		if (Game.Controller.isHost && Game.Controller.unauthPlayers.length > 0)
+
+		if (
+            Game.Controller.isHost &&
+            Game.Controller.unauthPlayers.Count > 0)
 		{
 			GUILayout.Label("Joining Players:");
-			for (int i = 0; i < Game.Controller.unauthPlayers.length; i = checked(i + 1))
+
+			for (
+                int i = 0;
+                i < Game.Controller.unauthPlayers.Count;
+                i++)
 			{
 				GUILayout.Space(10f);
 				UnityRuntimeServices.Invoke(typeof(GUILayout), "Label", new object[1] { RuntimeServices.GetProperty(Game.Controller.unauthPlayers[i], "n") }, typeof(MonoBehaviour));
-				GUILayout.TextArea((string)RuntimeServices.Coerce(RuntimeServices.GetProperty(RuntimeServices.GetProperty(Game.Controller.unauthPlayers[i], "p"), "externalIP"), typeof(string)));
+                GUILayout.Label(Game.Controller.unauthPlayers[i].n);
+				GUILayout.TextArea(Game.Controller.unauthPlayers[i].p.externalIP);
 				GUILayout.BeginHorizontal();
 				if (GUILayout.Button("Evict"))
 				{
-					UnityRuntimeServices.Invoke(networkView, "RPC", new object[3]
-					{
-						"dN",
-						RuntimeServices.GetProperty(Game.Controller.unauthPlayers[i], "p"),
-						2
-					}, typeof(MonoBehaviour));
-					if (Network.isServer)
-					{
-						Network.CloseConnection((NetworkPlayer)RuntimeServices.GetProperty(Game.Controller.unauthPlayers[i], "p"), true);
-					}
-					else
-					{
-						networkView.RPC("cC", RPCMode.Server, RuntimeServices.GetProperty(Game.Controller.unauthPlayers[i], "p"), RuntimeServices.GetProperty(Game.Controller.unauthPlayers[i], "n"), 0);
-					}
+                    networkView.RPC(
+                        "dN",
+                        Game.Controller.unauthPlayers[i].p,
+                        2);
+                    if (Network.isServer)
+                    {
+                        Network.CloseConnection(
+                            Game.Controller.unauthPlayers[i].p,
+                            true);
+                    }
+                    else
+                    {
+                        networkView.RPC(
+                            "cC",
+                            RPCMode.Server,
+                            Game.Controller.unauthPlayers[i].p,
+                            Game.Controller.unauthPlayers[i].n,
+                            0);
+                    }
 				}
-				else if (GUILayout.Button("Invite") && !RuntimeServices.ToBool(Game.Controller.authenticatedPlayers[RuntimeServices.GetProperty(Game.Controller.unauthPlayers[i], "p")]))
-				{
-					if (Network.isServer)
-					{
-						Game.Controller.authenticatedPlayers.Add(RuntimeServices.GetProperty(Game.Controller.unauthPlayers[i], "p"), 1);
-					}
-					else
-					{
-						networkView.RPC("pI", RPCMode.Server, RuntimeServices.GetProperty(Game.Controller.unauthPlayers[i], "p"), RuntimeServices.GetProperty(Game.Controller.unauthPlayers[i], "n"));
-					}
-				}
+                else if (
+                    GUILayout.Button("Invite") &&
+                    !(bool)Game.Controller.authenticatedPlayers[Game.Controller.unauthPlayers[i].p])
+                {
+                    if (Network.isServer)
+                    {
+                        Game.Controller.authenticatedPlayers.Add(
+                            Game.Controller.unauthPlayers[i].p,
+                            1);
+                    }
+                    else
+                    {
+                        networkView.RPC(
+                            "pI",
+                            RPCMode.Server,
+                            Game.Controller.unauthPlayers[i].p,
+                            Game.Controller.unauthPlayers[i].n);
+                    }
+                }
 				GUILayout.EndHorizontal();
 			}
+
 			GUILayout.FlexibleSpace();
+
 			GUILayout.Space(20f);
 			GUILayout.Label("Active Players:");
 		}
-		GameObject[] array = null;
-		Vehicle vehicle = null;
-		VehicleNet vehicleNet = null;
-		IEnumerator enumerator = UnityRuntimeServices.GetEnumerator(Game.Players);
-		while (enumerator.MoveNext())
-		{
-			DictionaryEntry dictionaryEntry = (DictionaryEntry)enumerator.Current;
-			vehicle = (Vehicle)RuntimeServices.Coerce(dictionaryEntry.Value, typeof(Vehicle));
-			UnityRuntimeServices.Update(enumerator, dictionaryEntry);
-			GameObject gameObject = vehicle.gameObject;
-			vehicleNet = (VehicleNet)gameObject.GetComponentInChildren(typeof(VehicleNet));
-			GUILayout.Space(10f);
-			UnityRuntimeServices.Invoke(typeof(GUILayout), "Label", new object[1] { RuntimeServices.InvokeBinaryOperator("op_Addition", dictionaryEntry.Key, (!vehicle.isPlayer) ? string.Empty : " (Me)") }, typeof(MonoBehaviour));
-			UnityRuntimeServices.Update(enumerator, dictionaryEntry);
-			GUILayout.TextArea((gameObject.networkView.isMine ? string.Empty : ((!vehicleNet) ? string.Empty : (Mathf.RoundToInt(vehicleNet.ping * 1000f) + " png - " + Mathf.RoundToInt(vehicleNet.jitter * 1000f) + " jtr" + vehicle.netCode + "\n"))) + ((!vehicleNet || vehicle.networkMode != 2) ? string.Empty : (Mathf.RoundToInt(vehicleNet.calcPing) + " CalcPng - " + Mathf.RoundToInt(vehicleNet.rpcPing) + " TmstmpOfst\n")) + ((!Network.isServer) ? string.Empty : (gameObject.networkView.owner.externalIP + " " + gameObject.networkView.owner.ipAddress)) + "\n" + gameObject.networkView.viewID.ToString() + " " + vehicle.networkMode, GUILayout.Height(30f));
-			GUILayout.BeginHorizontal();
-			if ((Game.Controller.isHost || isAdmin) && !vehicle.isBot && !gameObject.networkView.isMine && GUILayout.Button("Evict"))
-			{
-				Game.Messaging.broadcast(gameObject.name + " was evicted by " + Game.Player.name);
-				if (Network.isServer)
-				{
-					UnityRuntimeServices.Invoke(networkView, "RPC", new object[3]
-					{
-						"dN",
-						RuntimeServices.GetProperty(RuntimeServices.GetProperty(dictionaryEntry.Value, "networkView"), "owner"),
-						2
-					}, typeof(MonoBehaviour));
-					UnityRuntimeServices.Update(enumerator, dictionaryEntry);
-					UnityRuntimeServices.Invoke(RuntimeServices.GetProperty(dictionaryEntry.Value, "networkView"), "RPC", new object[3]
-					{
-						"dN",
-						RPCMode.All,
-						2
-					}, typeof(MonoBehaviour));
-					UnityRuntimeServices.Update(enumerator, dictionaryEntry);
-					Network.CloseConnection((NetworkPlayer)RuntimeServices.GetProperty(RuntimeServices.GetProperty(dictionaryEntry.Value, "networkView"), "owner"), true);
-					UnityRuntimeServices.Update(enumerator, dictionaryEntry);
-				}
-				else
-				{
-					networkView.RPC("cC", RPCMode.Server, RuntimeServices.GetProperty(RuntimeServices.GetProperty(dictionaryEntry.Value, "networkView"), "owner"), dictionaryEntry.Key, 1);
-					UnityRuntimeServices.Update(enumerator, dictionaryEntry);
-				}
-			}
-			else if ((Game.Controller.isHost || isAdmin) && !vehicle.isBot && !gameObject.networkView.isMine && GUILayout.Button("Ban"))
-			{
-				Game.Messaging.broadcast(gameObject.name + " was banned by " + Game.Player.name);
-				if (Network.isServer)
-				{
-					bannedIPs = (string)RuntimeServices.Coerce(RuntimeServices.InvokeBinaryOperator("op_Addition", bannedIPs, RuntimeServices.InvokeBinaryOperator("op_Addition", RuntimeServices.InvokeBinaryOperator("op_Addition", RuntimeServices.InvokeBinaryOperator("op_Addition", (!(bannedIPs != string.Empty)) ? string.Empty : "\n", RuntimeServices.GetProperty(RuntimeServices.GetProperty(RuntimeServices.GetProperty(dictionaryEntry.Value, "networkView"), "owner"), "ipAddress")), " "), gameObject.name)), typeof(string));
-					UnityRuntimeServices.Update(enumerator, dictionaryEntry);
-					UnityRuntimeServices.Invoke(networkView, "RPC", new object[3]
-					{
-						"dN",
-						RuntimeServices.GetProperty(RuntimeServices.GetProperty(dictionaryEntry.Value, "networkView"), "owner"),
-						2
-					}, typeof(MonoBehaviour));
-					UnityRuntimeServices.Update(enumerator, dictionaryEntry);
-					UnityRuntimeServices.Invoke(RuntimeServices.GetProperty(dictionaryEntry.Value, "networkView"), "RPC", new object[3]
-					{
-						"dN",
-						RPCMode.All,
-						2
-					}, typeof(MonoBehaviour));
-					UnityRuntimeServices.Update(enumerator, dictionaryEntry);
-					Network.CloseConnection((NetworkPlayer)RuntimeServices.GetProperty(RuntimeServices.GetProperty(dictionaryEntry.Value, "networkView"), "owner"), true);
-					UnityRuntimeServices.Update(enumerator, dictionaryEntry);
-					Game.Controller.StartCoroutine_Auto(Game.Controller.registerHost());
-				}
-				else
-				{
-					networkView.RPC("cC", RPCMode.Server, RuntimeServices.GetProperty(RuntimeServices.GetProperty(dictionaryEntry.Value, "networkView"), "owner"), dictionaryEntry.Key, 2);
-					UnityRuntimeServices.Update(enumerator, dictionaryEntry);
-				}
-			}
-			GUILayout.EndHorizontal();
-			GUILayout.FlexibleSpace();
-		}
+
+		GameObject[] gos;
+		Vehicle veh;
+		VehicleNet vehNet;
+        foreach (DictionaryEntry plrE in Game.Players)
+        {
+            veh = (Vehicle)plrE.Value;
+            GameObject go = veh.gameObject;
+            vehNet = (VehicleNet)go.GetComponentInChildren(typeof(VehicleNet));
+            GUILayout.Space(10f);
+            GUILayout.Label(plrE.Key + (veh.isPlayer ? " (Me)" : ""));
+            GUILayout.TextArea(
+                (go.networkView.isMine ?
+                    "" :
+                    (vehNet ?
+                        Mathf.RoundToInt(vehNet.ping * 1000) +
+                            " png - " +
+                            Mathf.RoundToInt(vehNet.jitter * 1000) +
+                            " jtr" +
+                            veh.netCode +
+                            "\n" :
+                        "")) +
+                (vehNet && veh.networkMode == 2 ?
+                    Mathf.RoundToInt(vehNet.calcPing) +
+                        " CalcPng - " +
+                        Mathf.RoundToInt(vehNet.rpcPing) +
+                        " TmstmpOfst\n" :
+                    "") +
+                (Network.isServer ?
+                    go.networkView.owner.externalIP +
+                        " " +
+                        go.networkView.owner.ipAddress :
+                    "") +
+                "\n" +
+                    go.networkView.viewID.ToString() +
+                    " " +
+                    veh.networkMode /*+ "/" + go.networkView.owner.ToString()*/,
+                GUILayout.Height(30));
+            GUILayout.BeginHorizontal();
+            if (
+                (Game.Controller.isHost || isAdmin) &&
+                !veh.isBot &&
+                !go.networkView.isMine &&
+                GUILayout.Button("Evict"))
+            {
+                Game.Messaging.broadcast(
+                    go.name +
+                    " was evicted by "
+                    + Game.Player.name);
+                if (Network.isServer)
+                {
+                    networkView.RPC(
+                        "dN",
+                        ((Vehicle)plrE.Value).networkView.owner,
+                        2);
+                    ((Vehicle)plrE.Value).networkView.RPC(
+                        "dN",
+                        RPCMode.All,
+                        2);
+                    Network.CloseConnection(
+                        ((Vehicle)plrE.Value).networkView.owner,
+                        true);
+                }
+                else
+                {
+                    networkView.RPC(
+                        "cC",
+                        RPCMode.Server,
+                        ((Vehicle)plrE.Value).networkView.owner,
+                        plrE.Key,
+                        1);
+                }
+            }
+            else if (
+                (Game.Controller.isHost || isAdmin) &&
+                !veh.isBot &&
+                !go.networkView.isMine &&
+                GUILayout.Button("Ban"))
+            {
+                Game.Messaging.broadcast(
+                    go.name +
+                    " was banned by " +
+                    Game.Player.name);
+                if (Network.isServer)
+                {
+                    bannedIPs += (bannedIPs != "" ? "\n" : "") +
+                        ((Vehicle)plrE.Value).networkView.owner.ipAddress +
+                        " " +
+                        go.name;
+                    networkView.RPC(
+                        "dN",
+                        ((Vehicle)plrE.Value).networkView.owner,
+                        2);
+                    ((Vehicle)plrE.Value).networkView.RPC(
+                        "dN",
+                        RPCMode.All,
+                        2);
+                    Network.CloseConnection(
+                        ((Vehicle)plrE.Value).networkView.owner,
+                        true);
+                    Game.Controller.registerHost();
+                }
+                else
+                {
+                    networkView.RPC(
+                        "cC",
+                        RPCMode.Server,
+                        ((Vehicle)plrE.Value).networkView.owner,
+                        plrE.Key,
+                        2);
+                }
+            }
+            GUILayout.EndHorizontal();
+            GUILayout.FlexibleSpace();
+        }
+
 		if (Game.Controller.isHost)
 		{
 			GUILayout.Space(20f);
 			GUILayout.Label("Banned Players:");
-			if (bannedIPs != string.Empty && GUILayout.Button("Unban All"))
+			if (bannedIPs != "" && GUILayout.Button("Unban All"))
 			{
-				bannedIPs = string.Empty;
+				bannedIPs = "";
 				Game.Controller.StartCoroutine_Auto(Game.Controller.registerHost());
 				updateServerPrefs();
 			}
-			string text = GUILayout.TextField(bannedIPs);
-			if (text != bannedIPs)
+			string cm = GUILayout.TextField(bannedIPs);
+			if (cm != bannedIPs)
 			{
-				bannedIPs = text;
+				bannedIPs = cm;
 				updateServerPrefs();
 			}
 		}
