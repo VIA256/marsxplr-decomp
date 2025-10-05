@@ -88,8 +88,6 @@
     <Compile Include="RamoSphere.cs" />
     <Compile Include="Rocket.cs" />
     <Compile Include="SeaData.cs" />
-    <Compile Include="SeaModeData.cs" />
-    <Compile Include="SeaModes.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Skidmarks.cs" />
     <Compile Include="SoundEffect.cs" />

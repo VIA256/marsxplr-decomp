@@ -27,7 +27,7 @@ public class Messaging : MonoBehaviour
 	[HideInInspector]
 	public ArrayList entries;
 	private string inputField = "";
-	private bool display = true;
+	// /*UNUSED*/ private bool display = true;
 	private Rect windowRect;
 
 	public Messaging()
