@@ -229,11 +229,12 @@ public class Settings : MonoBehaviour
                 }
             }
             GUILayout.EndHorizontal();
-        } //:33333
+        }
 		
 		GUILayout.FlexibleSpace();
 		GUILayout.Space(20f);
 		GUILayout.Label("Rendering Quality:");
+
 		GUILayout.BeginHorizontal();
 		if (renderLevel == 1)
 		{
@@ -259,106 +260,143 @@ public class Settings : MonoBehaviour
 		{
 			GUILayout.Label("Fantastic");
 		}
+
 		GUILayout.Label("(" + Game.Controller.fps.ToString("f0") + " FPS)");
-		GUILayout.EndHorizontal();
-		GUILayout.BeginHorizontal();
-		checked
+		
+        GUILayout.EndHorizontal();
+		
+        GUILayout.BeginHorizontal();
+		if (renderLevel > 1)
 		{
-			if (renderLevel > 1 && GUILayout.Button("<<"))
-			{
-				renderLevel--;
-				PlayerPrefs.SetInt("renderLevel", renderLevel);
-				updatePrefs();
-			}
-			if (renderLevel > 1 && renderLevel < 6)
-			{
-				GUILayout.Space(5f);
-			}
-			if (renderLevel < 6 && GUILayout.Button(">>"))
-			{
-				renderLevel++;
-				PlayerPrefs.SetInt("renderLevel", renderLevel);
-				updatePrefs();
-			}
-			GUILayout.EndHorizontal();
-			GUILayout.Space(10f);
-			UnityRuntimeServices.Invoke(typeof(GUILayout), "Label", new object[1] { RuntimeServices.InvokeBinaryOperator("op_Addition", RuntimeServices.InvokeBinaryOperator("op_Addition", "Visibility Cap:   (", (renderViewCap != 1000f) ? ((object)Mathf.Floor(renderViewCap)) : "MAX"), ")") }, typeof(MonoBehaviour));
-			float num2 = GUILayout.HorizontalSlider(renderViewCap, 200f, 1000f);
-			if (renderViewCap != num2)
-			{
-				renderViewCap = num2;
-				PlayerPrefs.SetFloat("viewCap", num2);
-				updatePrefs();
-			}
+            if (GUILayout.Button("<<"))
+            {
+			    renderLevel--;
+			    PlayerPrefs.SetInt("renderLevel", renderLevel);
+			    updatePrefs();
+            }
+		}
+
+		if (renderLevel > 1 && renderLevel < 6)
+		{
 			GUILayout.Space(5f);
-			UnityRuntimeServices.Invoke(typeof(GUILayout), "Label", new object[1] { RuntimeServices.InvokeBinaryOperator("op_Addition", RuntimeServices.InvokeBinaryOperator("op_Addition", "FPS Cap:   (", (Application.targetFrameRate != -1) ? ((object)Application.targetFrameRate) : "MAX"), ")") }, typeof(MonoBehaviour));
-			if (Application.targetFrameRate == -1)
-			{
-				Application.targetFrameRate = 100;
-			}
-			num2 = GUILayout.HorizontalSlider(Application.targetFrameRate, 10f, 100f);
-			if ((float)Application.targetFrameRate != num2)
-			{
-				Application.targetFrameRate = (int)num2;
-				PlayerPrefs.SetFloat("targetFrameRate", num2);
-			}
-			if (Application.targetFrameRate == 0 || Application.targetFrameRate == 100)
-			{
-				Application.targetFrameRate = -1;
-			}
-			GUILayout.FlexibleSpace();
-			GUILayout.Space(20f);
-			GUILayout.Label("Interface:");
-			if (minimapAllowed && GUILayout.Toggle(useMinimap, "Enable Minimap") != useMinimap)
-			{
-				useMinimap = !useMinimap;
-				PlayerPrefs.SetInt("useMinimap", useMinimap ? 1 : 0);
-				updatePrefs();
-			}
-			if (GUILayout.Toggle(showHints, "Enable Settings Advisor") != showHints)
-			{
-				showHints = !showHints;
-				PlayerPrefs.SetInt("showHints", showHints ? 1 : 0);
-				updatePrefs();
-			}
-			GUILayout.FlexibleSpace();
-			GUILayout.Space(20f);
-			GUILayout.Label("Audio:");
-			if (GUILayout.Toggle(useSfx, "Sound Effects Enabled") != useSfx)
-			{
-				useSfx = !useSfx;
-				PlayerPrefs.SetInt("useSfx", useSfx ? 1 : 0);
-			}
-			if (GUILayout.Toggle(useMusic == 0, "No Music") != (useMusic == 0))
-			{
-				useMusic = 0;
-				PlayerPrefs.SetInt("useMusic", 0);
-				updatePrefs();
-			}
-			if (GUILayout.Toggle(useMusic == 1, "Classic") != (useMusic == 1))
-			{
-				useMusic = 1;
-				PlayerPrefs.SetInt("useMusic", 1);
-				updatePrefs();
-			}
-			if (GUILayout.Toggle(useMusic == 2, "Ambient") != (useMusic == 2))
-			{
-				useMusic = 2;
-				PlayerPrefs.SetInt("useMusic", 2);
-				updatePrefs();
-			}
-			if (GUILayout.Toggle(useMusic == 3, "Carefree") != (useMusic == 3))
-			{
-				useMusic = 3;
-				PlayerPrefs.SetInt("useMusic", 3);
-				updatePrefs();
-			}
-			if (GUILayout.Toggle(useHypersound == 1, "HyperSound") != (useHypersound == 1))
-			{
-				useHypersound = ((useHypersound != 1) ? 1 : 0);
-				PlayerPrefs.SetInt("useHypersound", (useHypersound != 0) ? 1 : 0);
-				updatePrefs();
-			}
+		}
+
+		if (renderLevel < 6)
+		{
+            if (GUILayout.Button(">>"))
+            {
+                renderLevel++;
+                PlayerPrefs.SetInt("renderLevel", renderLevel);
+                updatePrefs();
+            }
+		}
+		GUILayout.EndHorizontal();
+
+		GUILayout.Space(10f);
+        GUILayout.Label(
+            "Visibility Cap:   (" +
+            (renderViewCap == 1000f ?
+                "MAX" :
+                Mathf.Floor(renderViewCap).ToString()) +
+            ")");
+		float cg = GUILayout.HorizontalSlider(
+            renderViewCap,
+            200f,
+            1000f);
+		if (renderViewCap != cg)
+		{
+			renderViewCap = cg;
+			PlayerPrefs.SetFloat("viewCap", cg);
+			updatePrefs();
+		}
+
+		GUILayout.Space(5f);
+        GUILayout.Label(
+            "FPS Cap:   (" +
+            (Application.targetFrameRate == -1 ?
+                "MAX" :
+                Application.targetFrameRate.ToString()) +
+            ")");
+		
+        if (Application.targetFrameRate == -1)
+		{
+			Application.targetFrameRate = 100;
+		}
+		cg = GUILayout.HorizontalSlider(
+            Application.targetFrameRate,
+            10f,
+            100f);
+		if ((float)Application.targetFrameRate != cg)
+		{
+			Application.targetFrameRate = (int)cg;
+			PlayerPrefs.SetFloat("targetFrameRate", cg);
+		}
+		if (
+            Application.targetFrameRate == 0 ||
+            Application.targetFrameRate == 100)
+		{
+			Application.targetFrameRate = -1;
+		}
+
+		GUILayout.FlexibleSpace();
+		GUILayout.Space(20f);
+		GUILayout.Label("Interface:");
+
+		if (minimapAllowed && GUILayout.Toggle(useMinimap, "Enable Minimap") != useMinimap)
+		{
+			useMinimap = !useMinimap;
+			PlayerPrefs.SetInt("useMinimap", useMinimap ? 1 : 0);
+			updatePrefs();
+		}
+
+		if (GUILayout.Toggle(showHints, "Enable Settings Advisor") != showHints)
+		{
+			showHints = !showHints;
+			PlayerPrefs.SetInt("showHints", showHints ? 1 : 0);
+			updatePrefs();
+		}
+
+		GUILayout.FlexibleSpace();
+		GUILayout.Space(20f);
+		GUILayout.Label("Audio:");
+
+		if (GUILayout.Toggle(useSfx, "Sound Effects Enabled") != useSfx)
+		{
+			useSfx = !useSfx;
+			PlayerPrefs.SetInt("useSfx", useSfx ? 1 : 0);
+		}
+
+		if (GUILayout.Toggle(useMusic == 0, "No Music") != (useMusic == 0))
+		{
+			useMusic = 0;
+			PlayerPrefs.SetInt("useMusic", 0);
+			updatePrefs();
+		}
+
+		if (GUILayout.Toggle(useMusic == 1, "Classic") != (useMusic == 1))
+		{
+			useMusic = 1;
+			PlayerPrefs.SetInt("useMusic", 1);
+			updatePrefs();
+		}
+		if (GUILayout.Toggle(useMusic == 2, "Ambient") != (useMusic == 2))
+		{
+			useMusic = 2;
+			PlayerPrefs.SetInt("useMusic", 2);
+			updatePrefs();
+		}
+		if (GUILayout.Toggle(useMusic == 3, "Carefree") != (useMusic == 3))
+		{
+			useMusic = 3;
+			PlayerPrefs.SetInt("useMusic", 3);
+			updatePrefs();
+		}
+
+		if (GUILayout.Toggle(useHypersound == 1, "HyperSound") != (useHypersound == 1))
+		{
+			useHypersound = ((useHypersound != 1) ? 1 : 0);
+			PlayerPrefs.SetInt("useHypersound", (useHypersound != 0) ? 1 : 0);
+			updatePrefs();
 		}
 	}
 
