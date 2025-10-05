@@ -172,64 +172,65 @@ public class Settings : MonoBehaviour
 		gyroCam = ((PlayerPrefs.GetInt("gyroCam", 0) != 0) ? true : false);
 	}
 
-	public void showDialogGame()//:33333
+	public void showDialogGame()
 	{
 		GUILayout.Label("Resolution:");
-		if (GUILayout.Button((Screen.fullScreen ? "Exit" : "Enter") + " Fullscreen (0)"))
+		if (GUILayout.Button((!Screen.fullScreen ?
+            "Enter" :
+            "Exit") + " Fullscreen (0)"))
 		{
 			toggleFullscreen();
 		}
-		checked
-		{
-			if (Screen.fullScreen || Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.WindowsPlayer)
-			{
-				GUILayout.BeginHorizontal();
-				if ((Screen.resolutions[0].width < Screen.width || Screen.resolutions[0].height < Screen.height) && GUILayout.Button("<<", GUILayout.Width(28f)))
-				{
-					for (int num = Extensions.get_length((System.Array)Screen.resolutions) - 1; num >= 0; num--)
-					{
-						Resolution[] resolutions = Screen.resolutions;
-						if (resolutions[RuntimeServices.NormalizeArrayIndex(resolutions, num)].width < Screen.width)
-						{
-							Resolution[] resolutions2 = Screen.resolutions;
-							int width = resolutions2[RuntimeServices.NormalizeArrayIndex(resolutions2, num)].width;
-							Resolution[] resolutions3 = Screen.resolutions;
-							Screen.SetResolution(width, resolutions3[RuntimeServices.NormalizeArrayIndex(resolutions3, num)].height, Screen.fullScreen);
-							break;
-						}
-					}
-				}
-				GUILayout.Label(Screen.width + "X" + Screen.height);
-				Resolution[] resolutions4 = Screen.resolutions;
-				if (resolutions4[RuntimeServices.NormalizeArrayIndex(resolutions4, Extensions.get_length((System.Array)Screen.resolutions) - 1)].width <= Screen.width)
-				{
-					Resolution[] resolutions5 = Screen.resolutions;
-					if (resolutions5[RuntimeServices.NormalizeArrayIndex(resolutions5, Extensions.get_length((System.Array)Screen.resolutions) - 1)].height <= Screen.height)
-					{
-						goto IL_028f;
-					}
-				}
-				if (GUILayout.Button(">>", GUILayout.Width(28f)))
-				{
-					int i = 0;
-					Resolution[] resolutions6 = Screen.resolutions;
-					for (int length = resolutions6.Length; i < length; i++)
-					{
-						if (resolutions6[i].width > Screen.width)
-						{
-							Screen.SetResolution(resolutions6[i].width, resolutions6[i].height, Screen.fullScreen);
-							break;
-						}
-					}
-				}
-				goto IL_028f;
-			}
-			goto IL_0294;
-		}
-		IL_028f:
-		GUILayout.EndHorizontal();
-		goto IL_0294;
-		IL_0294:
+
+        if (
+            Screen.fullScreen ||
+            Application.platform == RuntimePlatform.OSXPlayer ||
+            Application.platform == RuntimePlatform.WindowsPlayer)
+        {
+            GUILayout.BeginHorizontal();
+            if (
+                (Screen.resolutions[0].width < Screen.width ||
+                    Screen.resolutions[0].height < Screen.height) &&
+                GUILayout.Button("<<", GUILayout.Width(28)))
+            {
+                for (int i = Screen.resolutions.Length - 1; i >= 0; i--)
+                {
+                    if (!((Screen.resolutions[i].width <= Screen.width &&
+                            Screen.resolutions[i].height < Screen.height) ||
+                        (Screen.resolutions[i].width < Screen.width &&
+                            Screen.resolutions[i].height <= Screen.height)))
+                    {
+                        continue;
+                    }
+                    Screen.SetResolution(
+                        Screen.resolutions[i].width,
+                        Screen.resolutions[i].height,
+                        Screen.fullScreen);
+                    break;
+                }
+            }
+            GUILayout.Label(Screen.width + "X" + Screen.height);
+            if (
+                (Screen.resolutions[Screen.resolutions.Length - 1].width > Screen.width ||
+                Screen.resolutions[Screen.resolutions.Length - 1].height > Screen.height) &&
+                GUILayout.Button(">>", GUILayout.Width(28)))
+            {
+                foreach (Resolution res in Screen.resolutions)
+                {
+                    if (!((res.width >= Screen.width &&
+                            res.height > Screen.height) ||
+                        (res.width > Screen.width &&
+                            res.height >= Screen.height))) continue;
+                    Screen.SetResolution(
+                        res.width,
+                        res.height,
+                        Screen.fullScreen);
+                    break;
+                }
+            }
+            GUILayout.EndHorizontal();
+        } //:33333
+		
 		GUILayout.FlexibleSpace();
 		GUILayout.Space(20f);
 		GUILayout.Label("Rendering Quality:");
