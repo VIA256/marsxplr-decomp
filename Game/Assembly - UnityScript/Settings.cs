@@ -403,26 +403,54 @@ public class Settings : MonoBehaviour
 	public void showDialogPlayer()
 	{
 		GUILayout.Space(20f);
+
 		if (resetTime > 0f)
 		{
-			GUILayout.Label("Reset In " + (10f - (Time.time - resetTime)));
+			GUILayout.Label(
+                "Reset In " +
+                (10f - (Time.time - resetTime)));
 		}
-		else if (resetTime > -1f && GUILayout.Button("Reset My Position (/r)"))
+		else if (
+            resetTime > -1f &&
+            GUILayout.Button("Reset My Position (/r)"))
 		{
 			resetTime = Time.time;
 			Game.Player.rigidbody.isKinematic = true;
-			Game.Messaging.broadcast(Game.Player.name + " Resetting in 10 seconds...");
+			Game.Messaging.broadcast(
+                Game.Player.name +
+                " Resetting in 10 seconds...");
 		}
+
 		if (zorbSpeed != 0f)
 		{
 			GUILayout.Space(10f);
-			if (GUILayout.Button((Game.PlayerVeh.zorbBall ? "Deactivate" : "Activate") + " My Xorb (/x)"))
+			if (GUILayout.Button(
+                (Game.PlayerVeh.zorbBall ?
+                    "Deactivate" :
+                    "Activate") +
+                " My Xorb (/x)"))
 			{
-				Game.Player.networkView.RPC("sZ", RPCMode.All, !Game.PlayerVeh.zorbBall);
+				Game.Player.networkView.RPC(
+                    "sZ",
+                    RPCMode.All,
+                    !Game.PlayerVeh.zorbBall);
 			}
 		}
+
 		GUILayout.Space(20f);
+
 		GUILayout.Label("Camera Mode:");
+
+        //Ride (1, alt)
+        //Chase (2)
+        //Soar (5)
+        //Spectate
+        //Wander
+
+        //Distance (3-4)
+        //GyRide (6)
+        //HyperCam
+
 		if (GUILayout.Toggle(camMode == 0, "Ride (1, alt)") != (camMode == 0))
 		{
 			camMode = 0;
@@ -448,23 +476,27 @@ public class Settings : MonoBehaviour
 			camMode = 4;
 			PlayerPrefs.SetInt("cam", 4);
 		}
+
 		if (GUILayout.Toggle(gyroCam, "GyRide Enabled (7)") != gyroCam)
 		{
 			gyroCam = !gyroCam;
 			PlayerPrefs.SetInt("gyroCam", gyroCam ? 1 : 0);
 		}
+
 		if (GUILayout.Toggle(flightCam, "HyperCam Enabled") != flightCam)
 		{
 			flightCam = !flightCam;
 			PlayerPrefs.SetInt("flightCam", flightCam ? 1 : 0);
 		}
-		float num;
+
+		float cg;
 		if (camMode == 0)
 		{
 			GUILayout.Space(10f);
 			GUILayout.Label("(Press (2) or (esc) keys to unlock your cursor)");
 			GUILayout.Space(10f);
 		}
+
 		else if (camMode == 1)
 		{
 			GUILayout.Space(5f);
@@ -486,20 +518,23 @@ public class Settings : MonoBehaviour
 			}
 			GUILayout.Space(5f);
 			GUILayout.Label("Chase Distance: (3-4)");
-			num = GUILayout.HorizontalSlider(camDist, 0f, 20f);
-			if (camDist != num)
+			cg = GUILayout.HorizontalSlider(camDist, 0f, 20f);
+			if (camDist != cg)
 			{
-				camDist = num;
-				PlayerPrefs.SetFloat("camDist", num);
+				camDist = cg;
+				PlayerPrefs.SetFloat("camDist", cg);
 			}
 		}
+
 		else if (camMode == 3 || camMode == 4)
 		{
 			GUILayout.Space(10f);
 			GUILayout.Label("(Move camera with UIOJKL keys)");
 			GUILayout.Space(10f);
 		}
+
 		GUILayout.FlexibleSpace();
+
 		GUILayout.FlexibleSpace();
 		GUILayout.Space(20f);
 		GUILayout.Label("Vehicle Color:");
@@ -507,69 +542,104 @@ public class Settings : MonoBehaviour
 		{
 			GUILayout.Label("(You are quarry, and therefore green)");
 		}
-		if (GUILayout.Button((!colorCustom) ? "Randomize Coloring" : "Random Coloring"))
+
+		if (GUILayout.Button((!colorCustom) ?
+            "Random Coloring" :
+            "Randomize Coloring"))
 		{
 			StartCoroutine_Auto(ramdomizeVehicleColor());
 		}
+
 		GUILayout.BeginHorizontal();
-		num = GUILayout.HorizontalSlider(Game.PlayerVeh.vehicleColor.r, 0f, 1f);
-		if (Game.PlayerVeh.vehicleColor.r != num)
+		cg = GUILayout.HorizontalSlider(
+            Game.PlayerVeh.vehicleColor.r,
+            0f,
+            1f);
+		if (Game.PlayerVeh.vehicleColor.r != cg)
 		{
-			Game.PlayerVeh.vehicleColor.r = num;
+			Game.PlayerVeh.vehicleColor.r = cg;
 			updateVehicleAccent();
 			updateVehicleColor();
 		}
 		GUILayout.Label("Red", GUILayout.Width(65f));
 		GUILayout.EndHorizontal();
 		GUILayout.BeginHorizontal();
-		num = GUILayout.HorizontalSlider(Mathf.Min(Mathf.Lerp(0.1f, 0.8f, (Game.PlayerVeh.vehicleColor.r + Game.PlayerVeh.vehicleColor.b) / 2f), Game.PlayerVeh.vehicleColor.g), 0f, Mathf.Lerp(0.1f, 0.8f, (Game.PlayerVeh.vehicleColor.r + Game.PlayerVeh.vehicleColor.b) / 2f));
-		if (Game.PlayerVeh.vehicleColor.g != num)
+		cg = GUILayout.HorizontalSlider(
+            Mathf.Min(
+                Mathf.Lerp(
+                    0.1f,
+                    0.8f,
+                    (Game.PlayerVeh.vehicleColor.r +
+                        Game.PlayerVeh.vehicleColor.b) / 2f),
+                Game.PlayerVeh.vehicleColor.g),
+            0f,
+            Mathf.Lerp(
+                0.1f,
+                0.8f,
+                (Game.PlayerVeh.vehicleColor.r +
+                    Game.PlayerVeh.vehicleColor.b) / 2f));
+		if (Game.PlayerVeh.vehicleColor.g != cg)
 		{
-			Game.PlayerVeh.vehicleColor.g = num;
+			Game.PlayerVeh.vehicleColor.g = cg;
 			updateVehicleAccent();
 			updateVehicleColor();
 		}
 		GUILayout.Label("Green", GUILayout.Width(65f));
 		GUILayout.EndHorizontal();
 		GUILayout.BeginHorizontal();
-		num = GUILayout.HorizontalSlider(Game.PlayerVeh.vehicleColor.b, 0f, 1f);
-		if (Game.PlayerVeh.vehicleColor.b != num)
+		cg = GUILayout.HorizontalSlider(
+            Game.PlayerVeh.vehicleColor.b,
+            0f,
+            1f);
+		if (Game.PlayerVeh.vehicleColor.b != cg)
 		{
-			Game.PlayerVeh.vehicleColor.b = num;
+			Game.PlayerVeh.vehicleColor.b = cg;
 			updateVehicleAccent();
 			updateVehicleColor();
 		}
 		GUILayout.Label("Blue", GUILayout.Width(65f));
 		GUILayout.EndHorizontal();
+
 		GUILayout.Space(5f);
 		GUILayout.Label("Accent Color:");
+
 		GUILayout.BeginHorizontal();
-		num = GUILayout.HorizontalSlider(Game.PlayerVeh.vehicleAccent.r, 0f, 1f);
-		if (Game.PlayerVeh.vehicleAccent.r != num)
+		cg = GUILayout.HorizontalSlider(
+            Game.PlayerVeh.vehicleAccent.r,
+            0f,
+            1f);
+		if (Game.PlayerVeh.vehicleAccent.r != cg)
 		{
-			Game.PlayerVeh.vehicleAccent.r = num;
+			Game.PlayerVeh.vehicleAccent.r = cg;
 			updateVehicleColor();
 		}
 		GUILayout.Label("Red", GUILayout.Width(65f));
 		GUILayout.EndHorizontal();
 		GUILayout.BeginHorizontal();
-		num = GUILayout.HorizontalSlider(Game.PlayerVeh.vehicleAccent.g, 0f, 1f);
-		if (Game.PlayerVeh.vehicleAccent.g != num)
+		cg = GUILayout.HorizontalSlider(
+            Game.PlayerVeh.vehicleAccent.g,
+            0f,
+            1f);
+		if (Game.PlayerVeh.vehicleAccent.g != cg)
 		{
-			Game.PlayerVeh.vehicleAccent.g = num;
+			Game.PlayerVeh.vehicleAccent.g = cg;
 			updateVehicleColor();
 		}
 		GUILayout.Label("Green", GUILayout.Width(65f));
 		GUILayout.EndHorizontal();
 		GUILayout.BeginHorizontal();
-		num = GUILayout.HorizontalSlider(Game.PlayerVeh.vehicleAccent.b, 0f, 1f);
-		if (Game.PlayerVeh.vehicleAccent.b != num)
+		cg = GUILayout.HorizontalSlider(
+            Game.PlayerVeh.vehicleAccent.b,
+            0f,
+            1f);
+		if (Game.PlayerVeh.vehicleAccent.b != cg)
 		{
-			Game.PlayerVeh.vehicleAccent.b = num;
+			Game.PlayerVeh.vehicleAccent.b = cg;
 			updateVehicleColor();
 		}
 		GUILayout.Label("Blue", GUILayout.Width(65f));
 		GUILayout.EndHorizontal();
+
 		GUILayout.FlexibleSpace();
 	}
 
