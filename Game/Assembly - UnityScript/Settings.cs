@@ -10,375 +10,141 @@ using UnityScript.Lang;
 [Serializable]
 public class Settings : MonoBehaviour
 {
-	[Serializable]
-	[CompilerGenerated]
-	internal sealed class ramdomizeVehicleColor_002470 : GenericGenerator<object>
-	{
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<object>, IEnumerator
-		{
-			internal Settings _0024self_504;
-
-			public _0024(Settings self_)
-			{
-				_0024self_504 = self_;
-			}
-
-			public override bool MoveNext()
-			{
-				switch (_state)
-				{
-				default:
-					if (!Game.PlayerVeh)
-					{
-						return Yield(2, null);
-					}
-					Game.PlayerVeh.vehicleColor.r = UnityEngine.Random.value * 0.7f;
-					Game.PlayerVeh.vehicleColor.b = UnityEngine.Random.value * 0.7f;
-					Game.PlayerVeh.vehicleColor.g = UnityEngine.Random.value * Mathf.Lerp(0.1f, 0.8f, (Game.PlayerVeh.vehicleColor.r + Game.PlayerVeh.vehicleColor.b) / 2f) * 0.7f;
-					_0024self_504.colorCustom = false;
-					_0024self_504.updateVehicleAccent();
-					_0024self_504.saveVehicleColor();
-					Game.PlayerVeh.setColor();
-					Yield(1, null);
-					break;
-				case 1:
-					break;
-				}
-				bool result = default(bool);
-				return result;
-			}
-		}
-
-		internal Settings _0024self_505;
-
-		public ramdomizeVehicleColor_002470(Settings self_)
-		{
-			_0024self_505 = self_;
-		}
-
-		public override IEnumerator<object> GetEnumerator()
-		{
-			return new _0024(_0024self_505);
-		}
-	}
-
 	[HideInInspector]
-	public int showBox;
-
+	public int showBox = 0;
 	[HideInInspector]
-	public bool simplified;
-
+	public bool simplified = true;
 	public AudioSource gameMusic;
-
 	public AudioClip[] musicTracks;
-
 	public PhysicMaterial zorbPhysics;
-
 	[HideInInspector]
-	public int renderLevel;
-
+	public int renderLevel = 0;
 	[HideInInspector]
-	public int renderAdjustMax;
-
+	public int renderAdjustMax = 0;
 	[HideInInspector]
-	public float renderViewCap;
-
-	public bool enteredfullscreen;
-
+	public float renderViewCap = 1000f;
+	public bool enteredfullscreen = false;
 	[HideInInspector]
-	public bool renderAutoAdjust;
-
+	public bool renderAutoAdjust = false;
 	[HideInInspector]
-	public int renderAdjustTime;
-
+	public int renderAdjustTime = 8;
 	[HideInInspector]
-	public bool showHints;
-
+	public bool showHints = true;
 	[HideInInspector]
-	public float serverUpdateTime;
-
+	public float serverUpdateTime = 0.00f;
 	[HideInInspector]
-	public float colorUpdateTime;
+	public float colorUpdateTime = 0.00f;
+	public bool colorCustom = false;
+	public bool disableHints = false;
+	public Color fogColor = Color.clear;
 
-	public bool colorCustom;
-
-	public bool disableHints;
-
-	public Color fogColor;
-
-	private bool useFog;
-
-	private bool detailedObjects;
-
-	private bool useParticles;
-
-	private bool useTrails;
-
-	public bool useMinimap;
-
-	private bool foliage;
-
-	private bool terrainQuality;
-
-	private bool terrainDetail;
-
-	private bool terrainLighting;
-
-	public int useMusic;
-
-	public bool useSfx;
-
-	public int useHypersound;
-
-	private bool syncFps;
-
-	private bool playerOnlyLight;
-
+	private bool useFog = true;
+	private bool detailedObjects = true;
+	private bool useParticles = true;
+	private bool useTrails = true;
+	public bool useMinimap = true;
+	private bool foliage = true;
+	private bool terrainQuality = true;
+	private bool terrainDetail = true;
+	private bool terrainLighting = true;
+	public int useMusic = 1;
+	public bool useSfx = true;
+	public int useHypersound = 0;
+	private bool syncFps = false;
+	private bool playerOnlyLight = false;
 	private Vector2 scrollPosition;
-
 	[HideInInspector]
 	public SSAOEffect camSSAO;
-
 	public ContrastStretchEffect camContrast;
 
 	[HideInInspector]
 	public string txt;
-
 	[HideInInspector]
 	public string str;
-
 	[HideInInspector]
 	public string serverString;
-
 	[HideInInspector]
 	public string bannedIPs;
-
 	public static string serverDefault;
 
-	public string serverWelcome;
+	public string serverWelcome = "";
 
-	public int camMode;
+	public int camMode = 0;
+	public int camChase = 0;
+	public float camDist = 0;
+	public bool flightCam = false;
+	public bool gyroCam = false;
 
-	public int camChase;
-
-	public float camDist;
-
-	public bool flightCam;
-
-	public bool gyroCam;
-
-	public float worldGrav;
-
-	public float worldFog;
-
-	public float worldViewDist;
-
-	public float lavaFog;
-
-	public float lavaAlt;
-
-	public int laserSpeed;
-
-	public float laserGrav;
-
-	public float laserRico;
-
+	public float worldGrav = -9.81f;
+	public float worldFog = 0.001f;
+	public float worldViewDist = 5000f;
+	public float lavaFog = 0.005f;
+	public float lavaAlt = -300.00f;
+	public int laserSpeed = 180;
+	public float laserGrav = 0f;
+	public float laserRico = 0f;
 	public bool laserLocking;
 
 	public float resetTime;
-
-	public bool lasersAllowed;
-
-	public bool lasersFatal;
-
-	public bool lasersOptHit;
-
-	public float ramoSpheres;
-
-	public float zorbSpeed;
-
-	public float zorbAgility;
-
-	public float zorbBounce;
-
-	public bool minimapAllowed;
-
-	public bool hideNames;
-
-	public bool botsCanFire;
-
-	public bool botsCanDrive;
+	public bool lasersAllowed = true;
+	public bool lasersFatal = false;
+	public bool lasersOptHit = false;
+	public float ramoSpheres = 0f;
+	public float zorbSpeed = 7f;
+	public float zorbAgility = 0f;
+	public float zorbBounce = 0.5f;
+	public bool minimapAllowed = true;
+	public bool hideNames = false;
+	public bool botsCanFire = true;
+	public bool botsCanDrive = true;
 
 	public int[] firepower;
-
 	public float[] laserLock;
 
-	public bool buggyAllowed;
+	public bool buggyAllowed = true;
+	public bool buggyFlightSlip = false;
+	public bool buggySmartSuspension = true;
+	public bool buggyNewPhysics = false;
+	public bool buggyAWD = true;
+	public float buggyCG = -0.40f;
+	public float buggyPower = 1.00f;
+	public float buggySpeed = 30.00f;
+	public bool buggyFlightLooPower = false;
+	public float buggyFlightDrag = 300.00f;
+	public float buggyFlightAgility = 1.00f;
+	public float buggyTr = 1.00f;
+	public float buggySh = 70.00f;
+	public float buggySl = 50.00f;
 
-	public bool buggyFlightSlip;
+	public bool tankAllowed = true;
+	public float tankPower = 2000.00f;
+	public float tankSpeed = 25.00f;
+	public float tankGrip = 0.1f;
+	public float tankCG = -0.20f;
 
-	public bool buggySmartSuspension;
+	public bool hoverAllowed = true;
+	public float hoverHeight = 15.00f;
+	public float hoverHover = 100.00f;
+	public float hoverRepel = 2.50f;
+	public float hoverThrust = 220.0f;
 
-	public bool buggyNewPhysics;
+	public bool jetAllowed = true;
+	public float jetHDrag = 0.01f;
+	public float jetDrag = 0.001f;
+	public int jetSteer = 20;
+	public float jetLift = 0.5f;
+	public int jetStall = 20;
 
-	public bool buggyAWD;
-
-	public float buggyCG;
-
-	public float buggyPower;
-
-	public float buggySpeed;
-
-	public bool buggyFlightLooPower;
-
-	public float buggyFlightDrag;
-
-	public float buggyFlightAgility;
-
-	public float buggyTr;
-
-	public float buggySh;
-
-	public float buggySl;
-
-	public bool tankAllowed;
-
-	public float tankPower;
-
-	public float tankSpeed;
-
-	public float tankGrip;
-
-	public float tankCG;
-
-	public bool hoverAllowed;
-
-	public float hoverHeight;
-
-	public float hoverHover;
-
-	public float hoverRepel;
-
-	public float hoverThrust;
-
-	public bool jetAllowed;
-
-	public float jetHDrag;
-
-	public float jetDrag;
-
-	public int jetSteer;
-
-	public float jetLift;
-
-	public int jetStall;
-
-	public int networkMode;
-
-	public int networkPhysics;
-
-	public float networkInterpolation;
-
-	public bool isAdmin;
-
-	public Settings()
-	{
-		showBox = 0;
-		simplified = true;
-		renderLevel = 0;
-		renderAdjustMax = 0;
-		renderViewCap = 1000f;
-		enteredfullscreen = false;
-		renderAutoAdjust = false;
-		renderAdjustTime = 8;
-		showHints = true;
-		serverUpdateTime = 0f;
-		colorUpdateTime = 0f;
-		colorCustom = false;
-		disableHints = false;
-		fogColor = Color.clear;
-		useFog = true;
-		detailedObjects = true;
-		useParticles = true;
-		useTrails = true;
-		useMinimap = true;
-		foliage = true;
-		terrainQuality = true;
-		terrainDetail = true;
-		terrainLighting = true;
-		useMusic = 1;
-		useSfx = true;
-		useHypersound = 0;
-		syncFps = false;
-		playerOnlyLight = false;
-		serverWelcome = string.Empty;
-		camMode = 0;
-		camChase = 0;
-		camDist = 0f;
-		flightCam = false;
-		gyroCam = false;
-		worldGrav = 9.81f * -1f;
-		worldFog = 0.001f;
-		worldViewDist = 5000f;
-		lavaFog = 0.005f;
-		lavaAlt = 300f * -1f;
-		laserSpeed = 180;
-		laserGrav = 0f;
-		laserRico = 0f;
-		lasersAllowed = true;
-		lasersFatal = false;
-		lasersOptHit = false;
-		ramoSpheres = 0f;
-		zorbSpeed = 7f;
-		zorbAgility = 0f;
-		zorbBounce = 0.5f;
-		minimapAllowed = true;
-		hideNames = false;
-		botsCanFire = true;
-		botsCanDrive = true;
-		buggyAllowed = true;
-		buggyFlightSlip = false;
-		buggySmartSuspension = true;
-		buggyNewPhysics = false;
-		buggyAWD = true;
-		buggyCG = 0.4f * -1f;
-		buggyPower = 1f;
-		buggySpeed = 30f;
-		buggyFlightLooPower = false;
-		buggyFlightDrag = 300f;
-		buggyFlightAgility = 1f;
-		buggyTr = 1f;
-		buggySh = 70f;
-		buggySl = 50f;
-		tankAllowed = true;
-		tankPower = 2000f;
-		tankSpeed = 25f;
-		tankGrip = 0.1f;
-		tankCG = 0.2f * -1f;
-		hoverAllowed = true;
-		hoverHeight = 15f;
-		hoverHover = 100f;
-		hoverRepel = 2.5f;
-		hoverThrust = 220f;
-		jetAllowed = true;
-		jetHDrag = 0.01f;
-		jetDrag = 0.001f;
-		jetSteer = 20;
-		jetLift = 0.5f;
-		jetStall = 20;
-		networkMode = 0;
-		networkPhysics = 0;
-		networkInterpolation = 0f;
-		isAdmin = false;
-	}
+	public int networkMode = 0;
+	public int networkPhysics = 0;
+	public float networkInterpolation = 0.0f;
+	public bool isAdmin = false;
 
 	public void Start()
 	{
 		simplified = true;
 		getPrefs();
-		updatePrefs();
+		updatePrefs(); //Init music
 		if (GameData.userName == "Aubrey (admin)")
 		{
 			isAdmin = true;
@@ -389,7 +155,7 @@ public class Settings : MonoBehaviour
 	{
 		renderLevel = PlayerPrefs.GetInt("renderLevel", 4);
 		renderViewCap = PlayerPrefs.GetFloat("viewCap", 1000f);
-		Application.targetFrameRate = checked((int)PlayerPrefs.GetFloat("targetFrameRate", 100f));
+		Application.targetFrameRate = (int)PlayerPrefs.GetFloat("targetFrameRate", 100f);
 		renderAutoAdjust = false;
 		showHints = ((PlayerPrefs.GetInt("showHints", 1) != 0) ? true : false);
 		useMusic = PlayerPrefs.GetInt("useMusic", 1);
@@ -406,7 +172,7 @@ public class Settings : MonoBehaviour
 		gyroCam = ((PlayerPrefs.GetInt("gyroCam", 0) != 0) ? true : false);
 	}
 
-	public void showDialogGame()
+	public void showDialogGame()//:33333
 	{
 		GUILayout.Label("Resolution:");
 		if (GUILayout.Button((Screen.fullScreen ? "Exit" : "Enter") + " Fullscreen (0)"))
@@ -1952,10 +1718,25 @@ public class Settings : MonoBehaviour
 		updatePrefs();
 	}
 
-	public IEnumerator ramdomizeVehicleColor()
-	{
-		return new ramdomizeVehicleColor_002470(this).GetEnumerator();
-	}
+    public IEnumerator ramdomizeVehicleColor()
+    {
+        while (!Game.PlayerVeh) yield return null;
+
+        Color pvcol = Game.PlayerVeh.vehicleColor;
+        pvcol.r = UnityEngine.Random.value * 0.7f;
+        pvcol.b = UnityEngine.Random.value * 0.7f;
+        pvcol.g = UnityEngine.Random.value * Mathf.Lerp(
+            0.1f,
+            0.8f,
+            ((Game.PlayerVeh.vehicleColor.r +
+                Game.PlayerVeh.vehicleColor.b) / 2)) * 0.7f;
+        Game.PlayerVeh.vehicleColor = pvcol;
+
+        colorCustom = false;
+        updateVehicleAccent();
+        saveVehicleColor();
+        Game.PlayerVeh.setColor();
+    }
 
 	public void updateVehicleAccent()
 	{
