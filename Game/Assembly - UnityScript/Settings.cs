@@ -35,21 +35,21 @@ public class Settings : MonoBehaviour
 	public bool disableHints = false;
 	public Color fogColor = Color.clear;
 
-	private bool useFog = true;
-	private bool detailedObjects = true;
-	private bool useParticles = true;
-	private bool useTrails = true;
+	// /*UNUSED, DEPRECATED*/ private bool useFog = true;
+    // /*UNUSED, DEPRECATED*/ private bool detailedObjects = true;
+    // /*UNUSED, DEPRECATED*/ private bool useParticles = true;
+    // /*UNUSED, DEPRECATED*/ private bool useTrails = true;
 	public bool useMinimap = true;
-	private bool foliage = true;
-	private bool terrainQuality = true;
-	private bool terrainDetail = true;
-	private bool terrainLighting = true;
+    // /*UNUSED, DEPRECATED*/ private bool foliage = true;
+    // /*UNUSED, DEPRECATED*/ private bool terrainQuality = true;
+    // /*UNUSED, DEPRECATED*/ private bool terrainDetail = true;
+    // /*UNUSED, DEPRECATED*/ private bool terrainLighting = true;
 	public int useMusic = 1;
 	public bool useSfx = true;
 	public int useHypersound = 0;
-	private bool syncFps = false;
-	private bool playerOnlyLight = false;
-	private Vector2 scrollPosition;
+    // /*UNUSED, DEPRECATED*/ private bool syncFps = false;
+    // /*UNUSED, DEPRECATED*/ private bool playerOnlyLight = false;
+    // /*UNUSED, DEPRECATED*/ private Vector2 scrollPosition;
 	[HideInInspector]
 	public SSAOEffect camSSAO;
 	public ContrastStretchEffect camContrast;
@@ -709,7 +709,7 @@ public class Settings : MonoBehaviour
 			GUILayout.Label("Active Players:");
 		}
 
-		GameObject[] gos;
+		// /*UNUSED*/ GameObject[] gos;
 		Vehicle veh;
 		VehicleNet vehNet;
         foreach (DictionaryEntry plrE in Game.Players)

@@ -29,7 +29,7 @@ public class Skidmarks : MonoBehaviour
     //the lower this value, the smoother the generated tracks
 	private float updateRate = 0.2f;
 
-	private int indexShift = 0;
+	// /*UNUSED*/ private int indexShift = 0;
 	private int numMarks = 0;
 	private float updateTime = 0.0f;
 	private bool newTrackFlag = true;
