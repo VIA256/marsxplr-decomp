@@ -2,10 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Boo.Lang;
-using Boo.Lang.Runtime;
 using UnityEngine;
-using UnityScript.Lang;
 
 [Serializable]
 public class Settings : MonoBehaviour
@@ -659,7 +656,6 @@ public class Settings : MonoBehaviour
                 i++)
 			{
 				GUILayout.Space(10f);
-				UnityRuntimeServices.Invoke(typeof(GUILayout), "Label", new object[1] { RuntimeServices.GetProperty(Game.Controller.unauthPlayers[i], "n") }, typeof(MonoBehaviour));
                 GUILayout.Label(Game.Controller.unauthPlayers[i].n);
 				GUILayout.TextArea(Game.Controller.unauthPlayers[i].p.externalIP);
 				GUILayout.BeginHorizontal();
@@ -1875,166 +1871,185 @@ public class Settings : MonoBehaviour
 	    6 Fantastic
 	    */
 
+        //This can be automatically overwritten by the _Core GUI, so make sure it is whatever the user set it to when entering a game.
 		renderLevel = PlayerPrefs.GetInt("renderLevel", 4);
+
+        //Laser Locking
 		laserLocking = false;
-		checked
+        for (int i = 0; i < laserLock.Length; i++)
+        {
+            if (laserLock[i] > 0f)
+            {
+                laserLocking = true;
+                break;
+            }
+        }
+
+        //LOD Distance
+		if (renderLevel > 4)
 		{
-			for (int i = 0; i < Extensions.get_length((System.Array)laserLock); i++)
+			World.lodDist = 1000;
+		}
+		else if (renderLevel > 3)
+		{
+			World.lodDist = 400;
+		}
+		else if (renderLevel > 2)
+		{
+			World.lodDist = 75;
+		}
+		else
+		{
+			World.lodDist = 0;
+		}
+
+        //Rendering Effects
+		if (renderLevel > 4)
+		{
+			camContrast.enabled = true;
+
+			if (renderLevel > 5)
 			{
-				float[] array = laserLock;
-				if (array[RuntimeServices.NormalizeArrayIndex(array, i)] > 0f)
-				{
-					laserLocking = true;
-					break;
-				}
-			}
-			if (renderLevel > 4)
-			{
-				World.lodDist = 1000;
-			}
-			else if (renderLevel > 3)
-			{
-				World.lodDist = 400;
-			}
-			else if (renderLevel > 2)
-			{
-				World.lodDist = 75;
-			}
-			else
-			{
-				World.lodDist = 0;
-			}
-			if (renderLevel > 4)
-			{
-				camContrast.enabled = true;
-				if (renderLevel > 5)
-				{
-					camSSAO.enabled = true;
-					camSSAO.m_Downsampling = 2;
-				}
-				else
-				{
-					camSSAO.enabled = false;
-				}
+				camSSAO.enabled = true;
+				camSSAO.m_Downsampling = 2;
 			}
 			else
 			{
 				camSSAO.enabled = false;
-				camContrast.enabled = false;
 			}
-			if (Game.Settings.networkPhysics == 2)
-			{
-				Network.sendRate = 10f;
-			}
-			else
-			{
-				Network.sendRate = 15f;
-			}
-			if (ramoSpheres == 0f)
-			{
-				zorbSpeed = 0f;
-			}
-			if (useMusic == 0)
-			{
-				gameMusic.enabled = false;
-				if (gameMusic.isPlaying)
-				{
-					gameMusic.Stop();
-				}
-			}
-			else
-			{
-				gameMusic.enabled = true;
-				gameMusic.pitch = 1f;
-				AudioSource audioSource = gameMusic;
-				AudioClip[] array2 = musicTracks;
-				audioSource.clip = array2[RuntimeServices.NormalizeArrayIndex(array2, useMusic - 1)];
-				if (!gameMusic.isPlaying)
-				{
-					gameMusic.Play();
-				}
-			}
-			GameObject.Find("MiniMap").camera.enabled = minimapAllowed && useMinimap;
 		}
-		QualitySettings.currentLevel = (QualityLevel)checked(renderLevel - 1);
-		Time.fixedDeltaTime = ((renderLevel <= 3) ? 0.025f : 0.02f);
-		Camera.main.farClipPlane = ((renderViewCap != 1000f) ? Mathf.Min(renderViewCap, worldViewDist) : worldViewDist);
-		worldFog = Mathf.Lerp(0.007f, 0.0003f, Camera.main.farClipPlane / 6000f);
-		if (World.terrains != null)
+		else
 		{
-			int j = 0;
-			Terrain[] terrains = World.terrains;
-			for (int length = terrains.Length; j < length; j = checked(j + 1))
+			camSSAO.enabled = false;
+			camContrast.enabled = false;
+		}
+
+		if (Game.Settings.networkPhysics == 2)
+		{
+			Network.sendRate = 10f;
+		}
+		else
+		{
+			Network.sendRate = 15f;
+		}
+
+		if (ramoSpheres == 0f)
+		{
+			zorbSpeed = 0f;
+		}
+		if (useMusic == 0)
+		{
+			gameMusic.enabled = false;
+			if (gameMusic.isPlaying)
 			{
-				terrains[j].treeCrossFadeLength = 30f;
+				gameMusic.Stop();
+			}
+		}
+		else
+		{
+			gameMusic.enabled = true;
+			gameMusic.pitch = 1f;
+            gameMusic.clip = musicTracks[useMusic - 1];
+			if (!gameMusic.isPlaying)
+			{
+				gameMusic.Play();
+			}
+		}
+
+		GameObject.Find("MiniMap").camera.enabled = minimapAllowed && useMinimap;
+		
+        QualitySettings.currentLevel = (QualityLevel)(renderLevel - 1);
+		
+        Time.fixedDeltaTime = ((renderLevel <= 3) ? 0.025f : 0.02f);
+		
+        Camera.main.farClipPlane = ((renderViewCap != 1000f) ?
+            Mathf.Min(renderViewCap, worldViewDist) :
+            worldViewDist);
+		worldFog = Mathf.Lerp(
+            0.007f,
+            0.0003f,
+            Camera.main.farClipPlane / 6000f);
+		
+        if (World.terrains != null)
+		{
+			foreach (Terrain trn in World.terrains)
+			{
+                //Details: Rocks, trees, etc
+				trn.treeCrossFadeLength = 30f;
 				if (renderLevel > 4)
-				{
-					terrains[j].detailObjectDistance = 300f;
-					terrains[j].treeDistance = 600f;
-					terrains[j].treeMaximumFullLODCount = 100;
-					terrains[j].treeBillboardDistance = 150f;
+				{   //Fantastic, Beautiful
+					trn.detailObjectDistance = 300f;
+					trn.treeDistance = 600f;
+					trn.treeMaximumFullLODCount = 100;
+					trn.treeBillboardDistance = 150f;
 				}
 				else if (renderLevel > 3)
-				{
-					terrains[j].detailObjectDistance = 200f;
-					terrains[j].treeDistance = 500f;
-					terrains[j].treeMaximumFullLODCount = 50;
-					terrains[j].treeBillboardDistance = 100f;
+				{   //Good
+					trn.detailObjectDistance = 200f;
+					trn.treeDistance = 500f;
+					trn.treeMaximumFullLODCount = 50;
+					trn.treeBillboardDistance = 100f;
 				}
 				else if (renderLevel > 2)
-				{
-					terrains[j].detailObjectDistance = 150f;
-					terrains[j].treeDistance = 300f;
-					terrains[j].treeMaximumFullLODCount = 10;
-					terrains[j].treeBillboardDistance = 75f;
+				{   //Simple
+					trn.detailObjectDistance = 150f;
+					trn.treeDistance = 300f;
+					trn.treeMaximumFullLODCount = 10;
+					trn.treeBillboardDistance = 75f;
 				}
 				else
-				{
-					terrains[j].detailObjectDistance = 0f;
-					terrains[j].treeDistance = 0f;
-					terrains[j].treeMaximumFullLODCount = 0;
-					terrains[j].treeBillboardDistance = 0f;
+				{   //Fast, Fastest
+					trn.detailObjectDistance = 0f;
+					trn.treeDistance = 0f;
+					trn.treeMaximumFullLODCount = 0;
+					trn.treeBillboardDistance = 0f;
 				}
-				terrains[j].basemapDistance = 1500f;
+
+                //Textures
+				trn.basemapDistance = 1500f;
+
+                //Heightmap Resolution
 				if (renderLevel > 5)
 				{
-					terrains[j].heightmapMaximumLOD = 0;
-					terrains[j].heightmapPixelError = 5f;
+					trn.heightmapMaximumLOD = 0;
+					trn.heightmapPixelError = 5f;
 				}
 				else if (renderLevel > 2)
 				{
-					terrains[j].heightmapMaximumLOD = 0;
-					terrains[j].heightmapPixelError = 15f;
+					trn.heightmapMaximumLOD = 0;
+					trn.heightmapPixelError = 15f;
 				}
 				else if (renderLevel > 1)
 				{
-					terrains[j].heightmapMaximumLOD = 0;
-					terrains[j].heightmapPixelError = 50f;
+					trn.heightmapMaximumLOD = 0;
+					trn.heightmapPixelError = 50f;
 				}
 				else
 				{
-					terrains[j].heightmapMaximumLOD = 1;
-					terrains[j].heightmapPixelError = 50f;
+					trn.heightmapMaximumLOD = 1;
+					trn.heightmapPixelError = 50f;
 				}
-				if (renderLevel > 4)
+
+				/*if (renderLevel > 4)
 				{
-					terrains[j].lighting = TerrainLighting.Pixel;
+					trn.lighting = TerrainLighting.Pixel;
 				}
 				else
 				{
-					terrains[j].lighting = TerrainLighting.Lightmap;
-				}
+					trn.lighting = TerrainLighting.Lightmap;
+				}*/
 			}
 		}
+
 		Physics.gravity = new Vector3(0f, worldGrav, 0f);
 		if ((bool)World.sea)
 		{
-			float y = lavaAlt;
-			Vector3 position = World.sea.position;
-			float num = (position.y = y);
-			Vector3 vector = (World.sea.position = position);
+			Vector3 wspos = World.sea.position;
+			wspos.y = lavaAlt;
+			World.sea.position = wspos;
 		}
 		zorbPhysics.bouncyness = zorbBounce;
+
 		updateObjects();
 	}
 
@@ -2066,10 +2081,16 @@ public class Settings : MonoBehaviour
 
 	public void updateVehicleAccent()
 	{
-		float num = 0.25f * -1f;
-		Game.PlayerVeh.vehicleAccent.r = Mathf.Max(0f, Game.PlayerVeh.vehicleColor.r + num);
-		Game.PlayerVeh.vehicleAccent.g = Mathf.Max(0f, Game.PlayerVeh.vehicleColor.g + num);
-		Game.PlayerVeh.vehicleAccent.b = Mathf.Max(0f, Game.PlayerVeh.vehicleColor.b + num);
+		float num = -0.25f;
+		Game.PlayerVeh.vehicleAccent.r = Mathf.Max(
+            0f,
+            Game.PlayerVeh.vehicleColor.r + num);
+		Game.PlayerVeh.vehicleAccent.g = Mathf.Max(
+            0f,
+            Game.PlayerVeh.vehicleColor.g + num);
+		Game.PlayerVeh.vehicleAccent.b = Mathf.Max(
+            0f,
+            Game.PlayerVeh.vehicleColor.b + num);
 	}
 
 	public void updateVehicleColor()
@@ -2088,71 +2109,135 @@ public class Settings : MonoBehaviour
 		PlayerPrefs.SetFloat("vehColAccR", Game.PlayerVeh.vehicleAccent.r);
 		PlayerPrefs.SetFloat("vehColAccG", Game.PlayerVeh.vehicleAccent.g);
 		PlayerPrefs.SetFloat("vehColAccB", Game.PlayerVeh.vehicleAccent.b);
-		Game.Player.networkView.RPC("sC", RPCMode.Others, Game.PlayerVeh.vehicleColor.r, Game.PlayerVeh.vehicleColor.g, Game.PlayerVeh.vehicleColor.b, Game.PlayerVeh.vehicleAccent.r, Game.PlayerVeh.vehicleAccent.g, Game.PlayerVeh.vehicleAccent.b);
+		Game.Player.networkView.RPC(
+            "sC",
+            RPCMode.Others,
+            Game.PlayerVeh.vehicleColor.r,
+            Game.PlayerVeh.vehicleColor.g,
+            Game.PlayerVeh.vehicleColor.b,
+            Game.PlayerVeh.vehicleAccent.r,
+            Game.PlayerVeh.vehicleAccent.g,
+            Game.PlayerVeh.vehicleAccent.b);
 	}
 
 	public string packServerPrefs()
 	{
-		return "lasr:" + (lasersAllowed ? 1 : 0) + ";" + "lsrh:" + (lasersFatal ? 1 : 0) + ";" + "lsro:" + (lasersOptHit ? 1 : 0) + ";" + "mmap:" + (minimapAllowed ? 1 : 0) + ";" + "camo:" + (hideNames ? 1 : 0) + ";" + "rorb:" + ramoSpheres + ";" + "xspd:" + zorbSpeed + ";" + "xagt:" + zorbAgility + ";" + "xbnc:" + zorbBounce + ";" + "grav:" + worldGrav * -1f + ";" + "wvis:" + worldViewDist + ";" + "lfog:" + lavaFog + ";" + "lalt:" + lavaAlt + ";" + "lspd:" + laserSpeed + ";" + "lgvt:" + laserGrav + ";" + "lrco:" + laserRico + ";" + "botfire:" + (botsCanFire ? 1 : 0) + ";" + "botdrive:" + (botsCanDrive ? 1 : 0) + ";" + "bugen:" + (buggyAllowed ? 1 : 0) + ";" + "bugflsl:" + (buggyFlightSlip ? 1 : 0) + ";" + "bugflpw:" + (buggyFlightLooPower ? 1 : 0) + ";" + "bugawd:" + (buggyAWD ? 1 : 0) + ";" + "bugspn:" + (buggySmartSuspension ? 1 : 0) + ";" + "bugfldr:" + buggyFlightDrag + ";" + "bugflag:" + buggyFlightAgility + ";" + "bugcg:" + buggyCG + ";" + "bugpow:" + buggyPower + ";" + "bugspd:" + buggySpeed + ";" + "bugtr:" + buggyTr + ";" + "bugsl:" + buggySl + ";" + "bugsh:" + buggySh + ";" + "bugfp:" + firepower[0] + ";" + "bugll:" + laserLock[0] + ";" + "tnken:" + (tankAllowed ? 1 : 0) + ";" + "tnkpow:" + tankPower + ";" + "tnkgrp:" + tankGrip + ";" + "tnkspd:" + tankSpeed + ";" + "tnkcg:" + tankCG + ";" + "tnkfp:" + firepower[2] + ";" + "tnkll:" + laserLock[2] + ";" + "hvren:" + (hoverAllowed ? 1 : 0) + ";" + "hvrhe:" + hoverHeight + ";" + "hvrhv:" + hoverHover + ";" + "hvrrp:" + hoverRepel + ";" + "hvrth:" + hoverThrust + ";" + "hvrfp:" + firepower[1] + ";" + "hvrll:" + laserLock[1] + ";" + "jeten:" + (jetAllowed ? 1 : 0) + ";" + "jethd:" + jetHDrag + ";" + "jetd:" + jetDrag + ";" + "jets:" + jetSteer + ";" + "jetl:" + jetLift + ";" + "jetss:" + jetStall + ";" + "jetfp:" + firepower[3] + ";" + "jetll:" + laserLock[3] + ";" + "netm:" + networkMode + ";" + "netph:" + networkPhysics + ";" + "netin:" + networkInterpolation + ";" + string.Empty;
+		return
+            "lasr:" + (lasersAllowed ? 1 : 0) + ";" +
+            "lsrh:" + (lasersFatal ? 1 : 0) + ";" +
+            "lsro:" + (lasersOptHit ? 1 : 0) + ";" +
+            "mmap:" + (minimapAllowed ? 1 : 0) + ";" +
+            "camo:" + (hideNames ? 1 : 0) + ";" +
+            "rorb:" + ramoSpheres + ";" +
+            "xspd:" + zorbSpeed + ";" +
+            "xagt:" + zorbAgility + ";" +
+            "xbnc:" + zorbBounce + ";" +
+            "grav:" + worldGrav * -1f + ";" +
+            "wvis:" + worldViewDist + ";" +
+            "lfog:" + lavaFog + ";" +
+            "lalt:" + lavaAlt + ";" +
+            "lspd:" + laserSpeed + ";" +
+            "lgvt:" + laserGrav + ";" +
+            "lrco:" + laserRico + ";" +
+
+            "botfire:" + (botsCanFire ? 1 : 0) + ";" +
+            "botdrive:" + (botsCanDrive ? 1 : 0) + ";" +
+
+            "bugen:" + (buggyAllowed ? 1 : 0) + ";" +
+            "bugflsl:" + (buggyFlightSlip ? 1 : 0) + ";" +
+            "bugflpw:" + (buggyFlightLooPower ? 1 : 0) + ";" +
+            "bugawd:" + (buggyAWD ? 1 : 0) + ";" +
+            "bugspn:" + (buggySmartSuspension ? 1 : 0) + ";" +
+            "bugfldr:" + buggyFlightDrag + ";" +
+            "bugflag:" + buggyFlightAgility + ";" +
+            "bugcg:" + buggyCG + ";" +
+            "bugpow:" + buggyPower + ";" +
+            "bugspd:" + buggySpeed + ";" +
+            "bugtr:" + buggyTr + ";" +
+            "bugsl:" + buggySl + ";" +
+            "bugsh:" + buggySh + ";" +
+            "bugfp:" + firepower[0] + ";" +
+            "bugll:" + laserLock[0] + ";" +
+
+            "tnken:" + (tankAllowed ? 1 : 0) + ";" +
+            "tnkpow:" + tankPower + ";" +
+            "tnkgrp:" + tankGrip + ";" +
+            "tnkspd:" + tankSpeed + ";" +
+            "tnkcg:" + tankCG + ";" +
+            "tnkfp:" + firepower[2] + ";" +
+            "tnkll:" + laserLock[2] + ";" +
+
+            "hvren:" + (hoverAllowed ? 1 : 0) + ";" +
+            "hvrhe:" + hoverHeight + ";" +
+            "hvrhv:" + hoverHover + ";" +
+            "hvrrp:" + hoverRepel + ";" +
+            "hvrth:" + hoverThrust + ";" +
+            "hvrfp:" + firepower[1] + ";" +
+            "hvrll:" + laserLock[1] + ";" +
+
+            "jeten:" + (jetAllowed ? 1 : 0) + ";" +
+            "jethd:" + jetHDrag + ";" +
+            "jetd:" + jetDrag + ";" +
+            "jets:" + jetSteer + ";" +
+            "jetl:" + jetLift + ";" +
+            "jetss:" + jetStall + ";" +
+            "jetfp:" + firepower[3] + ";" +
+            "jetll:" + laserLock[3] + ";" +
+
+            "netm:" + networkMode + ";" +
+            "netph:" + networkPhysics + ";" +
+            "netin:" + networkInterpolation + ";" +
+        "";
 	}
 
 	public void updateObjects()
 	{
-		IEnumerator enumerator = UnityRuntimeServices.GetEnumerator(UnityEngine.Object.FindObjectsOfType(typeof(ParticleEmitter)));
-		while (enumerator.MoveNext())
-		{
-			ParticleEmitter particleEmitter = (ParticleEmitter)RuntimeServices.Coerce(enumerator.Current, typeof(ParticleEmitter));
-			particleEmitter.emit = ((renderLevel >= 3) ? true : false);
-			UnityRuntimeServices.Update(enumerator, particleEmitter);
-		}
-		IEnumerator enumerator2 = UnityRuntimeServices.GetEnumerator(UnityEngine.Object.FindObjectsOfType(typeof(Light)));
-		while (enumerator2.MoveNext())
-		{
-			Light light = (Light)RuntimeServices.Coerce(enumerator2.Current, typeof(Light));
-			if (!(light.name != "VehicleLight"))
-			{
-				light.enabled = false;
-				UnityRuntimeServices.Update(enumerator2, light);
-			}
-		}
-		IEnumerator enumerator3 = UnityRuntimeServices.GetEnumerator(UnityEngine.Object.FindObjectsOfType(typeof(GameObject)));
-		while (enumerator3.MoveNext())
-		{
-			GameObject gameObject = (GameObject)RuntimeServices.Coerce(enumerator3.Current, typeof(GameObject));
-			gameObject.SendMessage("OnPrefsUpdated", SendMessageOptions.DontRequireReceiver);
-			UnityRuntimeServices.Update(enumerator3, gameObject);
-		}
+        foreach (ParticleEmitter pE in FindObjectsOfType(typeof(ParticleEmitter)))
+        {
+            pE.emit = (renderLevel >= 3);
+        }
+
+        foreach (Light light in FindObjectsOfType(typeof(Light)))
+        {
+            if (light.name != "VehicleLight") continue;
+            light.enabled = false;
+        }
+
+        foreach (GameObject go in FindObjectsOfType(typeof(GameObject)))
+        {
+            go.SendMessage("OnPrefsUpdated", SendMessageOptions.DontRequireReceiver);
+        }
 	}
 
 	public void toggleFullscreen()
 	{
-		Resolution[] resolutions = Screen.resolutions;
-		checked
-		{
-			Resolution resolution = resolutions[RuntimeServices.NormalizeArrayIndex(resolutions, Extensions.get_length((System.Array)Screen.resolutions) - 1)];
-			if (!Screen.fullScreen)
-			{
-				Screen.SetResolution(resolution.width, resolution.height, true);
-				if (Application.platform == RuntimePlatform.OSXDashboardPlayer)
-				{
-					enteredfullscreen = true;
-				}
-				return;
-			}
-			if (Application.platform == RuntimePlatform.WindowsWebPlayer || Application.platform == RuntimePlatform.OSXWebPlayer || Application.platform == RuntimePlatform.OSXDashboardPlayer)
-			{
-				Screen.fullScreen = false;
-			}
-			else
-			{
-				Resolution[] resolutions2 = Screen.resolutions;
-				resolution = resolutions2[RuntimeServices.NormalizeArrayIndex(resolutions2, Extensions.get_length((System.Array)Screen.resolutions) - 2)];
-				Screen.SetResolution(resolution.width, resolution.height, false);
-			}
-			if (enteredfullscreen)
-			{
-				enteredfullscreen = false;
-			}
-		}
+		Resolution resolution = Screen.resolutions[Screen.resolutions.Length - 1];
+        if (!Screen.fullScreen)
+        {
+            Screen.SetResolution(resolution.width, resolution.height, true);
+            if (Application.platform == RuntimePlatform.OSXDashboardPlayer)
+            {
+                enteredfullscreen = true;
+            }
+        }
+        else
+        {
+            if (
+                Application.platform == RuntimePlatform.WindowsWebPlayer ||
+                Application.platform == RuntimePlatform.OSXWebPlayer ||
+                Application.platform == RuntimePlatform.OSXDashboardPlayer)
+            {
+                Screen.fullScreen = false;
+            }
+            else
+            {
+                resolution = Screen.resolutions[Screen.resolutions.Length - 2];
+                Screen.SetResolution(resolution.width, resolution.height, false);
+            }
+            if (enteredfullscreen)
+            {
+                enteredfullscreen = false;
+            }
+        }
 	}
 }
