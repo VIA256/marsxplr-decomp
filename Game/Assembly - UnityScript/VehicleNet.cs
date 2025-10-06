@@ -4,6 +4,25 @@ using UnityEngine;
 using UnityScript.Lang;
 
 [Serializable]
+public class State : System.Object
+{
+    public Vector3 p;
+    public Quaternion r;
+    public float t = 0.0f;
+    public float m = 0.0f;
+    public float n = 0.0f;
+
+    public State(Vector3 p, Quaternion r, float t, float m, float n)
+    {
+        this.p = p;
+        this.r = r;
+        this.t = t;
+        this.m = m;
+        this.n = n;
+    }
+}
+
+[Serializable]
 public class VehicleNet : MonoBehaviour
 {
 	public Vehicle vehicle;
