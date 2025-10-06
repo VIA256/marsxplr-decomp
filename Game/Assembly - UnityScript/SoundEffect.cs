@@ -8,7 +8,7 @@ public class SoundEffect : MonoBehaviour
 	{
 		if (!Game.Settings.useSfx)
 		{
-			UnityEngine.Object.Destroy(gameObject.GetComponent(typeof(AudioSource)));
+            Destroy(gameObject.GetComponent(typeof(AudioSource)));
 		}
 	}
 }
