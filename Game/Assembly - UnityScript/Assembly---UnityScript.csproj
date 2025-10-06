@@ -97,7 +97,6 @@
     <Compile Include="TankTrackSimple.cs" />
     <Compile Include="TerrainController.cs" />
     <Compile Include="ThrustCone.cs" />
-    <Compile Include="unauthPlayer.cs" />
     <Compile Include="Vehicle.cs" />
     <Compile Include="VehicleBot.cs" />
     <Compile Include="VehicleData.cs" />
