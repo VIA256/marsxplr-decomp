@@ -1,108 +1,180 @@
 using System;
 using System.Collections;
-using Boo.Lang.Runtime;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityScript.Lang;
 
 [Serializable]
 public class Tank : MonoBehaviour
 {
 	public Vehicle vehicle;
-
 	public GameObject tracks;
-
 	public GameObject tracksSimple;
-
-	public int tracksPerSide;
-
-	public float trackSpacing;
-
+	public int tracksPerSide = 3;
+	public float trackSpacing = 2.5f;
 	public GameObject superTracks;
-
 	public GameObject simpleTracks;
-
-	public Tank()
-	{
-		tracksPerSide = 3;
-		trackSpacing = 2.5f;
-	}
 
 	public void InitVehicle(Vehicle veh)
 	{
 		vehicle = veh;
-		UnityScript.Lang.Array array = new UnityScript.Lang.Array();
-		GameObject gameObject = null;
+
+		List<Material> materialAccents = new List<Material>();
+
+        //Build Tracks
+		GameObject track;
 		superTracks = new GameObject("Tracks");
 		superTracks.transform.parent = transform;
-		checked
+		for (int i = 0; i < tracksPerSide; i++)
 		{
+            //Left Side
+            track = (GameObject)Instantiate(
+                tracks,
+                transform.TransformPoint(new Vector3(
+                    -2,
+                    0,
+                    -(((tracksPerSide - 1) * trackSpacing) / 2) +
+                        i * trackSpacing)),
+                transform.rotation);
+            materialAccents.Add(
+                ((MeshRenderer)track.transform
+                .Find("Detailed/Track")
+                .GetComponent(typeof(MeshRenderer)))
+                .material);
+            materialAccents.Add(
+                ((MeshRenderer)track.transform
+                .Find("Detailed/Tread")
+                .GetComponent(typeof(MeshRenderer)))
+                .material);
+            materialAccents.Add(
+                ((MeshRenderer)track.transform
+                .Find("Simple")
+                .GetComponent(typeof(MeshRenderer)))
+                .material);
+            track.transform.parent = superTracks.transform;
+            //Right Side
+            track = (GameObject)Instantiate(
+                tracks,
+                transform.TransformPoint(new Vector3(
+                    2,
+                    0,
+                    -(((tracksPerSide - 1) * trackSpacing) / 2) +
+                        i * trackSpacing)),
+                transform.rotation);
+            materialAccents.Add(
+                ((MeshRenderer)track.transform
+                .Find("Detailed/Track")
+                .GetComponent(typeof(MeshRenderer)))
+                .material);
+            materialAccents.Add(
+                ((MeshRenderer)track.transform
+                .Find("Detailed/Tread")
+                .GetComponent(typeof(MeshRenderer)))
+                .material);
+            materialAccents.Add(
+                ((MeshRenderer)track.transform
+                .Find("Simple")
+                .GetComponent(typeof(MeshRenderer)))
+                .material);
+			track.transform.parent = superTracks.transform;
+            ((TankTrack)track.GetComponent(typeof(TankTrack))).rightSide = true;
+		}
+
+		if (!vehicle.networkView.isMine)
+		{
+			simpleTracks = new GameObject();
+			simpleTracks.transform.parent = transform;
 			for (int i = 0; i < tracksPerSide; i++)
 			{
-				gameObject = (GameObject)UnityEngine.Object.Instantiate(tracks, transform.TransformPoint(new Vector3(-2f, 0f, (float)(tracksPerSide - 1) * trackSpacing / 2f * -1f + (float)i * trackSpacing)), transform.rotation);
-				array.Add(RuntimeServices.GetProperty(gameObject.transform.Find("Detailed/Track").GetComponent(typeof(MeshRenderer)), "material"));
-				array.Add(RuntimeServices.GetProperty(gameObject.transform.Find("Detailed/Tread").GetComponent(typeof(MeshRenderer)), "material"));
-				array.Add(RuntimeServices.GetProperty(gameObject.transform.Find("Simple").GetComponent(typeof(MeshRenderer)), "material"));
-				gameObject.transform.parent = superTracks.transform;
-				gameObject = (GameObject)UnityEngine.Object.Instantiate(tracks, transform.TransformPoint(new Vector3(2f, 0f, (float)(tracksPerSide - 1) * trackSpacing / 2f * -1f + (float)i * trackSpacing)), transform.rotation);
-				array.Add(RuntimeServices.GetProperty(gameObject.transform.Find("Detailed/Track").GetComponent(typeof(MeshRenderer)), "material"));
-				array.Add(RuntimeServices.GetProperty(gameObject.transform.Find("Detailed/Tread").GetComponent(typeof(MeshRenderer)), "material"));
-				array.Add(RuntimeServices.GetProperty(gameObject.transform.Find("Simple").GetComponent(typeof(MeshRenderer)), "material"));
-				gameObject.transform.parent = superTracks.transform;
-				RuntimeServices.SetProperty(gameObject.GetComponent(typeof(TankTrack)), "rightSide", true);
+                //Left Side
+                track = (GameObject)Instantiate(
+                    tracks,
+                    transform.TransformPoint(new Vector3(
+                        -2,
+                        0.2f,
+                        -(((tracksPerSide - 1) * trackSpacing) / 2) +
+                            i * trackSpacing)),
+                    transform.rotation);
+                materialAccents.Add(
+                    ((MeshRenderer)track.transform
+                    .Find("Detailed/Track")
+                    .GetComponent(typeof(MeshRenderer)))
+                    .material);
+                materialAccents.Add(
+                    ((MeshRenderer)track.transform
+                    .Find("Detailed/Tread")
+                    .GetComponent(typeof(MeshRenderer)))
+                    .material);
+                materialAccents.Add(
+                    ((MeshRenderer)track.transform
+                    .Find("Simple")
+                    .GetComponent(typeof(MeshRenderer)))
+                    .material);
+                track.transform.parent = simpleTracks.transform;
+
+                //Right Side
+                track = (GameObject)Instantiate(
+                    tracks,
+                    transform.TransformPoint(new Vector3(
+                        2,
+                        0.2f,
+                        -(((tracksPerSide - 1) * trackSpacing) / 2) +
+                            i * trackSpacing)),
+                    transform.rotation);
+                materialAccents.Add(
+                    ((MeshRenderer)track.transform
+                    .Find("Detailed/Track")
+                    .GetComponent(typeof(MeshRenderer)))
+                    .material);
+                materialAccents.Add(
+                    ((MeshRenderer)track.transform
+                    .Find("Detailed/Tread")
+                    .GetComponent(typeof(MeshRenderer)))
+                    .material);
+                materialAccents.Add(
+                    ((MeshRenderer)track.transform
+                    .Find("Simple")
+                    .GetComponent(typeof(MeshRenderer)))
+                    .material);
+                track.transform.parent = simpleTracks.transform;
 			}
-			if (!vehicle.networkView.isMine)
-			{
-				simpleTracks = new GameObject();
-				simpleTracks.transform.parent = transform;
-				for (int i = 0; i < tracksPerSide; i++)
-				{
-					gameObject = (GameObject)UnityEngine.Object.Instantiate(tracksSimple, transform.TransformPoint(new Vector3(-2f, 0.2f, (float)(tracksPerSide - 1) * trackSpacing / 2f * -1f + (float)i * trackSpacing)), transform.rotation);
-					array.Add(RuntimeServices.GetProperty(gameObject.transform.Find("Detailed/Track").GetComponent(typeof(MeshRenderer)), "material"));
-					array.Add(RuntimeServices.GetProperty(gameObject.transform.Find("Detailed/Tread").GetComponent(typeof(MeshRenderer)), "material"));
-					array.Add(RuntimeServices.GetProperty(gameObject.transform.Find("Simple").GetComponent(typeof(MeshRenderer)), "material"));
-					gameObject.transform.parent = simpleTracks.transform;
-					gameObject = (GameObject)UnityEngine.Object.Instantiate(tracksSimple, transform.TransformPoint(new Vector3(2f, 0.2f, (float)(tracksPerSide - 1) * trackSpacing / 2f * -1f + (float)i * trackSpacing)), transform.rotation);
-					array.Add(RuntimeServices.GetProperty(gameObject.transform.Find("Detailed/Track").GetComponent(typeof(MeshRenderer)), "material"));
-					array.Add(RuntimeServices.GetProperty(gameObject.transform.Find("Detailed/Tread").GetComponent(typeof(MeshRenderer)), "material"));
-					array.Add(RuntimeServices.GetProperty(gameObject.transform.Find("Simple").GetComponent(typeof(MeshRenderer)), "material"));
-					gameObject.transform.parent = simpleTracks.transform;
-				}
-			}
-			else
-			{
-				TankMe tankMe = (TankMe)this.gameObject.AddComponent(typeof(TankMe));
-				tankMe.vehicle = vehicle;
-			}
-			vehicle.materialAccent = (Material[])array.ToBuiltin(typeof(Material));
-			if ((bool)World.@base)
-			{
-				transform.position = World.@base.position;
-			}
-			transform.localPosition = Vector3.zero;
 		}
+		else
+		{
+			TankMe tankMe = (TankMe)this.gameObject.AddComponent(typeof(TankMe));
+			tankMe.vehicle = vehicle;
+		}
+
+        vehicle.materialAccent = (Material[])materialAccents.ToArray();
+		
+        if ((bool)World.@base)
+        {   //DRAGONHERE: why we need to do this I don't know, but if we don't, we will hover in mid air on local client instances
+			transform.position = World.@base.position;
+		}
+        //DRAGONHERE: VERY STRANGE UNITY BUG that sets localposition to -3 if a tank is already present in world...
+		transform.localPosition = Vector3.zero;
 	}
 
 	public void Update()
 	{
-		if (!vehicle)
-		{
-			return;
-		}
-		float tankCG = Game.Settings.tankCG;
+        if (!vehicle) return;
+
 		Vector3 centerOfMass = vehicle.myRigidbody.centerOfMass;
-		float num = (centerOfMass.y = tankCG);
-		Vector3 vector = (vehicle.myRigidbody.centerOfMass = centerOfMass);
+        centerOfMass.y = Game.Settings.tankCG;
+		vehicle.myRigidbody.centerOfMass = centerOfMass;
+
 		if (!vehicle.networkView.isMine && (bool)vehicle.vehicleNet)
 		{
+            //Enable advanced physics
 			if (vehicle.vehicleNet.simulatePhysics && simpleTracks.active)
 			{
-				vehicle.myRigidbody.useGravity = true;
+                vehicle.myRigidbody.useGravity = true; //Gravity is simulated on the authoratative client instance that owns this tank - it just makes the networked instances jittery
 				simpleTracks.SetActiveRecursively(false);
 				superTracks.SetActiveRecursively(true);
 			}
+            //Disable advanced physics
 			else if (!vehicle.vehicleNet.simulatePhysics && superTracks.active)
 			{
-				vehicle.myRigidbody.useGravity = true;
+                vehicle.myRigidbody.useGravity = true; //Gravity is simulated on the authoratative client instance that owns this tank - it just makes the networked instances jittery
 				simpleTracks.SetActiveRecursively(true);
 				superTracks.SetActiveRecursively(false);
 			}
@@ -113,31 +185,39 @@ public class Tank : MonoBehaviour
 	{
 		if ((bool)superTracks)
 		{
-			IEnumerator enumerator = UnityRuntimeServices.GetEnumerator(superTracks.transform);
-			while (enumerator.MoveNext())
+			foreach(Transform track in superTracks.transform)
 			{
-				Transform transform = (Transform)RuntimeServices.Coerce(enumerator.Current, typeof(Transform));
-				RuntimeServices.SetProperty(transform.Find("Detailed/Tread").gameObject.GetComponent(typeof(MeshRenderer)), "enabled", level == 0);
-				UnityRuntimeServices.Update(enumerator, transform);
-				RuntimeServices.SetProperty(transform.Find("Detailed/Track").gameObject.GetComponent(typeof(MeshRenderer)), "enabled", level == 0);
-				UnityRuntimeServices.Update(enumerator, transform);
-				RuntimeServices.SetProperty(transform.Find("Simple").gameObject.GetComponent(typeof(MeshRenderer)), "enabled", level != 0);
-				UnityRuntimeServices.Update(enumerator, transform);
+                ((MeshRenderer)track
+                    .Find("Detailed/Tread")
+                    .gameObject.GetComponent(typeof(MeshRenderer))
+                    ).enabled = (level == 0);
+                ((MeshRenderer)track
+                    .Find("Detailed/Track")
+                    .gameObject.GetComponent(typeof(MeshRenderer))
+                    ).enabled = (level == 0);
+                ((MeshRenderer)track
+                    .Find("Simple")
+                    .gameObject.GetComponent(typeof(MeshRenderer))
+                    ).enabled = (level != 0);
 			}
 		}
 		if ((bool)simpleTracks)
 		{
-			IEnumerator enumerator2 = UnityRuntimeServices.GetEnumerator(simpleTracks.transform);
-			while (enumerator2.MoveNext())
-			{
-				Transform transform2 = (Transform)RuntimeServices.Coerce(enumerator2.Current, typeof(Transform));
-				RuntimeServices.SetProperty(transform2.Find("Detailed/Tread").gameObject.GetComponent(typeof(MeshRenderer)), "enabled", level == 0);
-				UnityRuntimeServices.Update(enumerator2, transform2);
-				RuntimeServices.SetProperty(transform2.Find("Detailed/Track").gameObject.GetComponent(typeof(MeshRenderer)), "enabled", level == 0);
-				UnityRuntimeServices.Update(enumerator2, transform2);
-				RuntimeServices.SetProperty(transform2.Find("Simple").gameObject.GetComponent(typeof(MeshRenderer)), "enabled", level != 0);
-				UnityRuntimeServices.Update(enumerator2, transform2);
-			}
+            foreach (Transform track in simpleTracks.transform)
+            {
+                ((MeshRenderer)track
+                    .Find("Detailed/Tread")
+                    .gameObject.GetComponent(typeof(MeshRenderer))
+                    ).enabled = (level == 0);
+                ((MeshRenderer)track
+                    .Find("Detailed/Track")
+                    .gameObject.GetComponent(typeof(MeshRenderer))
+                    ).enabled = (level == 0);
+                ((MeshRenderer)track
+                    .Find("Simple")
+                    .gameObject.GetComponent(typeof(MeshRenderer))
+                    ).enabled = (level != 0);
+            }
 		}
 	}
 }
