@@ -849,876 +849,1032 @@ public class Settings : MonoBehaviour
 
 	public void showDialogServer()
 	{
-		checked
+	    if (Game.Controller.isHost || isAdmin)
 		{
-			if (Game.Controller.isHost || isAdmin)
+			if (GUILayout.Button(">> Default All <<"))
 			{
-				if (GUILayout.Button(">> Default All <<"))
-				{
-					Game.Controller.networkView.RPC("sSS", RPCMode.All, serverDefault);
-				}
-				GUILayout.Space(20f);
-				GUILayout.Label("Server Name:");
-				string text = GUILayout.TextField(Game.Controller.serverName, 45);
-				if (text != Game.Controller.serverName)
-				{
-					Game.Controller.serverName = text;
-					updateServerPrefs();
-				}
-				GUILayout.Space(20f);
-				GUILayout.Label("Server Features:");
-				Game.Controller.serverHidden = GUILayout.Toggle(Game.Controller.serverHidden, "Hide Server from List");
-				if (Game.Controller.serverHidden && Game.Controller.hostRegistered)
-				{
-					Game.Controller.unregisterHost();
-					updateServerPrefs();
-				}
-				else if (!Game.Controller.serverHidden && !Game.Controller.hostRegistered)
-				{
-					Game.Controller.StartCoroutine_Auto(Game.Controller.registerHostSet());
-					updateServerPrefs();
-				}
-				GUILayout.BeginHorizontal();
-				GUILayout.Label("Password?");
-				text = GUILayout.TextField(Game.Controller.serverPassword);
-				if (text != Game.Controller.serverPassword)
-				{
-					Game.Controller.serverPassword = text;
-					updateServerPrefs();
-				}
-				GUILayout.EndHorizontal();
-				GUILayout.Label("Welcome Message:");
-				text = GUILayout.TextField(serverWelcome);
-				if (text != serverWelcome)
-				{
-					serverWelcome = text;
-					updateServerPrefs();
-				}
-				GUILayout.Space(20f);
-				GUILayout.Label("Game Features:");
-				if (GUILayout.Toggle(minimapAllowed, "Minimap enabled") != minimapAllowed)
-				{
-					minimapAllowed = !minimapAllowed;
-					updateServerPrefs();
-				}
-				if (GUILayout.Toggle(hideNames, "Camouflage Badges") != hideNames)
-				{
-					hideNames = !hideNames;
-					updateServerPrefs();
-				}
-				if (GUILayout.Toggle(ramoSpheres != 0f, "RORBs Enabled") != (ramoSpheres != 0f))
-				{
-					ramoSpheres = ((ramoSpheres == 0f) ? 0.5f : 0f);
-					if (ramoSpheres != 0f)
-					{
-						zorbSpeed = 7f;
-					}
-					updateServerPrefs();
-				}
-				float num;
+				Game.Controller.networkView.RPC(
+                    "sSS",
+                    RPCMode.All,
+                    serverDefault);
+			}
+
+			GUILayout.Space(20f);
+			GUILayout.Label("Server Name:");
+			string cm = GUILayout.TextField(Game.Controller.serverName, 45);
+			if (cm != Game.Controller.serverName)
+			{
+				Game.Controller.serverName = cm;
+				updateServerPrefs();
+			}
+
+			GUILayout.Space(20f);
+			GUILayout.Label("Server Features:");
+
+			Game.Controller.serverHidden = GUILayout.Toggle(
+                Game.Controller.serverHidden,
+                "Hide Server from List");
+			if (
+                Game.Controller.serverHidden &&
+                Game.Controller.hostRegistered)
+			{
+				Game.Controller.unregisterHost();
+				updateServerPrefs();
+			}
+			else if (
+                !Game.Controller.serverHidden &&
+                !Game.Controller.hostRegistered)
+			{
+				Game.Controller.StartCoroutine_Auto(Game.Controller.registerHostSet());
+				updateServerPrefs();
+			}
+
+			GUILayout.BeginHorizontal();
+			GUILayout.Label("Password?");
+			cm = GUILayout.TextField(Game.Controller.serverPassword);
+			if (cm != Game.Controller.serverPassword)
+			{
+				Game.Controller.serverPassword = cm;
+				updateServerPrefs();
+			}
+			GUILayout.EndHorizontal();
+
+			GUILayout.Label("Welcome Message:");
+			cm = GUILayout.TextField(serverWelcome);
+			if (cm != serverWelcome)
+			{
+				serverWelcome = cm;
+				updateServerPrefs();
+			}
+
+			GUILayout.Space(20f);
+			GUILayout.Label("Game Features:");
+
+			if (GUILayout.Toggle(
+                minimapAllowed,
+                "Minimap enabled") != minimapAllowed)
+			{
+				minimapAllowed = !minimapAllowed;
+				updateServerPrefs();
+			}
+
+			if (GUILayout.Toggle(
+                hideNames,
+                "Camouflage Badges") != hideNames)
+			{
+				hideNames = !hideNames;
+				updateServerPrefs();
+			}
+
+			if (GUILayout.Toggle(
+                ramoSpheres != 0f,
+                "RORBs Enabled") != (ramoSpheres != 0f))
+			{
+				ramoSpheres = ((ramoSpheres == 0f) ? 0.5f : 0f);
 				if (ramoSpheres != 0f)
 				{
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(ramoSpheres, 0.001f, 1f);
-					if (ramoSpheres != num)
-					{
-						ramoSpheres = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Size", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					if (GUILayout.Toggle(zorbSpeed != 0f, "XORBs Available") != (zorbSpeed != 0f))
-					{
-						zorbSpeed = ((zorbSpeed == 0f) ? 7 : 0);
-						updateServerPrefs();
-					}
-					if (zorbSpeed != 0f)
-					{
-						GUILayout.BeginHorizontal();
-						num = GUILayout.HorizontalSlider(zorbSpeed, 0.001f, 14f);
-						if (zorbSpeed != num)
-						{
-							zorbSpeed = num;
-							updateServerPrefs();
-						}
-						GUILayout.Label("X Speed", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal();
-						num = GUILayout.HorizontalSlider(zorbAgility, -7f, 7f);
-						if (zorbAgility != num)
-						{
-							zorbAgility = num;
-							updateServerPrefs();
-						}
-						GUILayout.Label("X Agility", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal();
-						num = GUILayout.HorizontalSlider(zorbBounce, 0f, 1f);
-						if (zorbBounce != num)
-						{
-							zorbBounce = num;
-							updateServerPrefs();
-						}
-						GUILayout.Label("X Bounce", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-					}
-					GUILayout.Space(10f);
+					zorbSpeed = 7f;
 				}
-				if (GUILayout.Toggle(lasersAllowed, "Lasers enabled") != lasersAllowed)
+				updateServerPrefs();
+			}
+
+			float cg;
+			if (ramoSpheres != 0f)
+			{
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(
+                    ramoSpheres,
+                    0.001f,
+                    1f);
+				if (ramoSpheres != cg)
 				{
-					lasersAllowed = !lasersAllowed;
+					ramoSpheres = cg;
 					updateServerPrefs();
 				}
+				GUILayout.Label("Size", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				if (GUILayout.Toggle(
+                    zorbSpeed != 0f,
+                    "XORBs Available") != (zorbSpeed != 0f))
+				{
+					zorbSpeed = ((zorbSpeed == 0f) ? 7 : 0);
+					updateServerPrefs();
+				}
+
+				if (zorbSpeed != 0f)
+				{
+					GUILayout.BeginHorizontal();
+					cg = GUILayout.HorizontalSlider(zorbSpeed, 0.001f, 14f);
+					if (zorbSpeed != cg)
+					{
+						zorbSpeed = cg;
+						updateServerPrefs();
+					}
+					GUILayout.Label("X Speed", GUILayout.Width(65f));
+					GUILayout.EndHorizontal();
+
+					GUILayout.BeginHorizontal();
+					cg = GUILayout.HorizontalSlider(zorbAgility, -7f, 7f);
+					if (zorbAgility != cg)
+					{
+						zorbAgility = cg;
+						updateServerPrefs();
+					}
+					GUILayout.Label("X Agility", GUILayout.Width(65f));
+					GUILayout.EndHorizontal();
+
+					GUILayout.BeginHorizontal();
+					cg = GUILayout.HorizontalSlider(zorbBounce, 0f, 1f);
+					if (zorbBounce != cg)
+					{
+						zorbBounce = cg;
+						updateServerPrefs();
+					}
+					GUILayout.Label("X Bounce", GUILayout.Width(65f));
+					GUILayout.EndHorizontal();
+
+				}
+
+				GUILayout.Space(10f);
+			}
+
+			if (GUILayout.Toggle(
+                lasersAllowed,
+                "Lasers enabled") != lasersAllowed)
+			{
+				lasersAllowed = !lasersAllowed;
+				updateServerPrefs();
+			}
+
+			if (lasersAllowed)
+			{
+				if (
+                    ramoSpheres != 0f &&
+                    GUILayout.Toggle(lasersOptHit, "L Hit ORBs") != lasersOptHit)
+				{
+					lasersOptHit = !lasersOptHit;
+					updateServerPrefs();
+				}
+				if (GUILayout.Toggle(
+                    lasersFatal,
+                    "L Hits Rematerialize") != lasersFatal)
+				{
+					lasersFatal = !lasersFatal;
+					updateServerPrefs();
+				}
+
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(laserSpeed, 20f, 340f);
+				if ((float)laserSpeed != cg)
+				{
+					laserSpeed = (int)cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("Lsr Spd", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(laserGrav, 0f, 1f);
+				if (laserGrav != cg)
+				{
+					laserGrav = cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("Lsr Gvt", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(laserRico, 0f, 1f);
+				if (laserRico != cg)
+				{
+					laserRico = cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("Lsr Rco", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				GUILayout.Space(10f);
+			}
+
+			GUILayout.BeginHorizontal();
+			cg = GUILayout.HorizontalSlider(
+                worldGrav,
+                0.81f * -1f,
+                18.81f * -1f);
+			if (worldGrav != cg)
+			{
+				worldGrav = cg;
+				updateServerPrefs();
+			}
+			GUILayout.Label("Gravity", GUILayout.Width(65f));
+			GUILayout.EndHorizontal();
+
+			GUILayout.BeginHorizontal();
+			cg = GUILayout.HorizontalSlider(worldViewDist, 300f, 9700f);
+			if (worldViewDist != cg)
+			{
+				worldViewDist = cg;
+				updateServerPrefs();
+			}
+			GUILayout.Label("Visibility", GUILayout.Width(65f));
+			GUILayout.EndHorizontal();
+
+			if ((bool)World.sea)
+			{
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(
+                    lavaFog,
+                    0.015f,
+                    0.01f * -1f);
+				if (lavaFog != cg)
+				{
+					lavaFog = cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("Sea Vis", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(lavaAlt, -100f, 100f);
+				if (lavaAlt != cg)
+				{
+					lavaAlt = cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("Sea Alt", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+			}
+
+			GUILayout.Space(20f);
+			GUILayout.Label("Bots:");
+
+			if (GUILayout.Toggle(botsCanFire, "Can Fire") != botsCanFire)
+			{
+				botsCanFire = !botsCanFire;
+				updateServerPrefs();
+			}
+
+			if (GUILayout.Toggle(botsCanDrive, "Can Drive") != botsCanDrive)
+			{
+				botsCanDrive = !botsCanDrive;
+				updateServerPrefs();
+			}
+
+			GUILayout.Space(10f);
+
+			GUILayout.BeginHorizontal();
+			if (
+                GUILayout.Button("Add Bot") &&
+                Game.Controller.botsInGame < int.MaxValue)
+			{
+				Game.Controller.StartCoroutine_Auto(Game.Controller.addBot());
+			}
+			if (Game.Controller.botsInGame > 0)
+			{
+				GUILayout.Space(5f);
+				if (GUILayout.Button("Axe Bot"))
+				{
+					Game.Controller.StartCoroutine_Auto(Game.Controller.axeBot());
+				}
+			}
+			GUILayout.EndHorizontal();
+
+			GUILayout.Space(20f);
+			GUILayout.Label("Buggy:");
+
+			if (GUILayout.Toggle(buggyAllowed, "Available") != buggyAllowed)
+			{
+				buggyAllowed = !buggyAllowed;
+				updateServerPrefs();
+			}
+			if (buggyAllowed)
+			{
+				if (GUILayout.Toggle(
+                    buggyFlightSlip,
+                    "Stall Blending") != buggyFlightSlip)
+				{
+					buggyFlightSlip = !buggyFlightSlip;
+					updateServerPrefs();
+				}
+				if (GUILayout.Toggle(
+                    buggyFlightLooPower,
+                    "Powered Loops") != buggyFlightLooPower)
+				{
+					buggyFlightLooPower = !buggyFlightLooPower;
+					updateServerPrefs();
+				}
+				if (GUILayout.Toggle(
+                    buggySmartSuspension,
+                    "Smart Suspension") != buggySmartSuspension)
+				{
+					buggySmartSuspension = !buggySmartSuspension;
+					updateServerPrefs();
+				}
+
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(buggyFlightDrag, 50f, 550f);
+				if (buggyFlightDrag != cg)
+				{
+					buggyFlightDrag = cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("Fl Speed", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(
+                    buggyFlightAgility,
+                    0.5f,
+                    1.5f);
+				if (buggyFlightAgility != cg)
+				{
+					buggyFlightAgility = cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("Fl Agility", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(
+                    buggyCG,
+                    -0.1f,
+                    -0.7f);
+				if (buggyCG != cg)
+				{
+					buggyCG = cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("Stability", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(buggyPower, 0.5f, 1.5f);
+				if (buggyPower != cg)
+				{
+					buggyPower = cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("Power", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(buggySpeed, 5f, 55f);
+				if (buggySpeed != cg)
+				{
+					buggySpeed = cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("Speed", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(buggyTr, 0.1f, 1.9f);
+				if (buggyTr != cg)
+				{
+					buggyTr = cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("Traction", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(buggySh, 20f, 120f);
+				if (buggySh != cg)
+				{
+					buggySh = cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("Shocks", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
 				if (lasersAllowed)
 				{
-					if (ramoSpheres != 0f && GUILayout.Toggle(lasersOptHit, "L Hit ORBs") != lasersOptHit)
-					{
-						lasersOptHit = !lasersOptHit;
-						updateServerPrefs();
-					}
-					if (GUILayout.Toggle(lasersFatal, "L Hits Rematerialize") != lasersFatal)
-					{
-						lasersFatal = !lasersFatal;
-						updateServerPrefs();
-					}
 					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(laserSpeed, 20f, 340f);
-					if ((float)laserSpeed != num)
+					cg = GUILayout.HorizontalSlider(firepower[0], 0f, 3f);
+					if ((float)firepower[0] != cg)
 					{
-						laserSpeed = (int)num;
+						firepower[0] = (int)cg;
 						updateServerPrefs();
 					}
-					GUILayout.Label("Lsr Spd", GUILayout.Width(65f));
+					GUILayout.Label("Firepower", GUILayout.Width(65f));
 					GUILayout.EndHorizontal();
+
 					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(laserGrav, 0f, 1f);
-					if (laserGrav != num)
+					cg = GUILayout.HorizontalSlider(laserLock[0], 0f, 1f);
+					if (laserLock[0] != cg)
 					{
-						laserGrav = num;
+						laserLock[0] = cg;
 						updateServerPrefs();
 					}
-					GUILayout.Label("Lsr Gvt", GUILayout.Width(65f));
+					GUILayout.Label("Lsr Lck", GUILayout.Width(65f));
 					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(laserRico, 0f, 1f);
-					if (laserRico != num)
-					{
-						laserRico = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Lsr Rco", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.Space(10f);
 				}
+
+			}
+
+			GUILayout.Space(20f);
+			GUILayout.Label("Tank:");
+
+			if (GUILayout.Toggle(tankAllowed, "Available") != tankAllowed)
+			{
+				tankAllowed = !tankAllowed;
+				updateServerPrefs();
+			}
+
+			if (tankAllowed)
+			{
 				GUILayout.BeginHorizontal();
-				num = GUILayout.HorizontalSlider(worldGrav, 0.81f * -1f, 18.81f * -1f);
-				if (worldGrav != num)
+				cg = GUILayout.HorizontalSlider(tankCG, 1f, 1.4f * -1f);
+				if (tankCG != cg)
 				{
-					worldGrav = num;
+					tankCG = cg;
 					updateServerPrefs();
 				}
-				GUILayout.Label("Gravity", GUILayout.Width(65f));
+				GUILayout.Label("Stability", GUILayout.Width(65f));
 				GUILayout.EndHorizontal();
+
 				GUILayout.BeginHorizontal();
-				num = GUILayout.HorizontalSlider(worldViewDist, 300f, 9700f);
-				if (worldViewDist != num)
+				cg = GUILayout.HorizontalSlider(tankGrip, 0f, 0.2f);
+				if (tankGrip != cg)
 				{
-					worldViewDist = num;
+					tankGrip = cg;
 					updateServerPrefs();
 				}
-				GUILayout.Label("Visibility", GUILayout.Width(65f));
+				GUILayout.Label("Grip", GUILayout.Width(65f));
 				GUILayout.EndHorizontal();
-				if ((bool)World.sea)
-				{
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(lavaFog, 0.015f, 0.01f * -1f);
-					if (lavaFog != num)
-					{
-						lavaFog = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Sea Vis", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(lavaAlt, -100f, 100f);
-					if (lavaAlt != num)
-					{
-						lavaAlt = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Sea Alt", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-				}
-				GUILayout.Space(20f);
-				GUILayout.Label("Bots:");
-				if (GUILayout.Toggle(botsCanFire, "Can Fire") != botsCanFire)
-				{
-					botsCanFire = !botsCanFire;
-					updateServerPrefs();
-				}
-				if (GUILayout.Toggle(botsCanDrive, "Can Drive") != botsCanDrive)
-				{
-					botsCanDrive = !botsCanDrive;
-					updateServerPrefs();
-				}
-				GUILayout.Space(10f);
+
 				GUILayout.BeginHorizontal();
-				if (GUILayout.Button("Add Bot"))
+				cg = GUILayout.HorizontalSlider(tankSpeed, 10f, 40f);
+				if (tankSpeed != cg)
 				{
-					Game.Controller.StartCoroutine_Auto(Game.Controller.addBot());
+					tankSpeed = cg;
+					updateServerPrefs();
 				}
-				if (Game.Controller.botsInGame > 0)
-				{
-					GUILayout.Space(5f);
-					if (GUILayout.Button("Axe Bot"))
-					{
-						Game.Controller.StartCoroutine_Auto(Game.Controller.axeBot());
-					}
-				}
+				GUILayout.Label("Speed", GUILayout.Width(65f));
 				GUILayout.EndHorizontal();
-				GUILayout.Space(20f);
-				GUILayout.Label("Buggy:");
-				if (GUILayout.Toggle(buggyAllowed, "Available") != buggyAllowed)
-				{
-					buggyAllowed = !buggyAllowed;
-					updateServerPrefs();
-				}
-				if (buggyAllowed)
-				{
-					if (GUILayout.Toggle(buggyFlightSlip, "Stall Blending") != buggyFlightSlip)
-					{
-						buggyFlightSlip = !buggyFlightSlip;
-						updateServerPrefs();
-					}
-					if (GUILayout.Toggle(buggyFlightLooPower, "Powered Loops") != buggyFlightLooPower)
-					{
-						buggyFlightLooPower = !buggyFlightLooPower;
-						updateServerPrefs();
-					}
-					if (GUILayout.Toggle(buggySmartSuspension, "Smart Suspension") != buggySmartSuspension)
-					{
-						buggySmartSuspension = !buggySmartSuspension;
-						updateServerPrefs();
-					}
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(buggyFlightDrag, 50f, 550f);
-					if (buggyFlightDrag != num)
-					{
-						buggyFlightDrag = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Fl Speed", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(buggyFlightAgility, 0.5f, 1.5f);
-					if (buggyFlightAgility != num)
-					{
-						buggyFlightAgility = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Fl Agility", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(buggyCG, 0.1f * -1f, 0.7f * -1f);
-					if (buggyCG != num)
-					{
-						buggyCG = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Stability", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(buggyPower, 0.5f, 1.5f);
-					if (buggyPower != num)
-					{
-						buggyPower = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Power", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(buggySpeed, 5f, 55f);
-					if (buggySpeed != num)
-					{
-						buggySpeed = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Speed", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(buggyTr, 0.1f, 1.9f);
-					if (buggyTr != num)
-					{
-						buggyTr = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Traction", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(buggySh, 20f, 120f);
-					if (buggySh != num)
-					{
-						buggySh = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Shocks", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					if (lasersAllowed)
-					{
-						GUILayout.BeginHorizontal();
-						num = GUILayout.HorizontalSlider(firepower[0], 0f, 3f);
-						if ((float)firepower[0] != num)
-						{
-							firepower[0] = (int)num;
-							updateServerPrefs();
-						}
-						GUILayout.Label("Firepower", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal();
-						num = GUILayout.HorizontalSlider(laserLock[0], 0f, 1f);
-						if (laserLock[0] != num)
-						{
-							laserLock[0] = num;
-							updateServerPrefs();
-						}
-						GUILayout.Label("Lsr Lck", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-					}
-				}
-				GUILayout.Space(20f);
-				GUILayout.Label("Tank:");
-				if (GUILayout.Toggle(tankAllowed, "Available") != tankAllowed)
-				{
-					tankAllowed = !tankAllowed;
-					updateServerPrefs();
-				}
-				if (tankAllowed)
-				{
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(tankCG, 1f, 1.4f * -1f);
-					if (tankCG != num)
-					{
-						tankCG = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Stability", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(tankGrip, 0f, 0.2f);
-					if (tankGrip != num)
-					{
-						tankGrip = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Grip", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(tankSpeed, 10f, 40f);
-					if (tankSpeed != num)
-					{
-						tankSpeed = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Speed", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(tankPower, 500f, 3500f);
-					if (tankPower != num)
-					{
-						tankPower = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Power", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					if (lasersAllowed)
-					{
-						GUILayout.BeginHorizontal();
-						num = GUILayout.HorizontalSlider(firepower[2], 0f, 3f);
-						if ((float)firepower[2] != num)
-						{
-							firepower[2] = (int)num;
-							updateServerPrefs();
-						}
-						GUILayout.Label("Firepower", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal();
-						num = GUILayout.HorizontalSlider(laserLock[2], 0f, 1f);
-						if (laserLock[2] != num)
-						{
-							laserLock[2] = num;
-							updateServerPrefs();
-						}
-						GUILayout.Label("Lsr Lck", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-					}
-				}
-				GUILayout.Space(20f);
-				GUILayout.Label("Hovercraft:");
-				if (GUILayout.Toggle(hoverAllowed, "Available") != hoverAllowed)
-				{
-					hoverAllowed = !hoverAllowed;
-					updateServerPrefs();
-				}
-				if (hoverAllowed)
-				{
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(hoverHeight, 5f, 25f);
-					if (hoverHeight != num)
-					{
-						hoverHeight = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Height", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(hoverHover, 20f, 180f);
-					if (hoverHover != num)
-					{
-						hoverHover = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Hover", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(hoverRepel, 0.5f, 4.5f);
-					if (hoverRepel != num)
-					{
-						hoverRepel = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Repulsion", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(hoverThrust, 20f, 420f);
-					if (hoverThrust != num)
-					{
-						hoverThrust = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Thrust", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					if (lasersAllowed)
-					{
-						GUILayout.BeginHorizontal();
-						num = GUILayout.HorizontalSlider(firepower[1], 0f, 3f);
-						if ((float)firepower[1] != num)
-						{
-							firepower[1] = (int)num;
-							updateServerPrefs();
-						}
-						GUILayout.Label("Firepower", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal();
-						num = GUILayout.HorizontalSlider(laserLock[1], 0f, 1f);
-						if (laserLock[1] != num)
-						{
-							laserLock[1] = num;
-							updateServerPrefs();
-						}
-						GUILayout.Label("Lsr Lck", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-					}
-				}
-				GUILayout.Space(20f);
-				GUILayout.Label("Jet:");
-				if (GUILayout.Toggle(jetAllowed, "Available") != jetAllowed)
-				{
-					jetAllowed = !jetAllowed;
-					updateServerPrefs();
-				}
-				if (jetAllowed)
-				{
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(jetHDrag, 0.005f, 0.015f);
-					if (jetHDrag != num)
-					{
-						jetHDrag = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("HoverDrag", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(jetDrag, 0.0005f, 0.0015f);
-					if (jetDrag != num)
-					{
-						jetDrag = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Drag", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(jetSteer, 5f, 35f);
-					if ((float)jetSteer != num)
-					{
-						jetSteer = (int)num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Agility", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(jetLift, 0.1f, 0.9f);
-					if (jetLift != num)
-					{
-						jetLift = num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Lift", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					num = GUILayout.HorizontalSlider(jetStall, 1f, 39f);
-					if ((float)jetStall != num)
-					{
-						jetStall = (int)num;
-						updateServerPrefs();
-					}
-					GUILayout.Label("Stall", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					if (lasersAllowed)
-					{
-						GUILayout.BeginHorizontal();
-						num = GUILayout.HorizontalSlider(firepower[3], 0f, 3f);
-						if ((float)firepower[3] != num)
-						{
-							firepower[3] = (int)num;
-							updateServerPrefs();
-						}
-						GUILayout.Label("Firepower", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal();
-						num = GUILayout.HorizontalSlider(laserLock[3], 0f, 1f);
-						if (laserLock[3] != num)
-						{
-							laserLock[3] = num;
-							updateServerPrefs();
-						}
-						GUILayout.Label("Lsr Lck", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-					}
-				}
-				GUILayout.Space(20f);
-				GUILayout.Label("Network Mode:");
-				if (GUILayout.Toggle(networkMode == 0, "UDP") != (networkMode == 0))
-				{
-					networkMode = 0;
-					updateServerPrefs();
-				}
-				if (GUILayout.Toggle(networkMode == 1, "RDC") != (networkMode == 1))
-				{
-					networkMode = 1;
-					updateServerPrefs();
-				}
-				if (GUILayout.Toggle(networkMode == 2, "RPC") != (networkMode == 2))
-				{
-					networkMode = 2;
-					updateServerPrefs();
-				}
-				if (networkMode == 0)
-				{
-					GUILayout.Label("\"UDP\" is the fastest mode, but may result in players with \"No Connection\"");
-				}
-				else if (networkMode == 1)
-				{
-					GUILayout.Label("\"RDC\" sacrifices speed for reliability");
-				}
-				else
-				{
-					GUILayout.Label("\"RPC\" guarantees reliability at the expense of speed");
-				}
-				GUILayout.Space(20f);
-				GUILayout.Label("Network Physics:");
-				if (GUILayout.Toggle(networkPhysics == 0, "Advanced") != (networkPhysics == 0))
-				{
-					networkPhysics = 0;
-					updateServerPrefs();
-				}
-				if (GUILayout.Toggle(networkPhysics == 1, "Enhanced") != (networkPhysics == 1))
-				{
-					networkPhysics = 1;
-					updateServerPrefs();
-				}
-				if (GUILayout.Toggle(networkPhysics == 2, "Simplified") != (networkPhysics == 2))
-				{
-					networkPhysics = 2;
-					updateServerPrefs();
-				}
-				if (networkPhysics == 0)
-				{
-					GUILayout.Label("\"Advanced\" is optimized for smooth movement and realistic collisions over the internet");
-				}
-				else if (networkPhysics == 1)
-				{
-					GUILayout.Label("\"Enhanced\" provides maximum movement precision at the cost of higher processor and network load");
-				}
-				else
-				{
-					GUILayout.Label("\"Simplified\" provides smooth movement and maximum framerates in games which don't need highly accurate vehicle collisions");
-				}
-				GUILayout.Space(20f);
-				GUILayout.Label("Network Interpolation:");
+
 				GUILayout.BeginHorizontal();
-				num = GUILayout.HorizontalSlider(networkInterpolation, 0f, 0.5f);
-				if (networkInterpolation != num)
+				cg = GUILayout.HorizontalSlider(tankPower, 500f, 3500f);
+				if (tankPower != cg)
 				{
-					networkInterpolation = num;
+					tankPower = cg;
 					updateServerPrefs();
 				}
-				GUILayout.Label((!(networkInterpolation < 0.01f)) ? (networkInterpolation * 1000f + " ms") : "Auto", GUILayout.Width(65f));
+				GUILayout.Label("Power", GUILayout.Width(65f));
 				GUILayout.EndHorizontal();
+
+				if (lasersAllowed)
+				{
+					GUILayout.BeginHorizontal();
+					cg = GUILayout.HorizontalSlider(firepower[2], 0f, 3f);
+					if ((float)firepower[2] != cg)
+					{
+						firepower[2] = (int)cg;
+						updateServerPrefs();
+					}
+					GUILayout.Label("Firepower", GUILayout.Width(65f));
+					GUILayout.EndHorizontal();
+
+					GUILayout.BeginHorizontal();
+					cg = GUILayout.HorizontalSlider(laserLock[2], 0f, 1f);
+					if (laserLock[2] != cg)
+					{
+						laserLock[2] = cg;
+						updateServerPrefs();
+					}
+					GUILayout.Label("Lsr Lck", GUILayout.Width(65f));
+					GUILayout.EndHorizontal();
+				}
+			}
+
+			GUILayout.Space(20f);
+			GUILayout.Label("Hovercraft:");
+
+			if (GUILayout.Toggle(hoverAllowed, "Available") != hoverAllowed)
+			{
+				hoverAllowed = !hoverAllowed;
+				updateServerPrefs();
+			}
+
+			if (hoverAllowed)
+			{
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(hoverHeight, 5f, 25f);
+				if (hoverHeight != cg)
+				{
+					hoverHeight = cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("Height", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(hoverHover, 20f, 180f);
+				if (hoverHover != cg)
+				{
+					hoverHover = cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("Hover", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(hoverRepel, 0.5f, 4.5f);
+				if (hoverRepel != cg)
+				{
+					hoverRepel = cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("Repulsion", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(hoverThrust, 20f, 420f);
+				if (hoverThrust != cg)
+				{
+					hoverThrust = cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("Thrust", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				if (lasersAllowed)
+				{
+					GUILayout.BeginHorizontal();
+					cg = GUILayout.HorizontalSlider(firepower[1], 0f, 3f);
+					if ((float)firepower[1] != cg)
+					{
+						firepower[1] = (int)cg;
+						updateServerPrefs();
+					}
+					GUILayout.Label("Firepower", GUILayout.Width(65f));
+					GUILayout.EndHorizontal();
+
+					GUILayout.BeginHorizontal();
+					cg = GUILayout.HorizontalSlider(laserLock[1], 0f, 1f);
+					if (laserLock[1] != cg)
+					{
+						laserLock[1] = cg;
+						updateServerPrefs();
+					}
+					GUILayout.Label("Lsr Lck", GUILayout.Width(65f));
+					GUILayout.EndHorizontal();
+				}
+			}
+
+			GUILayout.Space(20f);
+			GUILayout.Label("Jet:");
+
+			if (GUILayout.Toggle(jetAllowed, "Available") != jetAllowed)
+			{
+				jetAllowed = !jetAllowed;
+				updateServerPrefs();
+			}
+
+			if (jetAllowed)
+			{
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(jetHDrag, 0.005f, 0.015f);
+				if (jetHDrag != cg)
+				{
+					jetHDrag = cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("HoverDrag", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(jetDrag, 0.0005f, 0.0015f);
+				if (jetDrag != cg)
+				{
+					jetDrag = cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("Drag", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(jetSteer, 5f, 35f);
+				if ((float)jetSteer != cg)
+				{
+					jetSteer = (int)cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("Agility", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(jetLift, 0.1f, 0.9f);
+				if (jetLift != cg)
+				{
+					jetLift = cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("Lift", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal();
+				cg = GUILayout.HorizontalSlider(jetStall, 1f, 39f);
+				if ((float)jetStall != cg)
+				{
+					jetStall = (int)cg;
+					updateServerPrefs();
+				}
+				GUILayout.Label("Stall", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				if (lasersAllowed)
+				{
+					GUILayout.BeginHorizontal();
+					cg = GUILayout.HorizontalSlider(firepower[3], 0f, 3f);
+					if ((float)firepower[3] != cg)
+					{
+						firepower[3] = (int)cg;
+						updateServerPrefs();
+					}
+					GUILayout.Label("Firepower", GUILayout.Width(65f));
+					GUILayout.EndHorizontal();
+
+					GUILayout.BeginHorizontal();
+					cg = GUILayout.HorizontalSlider(laserLock[3], 0f, 1f);
+					if (laserLock[3] != cg)
+					{
+						laserLock[3] = cg;
+						updateServerPrefs();
+					}
+					GUILayout.Label("Lsr Lck", GUILayout.Width(65f));
+					GUILayout.EndHorizontal();
+				}
+			}
+
+			GUILayout.Space(20f);
+			GUILayout.Label("Network Mode:");
+
+			if (GUILayout.Toggle(networkMode == 0, "UDP") != (networkMode == 0))
+			{
+				networkMode = 0;
+				updateServerPrefs();
+			}
+			if (GUILayout.Toggle(networkMode == 1, "RDC") != (networkMode == 1))
+			{
+				networkMode = 1;
+				updateServerPrefs();
+			}
+			if (GUILayout.Toggle(networkMode == 2, "RPC") != (networkMode == 2))
+			{
+				networkMode = 2;
+				updateServerPrefs();
+			}
+
+			if (networkMode == 0)
+			{
+				GUILayout.Label("\"UDP\" is the fastest mode, but may result in players with \"No Connection\"");
+			}
+			else if (networkMode == 1)
+			{
+				GUILayout.Label("\"RDC\" sacrifices speed for reliability");
 			}
 			else
 			{
-				GUILayout.Space(20f);
-				GUILayout.Label("(NOTE: all these parameters are adjustable only by the server host. You can't change anything in this window)");
-				GUILayout.Space(60f);
-				GUILayout.Toggle(minimapAllowed, "Minimap enabled");
-				GUILayout.Toggle(hideNames, "Camouflage Badges");
-				GUILayout.Toggle(ramoSpheres != 0f, "RORBs Enabled");
+				GUILayout.Label("\"RPC\" guarantees reliability at the expense of speed");
+			}
+
+			GUILayout.Space(20f);
+			GUILayout.Label("Network Physics:");
+
+			if (GUILayout.Toggle(networkPhysics == 0, "Advanced") != (networkPhysics == 0))
+			{
+				networkPhysics = 0;
+				updateServerPrefs();
+			}
+			if (GUILayout.Toggle(networkPhysics == 1, "Enhanced") != (networkPhysics == 1))
+			{
+				networkPhysics = 1;
+				updateServerPrefs();
+			}
+			if (GUILayout.Toggle(networkPhysics == 2, "Simplified") != (networkPhysics == 2))
+			{
+				networkPhysics = 2;
+				updateServerPrefs();
+			}
+
+			if (networkPhysics == 0)
+			{
+				GUILayout.Label("\"Advanced\" is optimized for smooth movement and realistic collisions over the internet");
+			}
+			else if (networkPhysics == 1)
+			{
+				GUILayout.Label("\"Enhanced\" provides maximum movement precision at the cost of higher processor and network load");
+			}
+			else
+			{
+				GUILayout.Label("\"Simplified\" provides smooth movement and maximum framerates in games which don't need highly accurate vehicle collisions");
+			}
+
+			GUILayout.Space(20f);
+			GUILayout.Label("Network Interpolation:");
+
+			GUILayout.BeginHorizontal();
+			cg = GUILayout.HorizontalSlider(networkInterpolation, 0f, 0.5f);
+			if (networkInterpolation != cg)
+			{
+				networkInterpolation = cg;
+				updateServerPrefs();
+			}
+			GUILayout.Label((!(networkInterpolation < 0.01f)) ? (networkInterpolation * 1000f + " ms") : "Auto", GUILayout.Width(65f));
+			GUILayout.EndHorizontal();
+
+		}
+		else
+		{
+			GUILayout.Space(20f);
+			GUILayout.Label("(NOTE: all these parameters are adjustable only by the server host. You can't change anything in this window)");
+			GUILayout.Space(60f);
+
+			GUILayout.Toggle(minimapAllowed, "Minimap enabled");
+			GUILayout.Toggle(hideNames, "Camouflage Badges");
+
+			GUILayout.Toggle(ramoSpheres != 0f, "RORBs Enabled");
+			if (ramoSpheres != 0f)
+			{
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(ramoSpheres, 0.001f, 1f);
+				GUILayout.Label("Size", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				GUILayout.Toggle(zorbSpeed != 0f, "XORBs Available");
+				if (zorbSpeed != 0f)
+				{
+					GUILayout.BeginHorizontal();
+					GUILayout.HorizontalSlider(zorbSpeed, 0.001f, 14f);
+					GUILayout.Label("X Speed", GUILayout.Width(65f));
+					GUILayout.EndHorizontal();
+					GUILayout.BeginHorizontal();
+					GUILayout.HorizontalSlider(zorbAgility, -7f, 7f);
+					GUILayout.Label("X Agility", GUILayout.Width(65f));
+					GUILayout.EndHorizontal();
+					GUILayout.BeginHorizontal();
+					GUILayout.HorizontalSlider(zorbBounce, 0f, 1f);
+					GUILayout.Label("X Bounce", GUILayout.Width(65f));
+					GUILayout.EndHorizontal();
+				}
+				GUILayout.Space(10f);
+			}
+
+			GUILayout.Toggle(lasersAllowed, "Lasers enabled");
+			if (lasersAllowed)
+			{
 				if (ramoSpheres != 0f)
 				{
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(ramoSpheres, 0.001f, 1f);
-					GUILayout.Label("Size", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.Toggle(zorbSpeed != 0f, "XORBs Available");
-					if (zorbSpeed != 0f)
-					{
-						GUILayout.BeginHorizontal();
-						GUILayout.HorizontalSlider(zorbSpeed, 0.001f, 14f);
-						GUILayout.Label("X Speed", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal();
-						GUILayout.HorizontalSlider(zorbAgility, -7f, 7f);
-						GUILayout.Label("X Agility", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal();
-						GUILayout.HorizontalSlider(zorbBounce, 0f, 1f);
-						GUILayout.Label("X Bounce", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-					}
-					GUILayout.Space(10f);
+					GUILayout.Toggle(lasersOptHit, "L Hit ORBs");
 				}
-				GUILayout.Toggle(lasersAllowed, "Lasers enabled");
+				GUILayout.Toggle(lasersFatal, "L Hits Rematerialize");
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(laserSpeed, 20f, 340f);
+				GUILayout.Label("Lsr Spd", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(laserGrav, 0f, 1f);
+				GUILayout.Label("Lsr Gvt", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(laserRico, 0f, 1f);
+				GUILayout.Label("Lsr Rco", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				GUILayout.Space(10f);
+			}
+			GUILayout.BeginHorizontal();
+
+			GUILayout.HorizontalSlider(worldGrav, 0.81f * -1f, 18.81f * -1f);
+			GUILayout.Label("Gravity", GUILayout.Width(65f));
+			GUILayout.EndHorizontal();
+
+			GUILayout.BeginHorizontal();
+			GUILayout.HorizontalSlider(worldViewDist, 500f, 9500f);
+			GUILayout.Label("Visibility", GUILayout.Width(65f));
+			GUILayout.EndHorizontal();
+
+			if ((bool)World.sea)
+			{
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(lavaFog, 0.015f, 0.01f * -1f);
+				GUILayout.Label("Lava Fog", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(lavaAlt, -100f, 100f);
+				GUILayout.Label("Lava Alt", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+			}
+
+			GUILayout.Space(20f);
+			GUILayout.Label("Bots:");
+			GUILayout.Toggle(botsCanFire, "Can Fire");
+			GUILayout.Toggle(botsCanDrive, "Can Drive");
+
+			GUILayout.Space(20f);
+			GUILayout.Label("Buggy:");
+			GUILayout.Toggle(buggyAllowed, "Available");
+			if (buggyAllowed)
+			{
+				GUILayout.Toggle(buggyFlightSlip, "Stall Blending");
+				GUILayout.Toggle(buggyFlightLooPower, "Powered Loops");
+				GUILayout.Toggle(buggySmartSuspension, "Smart Suspension");
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(buggyFlightDrag, 50f, 550f);
+				GUILayout.Label("Fl Speed", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(buggyFlightAgility, 0.5f, 1.5f);
+				GUILayout.Label("Fl Agility", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(buggyCG, 0.1f * -1f, 0.7f * -1f);
+				GUILayout.Label("Stability", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(buggyPower, 0.5f, 1.5f);
+				GUILayout.Label("Power", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(buggySpeed, 5f, 55f);
+				GUILayout.Label("Speed", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(buggyTr, 0.1f, 1.9f);
+				GUILayout.Label("Traction", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(buggySh, 20f, 120f);
+				GUILayout.Label("Shocks", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
 				if (lasersAllowed)
 				{
-					if (ramoSpheres != 0f)
-					{
-						GUILayout.Toggle(lasersOptHit, "L Hit ORBs");
-					}
-					GUILayout.Toggle(lasersFatal, "L Hits Rematerialize");
 					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(laserSpeed, 20f, 340f);
-					GUILayout.Label("Lsr Spd", GUILayout.Width(65f));
+					GUILayout.HorizontalSlider(firepower[0], 0f, 3f);
+					GUILayout.Label("Firepower", GUILayout.Width(65f));
 					GUILayout.EndHorizontal();
 					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(laserGrav, 0f, 1f);
-					GUILayout.Label("Lsr Gvt", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(laserRico, 0f, 1f);
-					GUILayout.Label("Lsr Rco", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.Space(10f);
-				}
-				GUILayout.BeginHorizontal();
-				GUILayout.HorizontalSlider(worldGrav, 0.81f * -1f, 18.81f * -1f);
-				GUILayout.Label("Gravity", GUILayout.Width(65f));
-				GUILayout.EndHorizontal();
-				GUILayout.BeginHorizontal();
-				GUILayout.HorizontalSlider(worldViewDist, 500f, 9500f);
-				GUILayout.Label("Visibility", GUILayout.Width(65f));
-				GUILayout.EndHorizontal();
-				if ((bool)World.sea)
-				{
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(lavaFog, 0.015f, 0.01f * -1f);
-					GUILayout.Label("Lava Fog", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(lavaAlt, -100f, 100f);
-					GUILayout.Label("Lava Alt", GUILayout.Width(65f));
+					GUILayout.HorizontalSlider(laserLock[0], 0f, 1f);
+					GUILayout.Label("Lsr Lck", GUILayout.Width(65f));
 					GUILayout.EndHorizontal();
 				}
-				GUILayout.Space(20f);
-				GUILayout.Label("Bots:");
-				GUILayout.Toggle(botsCanFire, "Can Fire");
-				GUILayout.Toggle(botsCanDrive, "Can Drive");
-				GUILayout.Space(20f);
-				GUILayout.Label("Buggy:");
-				GUILayout.Toggle(buggyAllowed, "Available");
-				if (buggyAllowed)
-				{
-					GUILayout.Toggle(buggyFlightSlip, "Stall Blending");
-					GUILayout.Toggle(buggyFlightLooPower, "Powered Loops");
-					GUILayout.Toggle(buggySmartSuspension, "Smart Suspension");
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(buggyFlightDrag, 50f, 550f);
-					GUILayout.Label("Fl Speed", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(buggyFlightAgility, 0.5f, 1.5f);
-					GUILayout.Label("Fl Agility", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(buggyCG, 0.1f * -1f, 0.7f * -1f);
-					GUILayout.Label("Stability", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(buggyPower, 0.5f, 1.5f);
-					GUILayout.Label("Power", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(buggySpeed, 5f, 55f);
-					GUILayout.Label("Speed", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(buggyTr, 0.1f, 1.9f);
-					GUILayout.Label("Traction", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(buggySh, 20f, 120f);
-					GUILayout.Label("Shocks", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					if (lasersAllowed)
-					{
-						GUILayout.BeginHorizontal();
-						GUILayout.HorizontalSlider(firepower[0], 0f, 3f);
-						GUILayout.Label("Firepower", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal();
-						GUILayout.HorizontalSlider(laserLock[0], 0f, 1f);
-						GUILayout.Label("Lsr Lck", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-					}
-				}
-				GUILayout.Space(20f);
-				GUILayout.Label("Tank:");
-				GUILayout.Toggle(tankAllowed, "Available");
-				if (tankAllowed)
-				{
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(tankCG, 1f, 1.4f * -1f);
-					GUILayout.Label("Stability", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(tankGrip, 0f, 0.2f);
-					GUILayout.Label("Grip", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(tankSpeed, 10f, 40f);
-					GUILayout.Label("Speed", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(tankPower, 500f, 3500f);
-					GUILayout.Label("Power", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					if (lasersAllowed)
-					{
-						GUILayout.BeginHorizontal();
-						GUILayout.HorizontalSlider(firepower[2], 0f, 3f);
-						GUILayout.Label("Firepower", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal();
-						GUILayout.HorizontalSlider(laserLock[2], 0f, 1f);
-						GUILayout.Label("Lsr Lck", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-					}
-				}
-				GUILayout.Space(20f);
-				GUILayout.Label("Hovercraft:");
-				GUILayout.Toggle(hoverAllowed, "Available");
-				if (hoverAllowed)
-				{
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(hoverHeight, 5f, 25f);
-					GUILayout.Label("Height", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(hoverHover, 20f, 180f);
-					GUILayout.Label("Hover", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(hoverRepel, 0.5f, 4.5f);
-					GUILayout.Label("Repulsion", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(hoverThrust, 20f, 420f);
-					GUILayout.Label("Thrust", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					if (lasersAllowed)
-					{
-						GUILayout.BeginHorizontal();
-						GUILayout.HorizontalSlider(firepower[1], 0f, 3f);
-						GUILayout.Label("Firepower", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal();
-						GUILayout.HorizontalSlider(laserLock[1], 0f, 1f);
-						GUILayout.Label("Lsr Lck", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-					}
-				}
-				GUILayout.Space(20f);
-				GUILayout.Label("Jet:");
-				GUILayout.Toggle(jetAllowed, "Available");
-				if (jetAllowed)
-				{
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(jetHDrag, 0.005f, 0.015f);
-					GUILayout.Label("HoverDrag", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(jetDrag, 0.0005f, 0.0015f);
-					GUILayout.Label("Drag", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(jetSteer, 5f, 35f);
-					GUILayout.Label("Agility", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(jetLift, 0.1f, 0.9f);
-					GUILayout.Label("Lift", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					GUILayout.HorizontalSlider(jetStall, 1f, 39f);
-					GUILayout.Label("Stall", GUILayout.Width(65f));
-					GUILayout.EndHorizontal();
-					if (lasersAllowed)
-					{
-						GUILayout.BeginHorizontal();
-						GUILayout.HorizontalSlider(firepower[3], 0f, 3f);
-						GUILayout.Label("Firepower", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal();
-						GUILayout.HorizontalSlider(laserLock[3], 0f, 1f);
-						GUILayout.Label("Lsr Lck", GUILayout.Width(65f));
-						GUILayout.EndHorizontal();
-					}
-				}
-				GUILayout.Space(20f);
-				GUILayout.Label("Networking:");
-				GUILayout.Toggle(networkMode == 0, "UDP");
-				GUILayout.Toggle(networkMode == 1, "RDC");
-				GUILayout.Toggle(networkMode == 2, "RPC");
-				GUILayout.Toggle(networkPhysics == 0, "Advanced");
-				GUILayout.Toggle(networkPhysics == 1, "Enhanced");
-				GUILayout.Toggle(networkPhysics == 2, "Simplified");
-				GUILayout.BeginHorizontal();
-				GUILayout.HorizontalSlider(networkInterpolation, 0f, 0.5f);
-				GUILayout.Label((!(networkInterpolation < 0.01f)) ? (networkInterpolation * 1000f + " ms") : "Auto", GUILayout.Width(65f));
-				GUILayout.EndHorizontal();
 			}
-			GUILayout.Label("nTime: " + Mathf.RoundToInt((float)Network.time));
+
 			GUILayout.Space(20f);
-			GUILayout.Label("Settings I/O:");
-			serverString = GUILayout.TextField(serverString);
-			if (Game.Controller.isHost && GUILayout.Button("Apply Custom\nSettings"))
+			GUILayout.Label("Tank:");
+			GUILayout.Toggle(tankAllowed, "Available");
+			if (tankAllowed)
 			{
-				Game.Controller.networkView.RPC("sSS", RPCMode.All, serverString);
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(tankCG, 1f, 1.4f * -1f);
+				GUILayout.Label("Stability", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(tankGrip, 0f, 0.2f);
+				GUILayout.Label("Grip", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(tankSpeed, 10f, 40f);
+				GUILayout.Label("Speed", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(tankPower, 500f, 3500f);
+				GUILayout.Label("Power", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				if (lasersAllowed)
+				{
+					GUILayout.BeginHorizontal();
+					GUILayout.HorizontalSlider(firepower[2], 0f, 3f);
+					GUILayout.Label("Firepower", GUILayout.Width(65f));
+					GUILayout.EndHorizontal();
+					GUILayout.BeginHorizontal();
+					GUILayout.HorizontalSlider(laserLock[2], 0f, 1f);
+					GUILayout.Label("Lsr Lck", GUILayout.Width(65f));
+					GUILayout.EndHorizontal();
+				}
 			}
+
+			GUILayout.Space(20f);
+			GUILayout.Label("Hovercraft:");
+			GUILayout.Toggle(hoverAllowed, "Available");
+			if (hoverAllowed)
+			{
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(hoverHeight, 5f, 25f);
+				GUILayout.Label("Height", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(hoverHover, 20f, 180f);
+				GUILayout.Label("Hover", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(hoverRepel, 0.5f, 4.5f);
+				GUILayout.Label("Repulsion", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(hoverThrust, 20f, 420f);
+				GUILayout.Label("Thrust", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				if (lasersAllowed)
+				{
+					GUILayout.BeginHorizontal();
+					GUILayout.HorizontalSlider(firepower[1], 0f, 3f);
+					GUILayout.Label("Firepower", GUILayout.Width(65f));
+					GUILayout.EndHorizontal();
+					GUILayout.BeginHorizontal();
+					GUILayout.HorizontalSlider(laserLock[1], 0f, 1f);
+					GUILayout.Label("Lsr Lck", GUILayout.Width(65f));
+					GUILayout.EndHorizontal();
+				}
+			}
+
+
+			GUILayout.Space(20f);
+			GUILayout.Label("Jet:");
+			GUILayout.Toggle(jetAllowed, "Available");
+			if (jetAllowed)
+			{
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(jetHDrag, 0.005f, 0.015f);
+				GUILayout.Label("HoverDrag", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(jetDrag, 0.0005f, 0.0015f);
+				GUILayout.Label("Drag", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(jetSteer, 5f, 35f);
+				GUILayout.Label("Agility", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(jetLift, 0.1f, 0.9f);
+				GUILayout.Label("Lift", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal();
+				GUILayout.HorizontalSlider(jetStall, 1f, 39f);
+				GUILayout.Label("Stall", GUILayout.Width(65f));
+				GUILayout.EndHorizontal();
+				if (lasersAllowed)
+				{
+					GUILayout.BeginHorizontal();
+					GUILayout.HorizontalSlider(firepower[3], 0f, 3f);
+					GUILayout.Label("Firepower", GUILayout.Width(65f));
+					GUILayout.EndHorizontal();
+					GUILayout.BeginHorizontal();
+					GUILayout.HorizontalSlider(laserLock[3], 0f, 1f);
+					GUILayout.Label("Lsr Lck", GUILayout.Width(65f));
+					GUILayout.EndHorizontal();
+				}
+			}
+
+			GUILayout.Space(20f);
+			GUILayout.Label("Networking:");
+			GUILayout.Toggle(networkMode == 0, "UDP");
+			GUILayout.Toggle(networkMode == 1, "RDC");
+			GUILayout.Toggle(networkMode == 2, "RPC");
+			GUILayout.Toggle(networkPhysics == 0, "Advanced");
+			GUILayout.Toggle(networkPhysics == 1, "Enhanced");
+			GUILayout.Toggle(networkPhysics == 2, "Simplified");
+			GUILayout.BeginHorizontal();
+			GUILayout.HorizontalSlider(networkInterpolation, 0f, 0.5f);
+            GUILayout.Label(
+                (networkInterpolation < 0.01 ?
+                    "Auto" :
+                    (networkInterpolation * 1000) + " ms"),
+                GUILayout.Width(65));
+			GUILayout.EndHorizontal();
+		}
+
+		GUILayout.Label("nTime: " + Mathf.RoundToInt((float)Network.time));
+		
+        GUILayout.Space(20f);
+		GUILayout.Label("Settings I/O:");
+		serverString = GUILayout.TextField(serverString);
+		if (
+            Game.Controller.isHost &&
+            GUILayout.Button("Apply Custom\nSettings"))
+		{
+			Game.Controller.networkView.RPC(
+                "sSS",
+                RPCMode.All,
+                serverString);
 		}
 	}
 
 	public void updatePrefs()
 	{
+
+            /*
+	    1 Fastest
+	    2 Fast
+	    3 Simple
+	    4 Good
+	    5 Beautiful
+	    6 Fantastic
+	    */
+
 		renderLevel = PlayerPrefs.GetInt("renderLevel", 4);
 		laserLocking = false;
 		checked
