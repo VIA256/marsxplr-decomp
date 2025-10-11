@@ -196,84 +196,71 @@ public class Vehicle : MonoBehaviour
 		if (updateColor)
 		{
 			updateColor = false;
-			bool isGreen = ((isIt != 0 && Game.Players.Count > 1) ?
-                true :
-                false);
-			if (materialMain.Length > 0)
-			{
-				Color targetColor = (isGreen ?
+		    bool isGreen = (
+                isIt != 0 &&
+                Game.Players.Count > 1 ? true : false);
+		    if(materialMain.Length > 0) {
+			    Color targetColor = (isGreen ?
                     Game.Controller.vehicleIsItColor :
                     vehicleColor);
-				materialMain[0].color = Color.Lerp(
+			    materialMain[0].color = Color.Lerp(
                     materialMain[0].color,
                     targetColor,
-                    Time.deltaTime * 2f);
+                    Time.deltaTime * 2);
+                Color matmaincol = materialMain[0].color;
+                matmaincol.a = 0.5f;
+                materialMain[0].color = matmaincol;
 
-				Color matmain0col = materialMain[0].color;
-				matmain0col.a = 0.5f;
-				materialMain[0].color = matmain0col;
-
-				if (materialAccent.Length > 0)
-				{
-					materialMain[0].SetColor(
-                        "_SpecColor",
-                        materialAccent[0].color);
-				}
-				else
-				{
-					materialMain[0].SetColor("_SpecColor", vehicleAccent);
-				}
-				if (
-                    materialMain[0].color.r < targetColor.r - 0.05f ||
-                    materialMain[0].color.r > targetColor.r + 0.05f ||
-                    materialMain[0].color.g < targetColor.g - 0.05f ||
-                    materialMain[0].color.g > targetColor.g + 0.05f ||
-                    materialMain[0].color.b < targetColor.b - 0.05f ||
-                    materialMain[0].color.b > targetColor.b + 0.05f)
-				{
-					updateColor = true;
-				}
-				if (materialMain.Length > 1)
-				{
-					for (int i = 1; i < materialMain.Length; i++)
-					{
-						materialAccent[i].color = materialMain[0].color;
-					}
-				}
-			}
-            if (materialMain.Length > 0)
-            {
-                Color targetColor = ((!isGreen) ?
-                    vehicleAccent :
-                    Game.Controller.vehicleIsItAccent);
-                materialAccent[0].color = Color.Lerp(
-                    materialAccent[0].color,
-                    targetColor,
-                    Time.deltaTime * 2f);
-
-                Color mataccent0col = materialAccent[0].color;
-                mataccent0col.a = 0.5f;
-                materialAccent[0].color = mataccent0col;
-
-                materialAccent[0].SetColor("_SpecColor", materialMain[0].color);
+			    if(materialAccent.Length > 0) materialMain[0].SetColor (
+                    "_SpecColor",
+                    materialAccent[0].color);
+			    else materialMain[0].SetColor (
+                    "_SpecColor",
+                    vehicleAccent);
                 if (
-                    materialAccent[0].color.r < targetColor.r - 0.05f ||
-                    materialAccent[0].color.r > targetColor.r + 0.05f ||
-                    materialAccent[0].color.g < targetColor.g - 0.05f ||
-                    materialAccent[0].color.g > targetColor.g + 0.05f ||
-                    materialAccent[0].color.b < targetColor.b - 0.05f ||
-                    materialAccent[0].color.b > targetColor.b + 0.05f)
+                    materialMain[0].color.r < targetColor.r - .05 ||
+                    materialMain[0].color.r > targetColor.r + .05 ||
+                    materialMain[0].color.g < targetColor.g - .05 ||
+                    materialMain[0].color.g > targetColor.g + .05 ||
+                    materialMain[0].color.b < targetColor.b - .05 ||
+                    materialMain[0].color.b > targetColor.b + .05)
                 {
                     updateColor = true;
                 }
-                if (materialAccent.Length > 1)
+			    if(materialMain.Length > 1)
+                    for(int i = 1; i < materialMain.Length; i++)
+                        materialMain[i].color = materialMain[0].color;
+		    }
+		    if(materialAccent.Length > 0) {
+			    Color targetColor = (isGreen ?
+                    Game.Controller.vehicleIsItAccent :
+                    vehicleAccent);
+			    materialAccent[0].color = Color.Lerp(
+                    materialAccent[0].color,
+                    targetColor,
+                    Time.deltaTime * 2);
+			    
+                Color mataccentcol = materialAccent[0].color;
+                mataccentcol.a = 0.5f;
+                materialAccent[0].color = mataccentcol;
+
+                materialAccent[0].SetColor (
+                    "_SpecColor",
+                    materialMain[0].color);
+                if (
+                    materialAccent[0].color.r < targetColor.r - .05 ||
+                    materialAccent[0].color.r > targetColor.r + .05 ||
+                    materialAccent[0].color.g < targetColor.g - .05 ||
+                    materialAccent[0].color.g > targetColor.g + .05 ||
+                    materialAccent[0].color.b < targetColor.b - .05 ||
+                    materialAccent[0].color.b > targetColor.b + .05)
                 {
-                    for (int i = 1; i < materialAccent.Length; i++)
-                    {
-                        materialAccent[i].color = materialAccent[0].color;
-                    }
+                    updateColor = true;
                 }
-            }
+			    if(materialAccent.Length > 1)
+                    for(int i = 1; i < materialAccent.Length; i++)
+                        materialAccent[i].color = materialAccent[0].color;
+		    }
 		}
 
 		if (Time.time > updateTick)
