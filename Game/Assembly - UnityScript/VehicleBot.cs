@@ -13,9 +13,6 @@ public class VehicleBot : MonoBehaviour
 	private int enemyUpdateTime;
 	private float rocketFireTime = 0.00f;
 
-    private enum BotMode { RabbitHunt, Tag };
-    private BotMode botMode = BotMode.RabbitHunt;
-
 	public void Update()
 	{
         //Enemy updates
@@ -55,8 +52,8 @@ public class VehicleBot : MonoBehaviour
 		}
 
         //Rabbit Hunt Mode
-        if (botMode == BotMode.RabbitHunt)
-        {
+        //if (true)
+        //{
             if (vehicle.isIt != 0)
             {
                 botMovement = 1;
@@ -67,10 +64,10 @@ public class VehicleBot : MonoBehaviour
                 botMovement = 2;
                 botEnemySelection = 2;
             }
-        }
+        //}
 
-        //Tag Mode
-        else
+        //Tag Mode (UNUSED)
+        /*else
         {
             if (vehicle.isIt == 0)
             {
@@ -81,7 +78,7 @@ public class VehicleBot : MonoBehaviour
                 botMovement = 2;
                 botEnemySelection = 1;
             }
-        }
+        }*/
 
 
 		if (Game.Settings.botsCanDrive)
