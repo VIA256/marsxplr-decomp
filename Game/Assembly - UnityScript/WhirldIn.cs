@@ -29,103 +29,6 @@ public class WhirldIn
 {
 	[Serializable]
 	[CompilerGenerated]
-	internal sealed class LoadAssetBundle_002452 : GenericGenerator<object>
-	{
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<object>, IEnumerator
-		{
-			internal string _0024thread_0024580;
-
-			internal string _0024url_0024581;
-
-			internal WWW _0024www_0024582;
-
-			internal string _0024p583;
-
-			internal WhirldIn _0024self_584;
-
-			public _0024(string p, WhirldIn self_)
-			{
-				_0024p583 = p;
-				_0024self_584 = self_;
-			}
-
-			public override bool MoveNext()
-			{
-				checked
-				{
-					switch (_state)
-					{
-					default:
-						_0024self_584.threadAssetBundles++;
-						goto case 2;
-					case 2:
-						if (_0024self_584.threads.Count >= _0024self_584.maxThreads)
-						{
-							return Yield(2, null);
-						}
-						_0024thread_0024580 = Path.GetFileNameWithoutExtension(_0024p583);
-						_0024self_584.threads.Add(_0024thread_0024580, string.Empty);
-						_0024url_0024581 = _0024p583;
-						_0024url_0024581 = (string)RuntimeServices.Coerce(_0024self_584.GetURL(_0024url_0024581), typeof(string));
-						_0024www_0024582 = new WWW(_0024url_0024581);
-						goto case 3;
-					case 3:
-						if (!_0024www_0024582.isDone)
-						{
-							_0024self_584.threads[_0024thread_0024580] = _0024www_0024582.progress;
-							return Yield(3, null);
-						}
-						if (_0024www_0024582.error != null || !_0024www_0024582.assetBundle)
-						{
-							if (!_0024www_0024582.assetBundle)
-							{
-								_0024self_584.info += "Referenced file is not an AssetBundle: " + _0024url_0024581 + "\n";
-							}
-							else
-							{
-								_0024self_584.info += "Failed to download asset file: " + _0024url_0024581 + " (" + _0024www_0024582.error + ")\n";
-							}
-							_0024self_584.threads.Remove(_0024thread_0024580);
-							_0024self_584.threadAssetBundles--;
-						}
-						else
-						{
-							_0024self_584.threads[_0024thread_0024580] = "Initializing Bundle";
-							_0024self_584.loadedAssetBundles.Add(_0024www_0024582.assetBundle);
-							_0024self_584.threads.Remove(_0024thread_0024580);
-							_0024self_584.threadAssetBundles--;
-							Yield(1, null);
-						}
-						break;
-					case 1:
-						break;
-					}
-					bool result = default(bool);
-					return result;
-				}
-			}
-		}
-
-		internal string _0024p585;
-
-		internal WhirldIn _0024self_586;
-
-		public LoadAssetBundle_002452(string p, WhirldIn self_)
-		{
-			_0024p585 = p;
-			_0024self_586 = self_;
-		}
-
-		public override IEnumerator<object> GetEnumerator()
-		{
-			return new _0024(_0024p585, _0024self_586);
-		}
-	}
-
-	[Serializable]
-	[CompilerGenerated]
 	internal sealed class LoadStreamedScene_002453 : GenericGenerator<object>
 	{
 		[Serializable]
@@ -1692,10 +1595,51 @@ public class WhirldIn
 		return new Generate_002464(this).GetEnumerator();
 	}
 
-	public IEnumerator LoadAssetBundle(string p)
-	{
-		return new LoadAssetBundle_002452(p, this).GetEnumerator();
-	}
+    public IEnumerator LoadAssetBundle(string p)
+    {
+        threadAssetBundles++;
+
+        while (threads.Count >= maxThreads) yield return null;  //Don't overwhelm the computer by doing too many things @ once
+
+        //Presets
+        String thread = System.IO.Path.GetFileNameWithoutExtension(p);
+        threads.Add(thread, "");
+        String url = p;
+
+        //Download StreamedScene
+        url = (String)GetURL(url);
+        WWW www = new WWW(url);
+        while (!www.isDone)
+        {
+            threads[thread] = www.progress;
+            yield return null;
+        }
+        if (www.error != null || !www.assetBundle)
+        {
+            if (!www.assetBundle) info +=
+                 "Referenced file is not an AssetBundle: " +
+                 url +
+                 "\n";
+            else info +=
+                "Failed to download asset file: " +
+                url +
+                " (" +
+                www.error +
+                ")\n";
+            threads.Remove(thread);
+            threadAssetBundles--;
+            yield break;
+        }
+
+        //Load AssetBundle
+        threads[thread] = "Initializing Bundle";
+        loadedAssetBundles.Add(www.assetBundle);
+
+        //Success
+        threads.Remove(thread);
+        threadAssetBundles--;
+
+    }
 
 	public IEnumerator LoadStreamedScene(string p)
 	{
