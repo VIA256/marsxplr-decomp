@@ -407,18 +407,18 @@ public class Vehicle : MonoBehaviour
                     Physics.IgnoreCollision(ramoSphere.collider, cldr);
                 }
             }
-            ramoSphere.collider.active = false; //DRAGONHERE - MAJOR UNITY BUG: We need to set this all the time, as colliders that are instantiated using a prefab and are then thrown inside of rightbodies are not properly initialized until some of their settings are toggled
+            ramoSphere.active = false; //DRAGONHERE - MAJOR UNITY BUG: We need to set this all the time, as colliders that are instantiated using a prefab and are then thrown inside of rightbodies are not properly initialized until some of their settings are toggled
             ramoSphereScale = (((Game.Settings.ramoSpheres) * 15) +
                 camOffset * 1);
             if (ramoSphere.collider.isTrigger == zorbBall)
             {
                 ramoSphere.collider.isTrigger = !zorbBall;
                 ramoSphere.transform.localScale = Vector3.zero;
-                ramoSphere.collider.active = true;
+                ramoSphere.active = true;
                 ((RamoSphere)ramoSphere.GetComponent(typeof(RamoSphere)))
                     .colorSet(zorbBall);
             }
-            else ramoSphere.collider.active = true;
+            else ramoSphere.active = true;
             rigidbody.inertiaTensor = tnsor;
             rigidbody.centerOfMass = cg;
         }
@@ -446,7 +446,7 @@ public class Vehicle : MonoBehaviour
 	{
 		if (
             (bool)ramoSphere &&
-            !ramoSphere .collider.isTrigger)
+            !ramoSphere.collider.isTrigger)
 		{
 			ramoSphere.SendMessage("OnCollisionEnter", collision);
 		}
