@@ -13,7 +13,10 @@ public class VehicleTrigger : MonoBehaviour
 
 	public void OnTriggerStay(Collider other)
 	{
-		if (other.gameObject.layer != 14 && vehicle.networkView.isMine && (bool)other.attachedRigidbody)
+		if (
+            other.gameObject.layer != 14 &&
+            vehicle.networkView.isMine &&
+            (bool)other.attachedRigidbody)
 		{
 			vehicle.OnRam(other.attachedRigidbody.gameObject);
 		}
