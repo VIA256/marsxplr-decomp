@@ -29,135 +29,6 @@ public class WhirldIn
 {
 	[Serializable]
 	[CompilerGenerated]
-	internal sealed class LoadStreamedScene_002453 : GenericGenerator<object>
-	{
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<object>, IEnumerator
-		{
-			internal string _0024thread_0024587;
-
-			internal string _0024nme_0024588;
-
-			internal string _0024url_0024589;
-
-			internal string[] _0024pS_0024590;
-
-			internal WWW _0024www_0024591;
-
-			internal AssetBundle _0024blah_0024592;
-
-			internal AsyncOperation _0024async_0024593;
-
-			internal float _0024tme_0024594;
-
-			internal string _0024p595;
-
-			internal WhirldIn _0024self_596;
-
-			public _0024(string p, WhirldIn self_)
-			{
-				_0024p595 = p;
-				_0024self_596 = self_;
-			}
-
-			public override bool MoveNext()
-			{
-				switch (_state)
-				{
-				default:
-					if (_0024self_596.threads.Count >= _0024self_596.maxThreads)
-					{
-						return Yield(2, null);
-					}
-					_0024thread_0024587 = "SceneData";
-					_0024self_596.threads.Add(_0024thread_0024587, string.Empty);
-					_0024nme_0024588 = "World";
-					_0024url_0024589 = "Whirld.unity3d";
-					if (_0024p595 != string.Empty)
-					{
-						_0024pS_0024590 = _0024p595.Split(","[0]);
-						if (_0024pS_0024590[0] != null)
-						{
-							_0024nme_0024588 = _0024pS_0024590[0];
-						}
-						if (_0024pS_0024590[1] != null)
-						{
-							_0024url_0024589 = _0024pS_0024590[1];
-						}
-					}
-					_0024url_0024589 = (string)RuntimeServices.Coerce(_0024self_596.GetURL(_0024url_0024589), typeof(string));
-					_0024www_0024591 = new WWW(_0024url_0024589);
-					goto case 3;
-				case 3:
-					if (!_0024www_0024591.isDone)
-					{
-						_0024self_596.threads[_0024thread_0024587] = _0024www_0024591.progress;
-						return Yield(3, null);
-					}
-					if (_0024www_0024591.error != null || !_0024www_0024591.assetBundle)
-					{
-						if (!_0024www_0024591.assetBundle)
-						{
-							_0024self_596.info += "StreamedScene file contains no scenes: " + _0024url_0024589 + "\n";
-						}
-						else
-						{
-							_0024self_596.info += "Failed to download asset file: " + _0024url_0024589 + " (" + _0024www_0024591.error + ")\n";
-						}
-						_0024self_596.threads.Remove(_0024thread_0024587);
-						break;
-					}
-					_0024self_596.threads[_0024thread_0024587] = "Loading Asset Dependencies";
-					goto case 4;
-				case 4:
-					if (_0024self_596.threadAssetBundles > 0)
-					{
-						return Yield(4, null);
-					}
-					_0024self_596.threads.Remove(_0024thread_0024587);
-					_0024thread_0024587 = "SceneInit";
-					_0024self_596.threads.Add(_0024thread_0024587, "...");
-					_0024blah_0024592 = _0024www_0024591.assetBundle;
-					_0024async_0024593 = Application.LoadLevelAdditiveAsync(_0024nme_0024588);
-					_0024tme_0024594 = Time.time;
-					goto case 5;
-				case 5:
-					if (!_0024async_0024593.isDone)
-					{
-						_0024self_596.threads[_0024thread_0024587] = Time.time - _0024tme_0024594 + "...";
-						return Yield(5, null);
-					}
-					_0024self_596.loadedAssetBundles.Add(_0024www_0024591.assetBundle);
-					_0024self_596.threads.Remove(_0024thread_0024587);
-					Yield(1, null);
-					break;
-				case 1:
-					break;
-				}
-				bool result = default(bool);
-				return result;
-			}
-		}
-
-		internal string _0024p597;
-
-		internal WhirldIn _0024self_598;
-
-		public LoadStreamedScene_002453(string p, WhirldIn self_)
-		{
-			_0024p597 = p;
-			_0024self_598 = self_;
-		}
-
-		public override IEnumerator<object> GetEnumerator()
-		{
-			return new _0024(_0024p597, _0024self_598);
-		}
-	}
-
-	[Serializable]
-	[CompilerGenerated]
 	internal sealed class LoadSkyboxTexture_002454 : GenericGenerator<object>
 	{
 		[Serializable]
@@ -1641,9 +1512,199 @@ public class WhirldIn
 
     }
 
+    /*[Serializable]
+	[CompilerGenerated]
+	internal sealed class LoadStreamedScene_002453 : GenericGenerator<object>
+	{
+		[Serializable]
+		[CompilerGenerated]
+		private sealed class _0024 : GenericGeneratorEnumerator<object>, IEnumerator
+		{
+			internal string _0024thread_0024587;
+
+			internal string _0024nme_0024588;
+
+			internal string _0024url_0024589;
+
+			internal string[] _0024pS_0024590;
+
+			internal WWW _0024www_0024591;
+
+			internal AssetBundle _0024blah_0024592;
+
+			internal AsyncOperation _0024async_0024593;
+
+			internal float _0024tme_0024594;
+
+			internal string _0024p595;
+
+			internal WhirldIn _0024self_596;
+
+			public _0024(string p, WhirldIn self_)
+			{
+				_0024p595 = p;
+				_0024self_596 = self_;
+			}
+
+			public override bool MoveNext()
+			{
+				switch (_state)
+				{
+				default:
+					if (_0024self_596.threads.Count >= _0024self_596.maxThreads)
+					{
+						return Yield(2, null);
+					}
+					_0024thread_0024587 = "SceneData";
+					_0024self_596.threads.Add(_0024thread_0024587, string.Empty);
+					_0024nme_0024588 = "World";
+					_0024url_0024589 = "Whirld.unity3d";
+					if (_0024p595 != string.Empty)
+					{
+						_0024pS_0024590 = _0024p595.Split(","[0]);
+						if (_0024pS_0024590[0] != null)
+						{
+							_0024nme_0024588 = _0024pS_0024590[0];
+						}
+						if (_0024pS_0024590[1] != null)
+						{
+							_0024url_0024589 = _0024pS_0024590[1];
+						}
+					}
+					_0024url_0024589 = (string)RuntimeServices.Coerce(_0024self_596.GetURL(_0024url_0024589), typeof(string));
+					_0024www_0024591 = new WWW(_0024url_0024589);
+					goto case 3;
+				case 3:
+					if (!_0024www_0024591.isDone)
+					{
+						_0024self_596.threads[_0024thread_0024587] = _0024www_0024591.progress;
+						return Yield(3, null);
+					}
+					if (_0024www_0024591.error != null || !_0024www_0024591.assetBundle)
+					{
+						if (!_0024www_0024591.assetBundle)
+						{
+							_0024self_596.info += "StreamedScene file contains no scenes: " + _0024url_0024589 + "\n";
+						}
+						else
+						{
+							_0024self_596.info += "Failed to download asset file: " + _0024url_0024589 + " (" + _0024www_0024591.error + ")\n";
+						}
+						_0024self_596.threads.Remove(_0024thread_0024587);
+						break;
+					}
+					_0024self_596.threads[_0024thread_0024587] = "Loading Asset Dependencies";
+					goto case 4;
+				case 4:
+					if (_0024self_596.threadAssetBundles > 0)
+					{
+						return Yield(4, null);
+					}
+					_0024self_596.threads.Remove(_0024thread_0024587);
+					_0024thread_0024587 = "SceneInit";
+					_0024self_596.threads.Add(_0024thread_0024587, "...");
+					_0024blah_0024592 = _0024www_0024591.assetBundle;
+					_0024async_0024593 = Application.LoadLevelAdditiveAsync(_0024nme_0024588);
+					_0024tme_0024594 = Time.time;
+					goto case 5;
+				case 5:
+					if (!_0024async_0024593.isDone)
+					{
+						_0024self_596.threads[_0024thread_0024587] = Time.time - _0024tme_0024594 + "...";
+						return Yield(5, null);
+					}
+					_0024self_596.loadedAssetBundles.Add(_0024www_0024591.assetBundle);
+					_0024self_596.threads.Remove(_0024thread_0024587);
+					Yield(1, null);
+					break;
+				case 1:
+					break;
+				}
+				bool result = default(bool);
+				return result;
+			}
+		}
+
+		internal string _0024p597;
+
+		internal WhirldIn _0024self_598;
+
+		public LoadStreamedScene_002453(string p, WhirldIn self_)
+		{
+			_0024p597 = p;
+			_0024self_598 = self_;
+		}
+
+		public override IEnumerator<object> GetEnumerator()
+		{
+			return new _0024(_0024p597, _0024self_598);
+		}
+	}*/
+
 	public IEnumerator LoadStreamedScene(string p)
 	{
-		return new LoadStreamedScene_002453(p, this).GetEnumerator();
+        while (threads.Count >= maxThreads) yield return null;  //Don't overwhelm the computer by doing too many things @ once
+
+        //Presets
+        String thread = "SceneData";
+        threads.Add(thread, "");
+        String nme = "World";
+        String url = "Whirld.unity3d";
+
+        //Object Parameters
+        if (p != "")    //[ss:sceneName,url]
+        {
+            String[] pS = p.Split(","[0]);
+            if (pS[0] != null) nme = pS[0];
+            if (pS[1] != null) url = pS[1];
+        }
+
+        //Download StreamedScene
+        url = (String)GetURL(url);
+        WWW www = new WWW(url);
+        while (!www.isDone)
+        {
+            threads[thread] = www.progress;
+            yield return null;
+        }
+        if (www.error != null || !www.assetBundle)
+        {
+            if (!www.assetBundle) info +=
+                 "StreamedScene file contains no scenes: " +
+                 url +
+                 "\n";
+            else info +=
+                "Failed to download asset file: " +
+                url +
+                " (" +
+                www.error +
+                ")\n";
+            threads.Remove(thread);
+            yield break;
+        }
+
+        //Wait for all AssetBundles to load
+        threads[thread] = "Loading Asset Dependencies";
+        while (threadAssetBundles > 0) yield return null;
+
+        threads.Remove(thread);
+        thread = "SceneInit";
+        threads.Add(thread, "...");
+
+        //Load StreamedScene
+        AssetBundle blah = www.assetBundle;
+        AsyncOperation async = Application.LoadLevelAdditiveAsync(nme);
+        float tme = Time.time;
+        while (!async.isDone)
+        {
+            threads[thread] = (Time.time - tme) + "...";
+            yield return null;
+        }
+
+        //Success
+        loadedAssetBundles.Add(www.assetBundle);
+        threads.Remove(thread);
+
 	}
 
 	public IEnumerator LoadTexture(string p)
