@@ -1,3 +1,8 @@
+//********************************************************************************************************************************************
+//*********************************** Whirld - by Aubrey Falconer ****************************************************************************
+//**** http://AubreyFalconer.com **** http://web.archive.org/web/20120519040400/http://www.unifycommunity.com/wiki/index.php?title=Whirld ****
+//********************************************************************************************************************************************
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +13,16 @@ using Boo.Lang.Runtime;
 using Ionic.Zlib;
 using UnityEngine;
 using UnityScript.Lang;
+
+[Serializable]
+public enum WhirldInStatus
+{
+    Idle,
+    Working,
+    Success,
+    WWWError,
+    SyntaxError
+}
 
 [Serializable]
 public class WhirldIn

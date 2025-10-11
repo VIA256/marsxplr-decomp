@@ -107,7 +107,6 @@
     <Compile Include="WaterLightmapFog.cs" />
     <Compile Include="WhirldData.cs" />
     <Compile Include="WhirldIn.cs" />
-    <Compile Include="WhirldInStatus.cs" />
     <Compile Include="WhirldLibrary.cs" />
     <Compile Include="WhirldLOD.cs" />
     <Compile Include="WhirldObject.cs" />
