@@ -1,32 +1,21 @@
 using System;
 using UnityEngine;
-using UnityScript.Lang;
+using System.Collections;
+using System.Collections.Generic;
 
 [Serializable]
 public class VehicleData : MonoBehaviour
 {
-	public int camOffset;
-
+	public int camOffset = 2;
 	public Transform ridePos;
-
 	public int mass;
-
 	public float drag;
-
 	public float angularDrag;
-
 	public string shortName;
-
 	public bool inputThrottle;
 
 	public MeshRenderer[] materialMain;
-
 	public MeshRenderer[] materialAccent;
-
-	public VehicleData()
-	{
-		camOffset = 2;
-	}
 
 	public void InitVehicle(Vehicle veh)
 	{
@@ -36,32 +25,25 @@ public class VehicleData : MonoBehaviour
 		veh.myRigidbody.mass = mass;
 		veh.myRigidbody.drag = drag;
 		veh.myRigidbody.angularDrag = angularDrag;
-		checked
+		if (materialMain.Length > 0)
 		{
-			if (Extensions.get_length((System.Array)materialMain) > 0)
-			{
-				UnityScript.Lang.Array array = new UnityScript.Lang.Array();
-				int i = 0;
-				MeshRenderer[] array2 = materialMain;
-				for (int length = array2.Length; i < length; i++)
-				{
-					array.Add(array2[i].material);
-				}
-				veh.materialMain = (Material[])array.ToBuiltin(typeof(Material));
-			}
-			if (Extensions.get_length((System.Array)materialAccent) > 0)
-			{
-				UnityScript.Lang.Array array = new UnityScript.Lang.Array();
-				int j = 0;
-				MeshRenderer[] array3 = materialAccent;
-				for (int length2 = array3.Length; j < length2; j++)
-				{
-					array.Add(array3[j].material);
-				}
-				veh.materialAccent = (Material[])array.ToBuiltin(typeof(Material));
-			}
-			veh.inputThrottle = inputThrottle;
-			UnityEngine.Object.Destroy(this);
+            List<Material> mats = new List<Material>();
+            foreach (MeshRenderer mat in materialMain)
+            {
+                mats.Add(mat.material);
+            }
+            veh.materialMain = mats.ToArray();
 		}
+		if (materialAccent.Length > 0)
+		{
+            List<Material> mats = new List<Material>();
+            foreach (MeshRenderer mat in materialAccent)
+            {
+                mats.Add(mat.material);
+                veh.materialAccent = mats.ToArray();
+            }
+		}
+		veh.inputThrottle = inputThrottle;
+		Destroy(this);
 	}
 }
