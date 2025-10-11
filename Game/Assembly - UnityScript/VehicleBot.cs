@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using Boo.Lang.Runtime;
 using UnityEngine;
-using UnityScript.Lang;
 
 [Serializable]
 public class VehicleBot : MonoBehaviour
@@ -10,143 +8,174 @@ public class VehicleBot : MonoBehaviour
 	public Vehicle vehicle;
 
 	private GameObject enemy;
-
 	private int botMovement;
-
 	private int botEnemySelection;
-
 	private int enemyUpdateTime;
+	private float rocketFireTime = 0.00f;
 
-	private float rocketFireTime;
-
-	public VehicleBot()
-	{
-		rocketFireTime = 0f;
-	}
+    private enum BotMode { RabbitHunt, Tag };
+    private BotMode botMode = BotMode.RabbitHunt;
 
 	public void Update()
 	{
-		if ((float)enemyUpdateTime == 0f || Time.time - 2f > (float)enemyUpdateTime)
+        //Enemy updates
+		if (
+            (float)enemyUpdateTime == 0f ||
+            Time.time - 2f > (float)enemyUpdateTime)
 		{
-			enemyUpdateTime = checked((int)Time.time);
+			enemyUpdateTime = (int)Time.time;
+
 			if (botEnemySelection == 1)
 			{
-				float num = float.PositiveInfinity;
-				IEnumerator enumerator = UnityRuntimeServices.GetEnumerator(Game.Players);
-				while (enumerator.MoveNext())
-				{
-					DictionaryEntry dictionaryEntry = (DictionaryEntry)enumerator.Current;
-					if (RuntimeServices.ToBool(RuntimeServices.GetProperty(dictionaryEntry.Value, "gameObject")))
-					{
-						GameObject gameObject = (GameObject)RuntimeServices.Coerce(RuntimeServices.GetProperty(dictionaryEntry.Value, "gameObject"), typeof(GameObject));
-						UnityRuntimeServices.Update(enumerator, dictionaryEntry);
-						float sqrMagnitude = (gameObject.transform.position - transform.position).sqrMagnitude;
-						if (sqrMagnitude < num && gameObject.name != name)
-						{
-							enemy = gameObject;
-							num = sqrMagnitude;
-						}
-					}
-				}
+                float distance = Mathf.Infinity;
+                foreach (DictionaryEntry plrE in Game.Players)
+                {
+                    if (!((Vehicle)plrE.Value).gameObject) continue;
+                    GameObject go = ((Vehicle)plrE.Value).gameObject;
+                    Vector3 diff = (go.transform.position - transform.position);
+                    float curDistance = diff.sqrMagnitude;
+                    if (curDistance < distance && go.name != name)
+                    {
+                        enemy = go;
+                        distance = curDistance;
+                    }
+                }
 			}
 			else if (botEnemySelection == 2)
 			{
-				IEnumerator enumerator2 = UnityRuntimeServices.GetEnumerator(Game.Players);
-				while (enumerator2.MoveNext())
-				{
-					DictionaryEntry dictionaryEntry2 = (DictionaryEntry)enumerator2.Current;
-					if (RuntimeServices.EqualityOperator(RuntimeServices.GetProperty(dictionaryEntry2.Value, "isIt"), 1))
-					{
-						enemy = (GameObject)RuntimeServices.Coerce(RuntimeServices.GetProperty(dictionaryEntry2.Value, "gameObject"), typeof(GameObject));
-						UnityRuntimeServices.Update(enumerator2, dictionaryEntry2);
-						break;
-					}
-				}
+                foreach (DictionaryEntry plrE in Game.Players)
+                {
+                    if (((Vehicle)plrE.Value).isIt != 0)
+                    {
+                        enemy = ((Vehicle)plrE.Value).gameObject;
+                        break;
+                    }
+                }
 			}
 		}
-		if (true)
-		{
-			if (vehicle.isIt != 0)
-			{
-				botMovement = 1;
-				botEnemySelection = 1;
-			}
-			else
-			{
-				botMovement = 2;
-				botEnemySelection = 2;
-			}
-		}
-		else if (vehicle.isIt == 0)
-		{
-			botMovement = 1;
-		}
-		else
-		{
-			botMovement = 2;
-			botEnemySelection = 1;
-		}
+
+        //Rabbit Hunt Mode
+        if (botMode == BotMode.RabbitHunt)
+        {
+            if (vehicle.isIt != 0)
+            {
+                botMovement = 1;
+                botEnemySelection = 1;
+            }
+            else
+            {
+                botMovement = 2;
+                botEnemySelection = 2;
+            }
+        }
+
+        //Tag Mode
+        else
+        {
+            if (vehicle.isIt == 0)
+            {
+                botMovement = 1;
+            }
+            else
+            {
+                botMovement = 2;
+                botEnemySelection = 1;
+            }
+        }
+
+
 		if (Game.Settings.botsCanDrive)
 		{
+            //Hiding movement
 			if (botMovement == 1)
 			{
+                //Tank
 				if (vehicle.vehId == 2)
 				{
-					vehicle.input.x = ((Time.time % 2f != 0f) ? (UnityEngine.Random.value * 2f - 1f) : 0f);
+					vehicle.input.x = (Time.time % 2f == 0f ?
+                        0f :
+                        UnityEngine.Random.value * 2f - 1f);
 					vehicle.input.y = 1f;
 				}
+                //All others
 				else
 				{
 					vehicle.input.x = UnityEngine.Random.value * 2f - 1f;
 					vehicle.input.y = 1f;
 				}
 			}
+
+            //Persuing movement
 			else if (botMovement == 2 && (bool)enemy)
 			{
-				float num = Vector3.Distance(enemy.transform.position, vehicle.myRigidbody.position);
-				float num2 = Quaternion.LookRotation(enemy.transform.position - vehicle.myRigidbody.position).eulerAngles.y - transform.localRotation.eulerAngles.y;
-				if (num2 > 180f)
+				float distance = Vector3.Distance(
+                    enemy.transform.position,
+                    vehicle.myRigidbody.position);
+				float rotation = Quaternion.LookRotation(
+                    enemy.transform.position -
+                        vehicle.myRigidbody.position).eulerAngles.y -
+                        transform.localRotation.eulerAngles.y;
+				if (rotation > 180f)
 				{
-					num2 -= 360f;
+					rotation -= 360f;
 				}
-				if (num2 < -180f)
+				if (rotation < -180f)
 				{
-					num2 += 360f;
+					rotation += 360f;
 				}
+
+                //Buggy
 				if (vehicle.vehId == 0)
 				{
-					num2 /= 20f;
-					if (num < 15f)
+					rotation /= 20f;
+					if (distance < 15f)
 					{
-						vehicle.input.x = ((!(Mathf.Abs(num2) < 0.1f)) ? Mathf.Clamp(num2, -1f, 1f) : 0f);
+                        vehicle.input.x = (Mathf.Abs(rotation) < 0.1f ?
+                            0f :
+                            Mathf.Clamp(rotation, -1f, 1f));
 					}
 					else
 					{
-						vehicle.input.x = ((!(Mathf.Abs(num2) < 0.1f)) ? Mathf.Clamp(num2, 0.6f * -1f, 0.6f) : 0f);
+                        vehicle.input.x = (Mathf.Abs(rotation) < 0.1f ?
+                            0 :
+                            Mathf.Clamp(rotation, -0.6f, 0.6f));
 					}
 					vehicle.input.y = 1f;
 					vehicle.specialInput = false;
 				}
+                //Hovercraft
 				else if (vehicle.vehId == 1)
 				{
-					num2 /= 15f;
-					vehicle.input.x = ((!(Mathf.Abs(num2) < 0.1f)) ? Mathf.Clamp(num2, -1f, 1f) : 0f);
+					rotation /= 15f;
+					vehicle.input.x = (Mathf.Abs(rotation) < 0.1f ?
+                        0f :
+                        Mathf.Clamp(rotation, -1f, 1f));
 					vehicle.input.y = 1f;
 					vehicle.specialInput = false;
 				}
+                //Tank
 				else if (vehicle.vehId == 2)
 				{
-					num2 /= 80f;
-					vehicle.input.x = ((!(Mathf.Abs(num2) < 0.3f)) ? Mathf.Clamp(num2, -1f, 1f) : 0f);
-					vehicle.input.y = ((!(Mathf.Abs(num2) > 1f)) ? 1 : 0);
+					rotation /= 80f;
+					vehicle.input.x = (Mathf.Abs(rotation) < 0.3f ?
+                        0f :
+                        Mathf.Clamp(rotation, -1f, 1f));
+					vehicle.input.y = (Mathf.Abs(rotation) > 1f ?
+                        0 :
+                        1);
 					vehicle.specialInput = false;
 				}
 				else if (vehicle.vehId == 3)
 				{
-					num2 /= 10f;
-					vehicle.input.x = ((!(Mathf.Abs(num2) < 0.1f)) ? Mathf.Clamp(num2, -1f, 1f) : 0f);
+					rotation /= 10f;
+					vehicle.input.x = (Mathf.Abs(rotation) < 0.1f ?
+                        0f :
+                        Mathf.Clamp(rotation, -1f, 1f));
 					vehicle.input.y = 1f;
-					vehicle.input.z = ((!Physics.Raycast(transform.position, Vector3.up * -1f, 4f)) ? 0.3f : 1f);
+					vehicle.input.z = Physics.Raycast(
+                        transform.position,
+                        Vector3.up * -1f,
+                        4f) ? 1f : 0.3f;
 					vehicle.specialInput = true;
 				}
 			}
@@ -156,11 +185,29 @@ public class VehicleBot : MonoBehaviour
 			vehicle.input.x = 0f;
 			vehicle.input.y = 0f;
 		}
-		if ((bool)enemy && Game.Settings.botsCanFire && Time.time - 1f > rocketFireTime && !Physics.Linecast(transform.position, enemy.transform.position, 1 << 8))
+
+        //Fire!
+		if (
+            (bool)enemy &&
+            Game.Settings.botsCanFire &&
+            Time.time - 1f > rocketFireTime &&
+            !Physics.Linecast(
+                transform.position,
+                enemy.transform.position,
+                1 << 8))
 		{
 			rocketFireTime = Time.time;
-			networkView.RPC("fRl", RPCMode.All, networkView.viewID, Network.time + string.Empty, vehicle.ridePos.position + vehicle.transform.up * (0.1f * -1f), enemy.networkView.viewID);
+			networkView.RPC(
+                "fRl",
+                RPCMode.All,
+                networkView.viewID,
+                Network.time + "",
+                vehicle.ridePos.position +
+                    vehicle.transform.up * -0.1f,
+                enemy.networkView.viewID);
 		}
+
+        //Bounds Checking
 		if (vehicle.myRigidbody.position.y < -300f)
 		{
 			vehicle.myRigidbody.velocity = vehicle.myRigidbody.velocity.normalized;
