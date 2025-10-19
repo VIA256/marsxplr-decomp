@@ -29,204 +29,6 @@ public class WhirldIn
 {
 	[Serializable]
 	[CompilerGenerated]
-	internal sealed class LoadSkybox_002456 : GenericGenerator<object>
-	{
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<object>, IEnumerator
-		{
-			internal string[] _0024vS_0024699;
-
-			internal string _0024v700;
-
-			internal WhirldIn _0024self_701;
-
-			public _0024(string v, WhirldIn self_)
-			{
-				_0024v700 = v;
-				_0024self_701 = self_;
-			}
-
-			public override bool MoveNext()
-			{
-				switch (_state)
-				{
-				default:
-					_0024vS_0024699 = _0024v700.Split(","[0]);
-					if (Extensions.get_length((System.Array)_0024vS_0024699) > 5)
-					{
-						_0024self_701.LoadSkyboxTexture(_0024vS_0024699[0], 1);
-						_0024self_701.LoadSkyboxTexture(_0024vS_0024699[1], 2);
-						_0024self_701.LoadSkyboxTexture(_0024vS_0024699[2], 3);
-						_0024self_701.LoadSkyboxTexture(_0024vS_0024699[3], 4);
-						_0024self_701.LoadSkyboxTexture(_0024vS_0024699[4], 5);
-						_0024self_701.LoadSkyboxTexture(_0024vS_0024699[5], 6);
-						goto case 2;
-					}
-					if (_0024vS_0024699[0].Substring(checked(_0024vS_0024699[0].LastIndexOf(".") + 1)) == "jpg")
-					{
-						_0024self_701.LoadSkyboxTexture(_0024vS_0024699[0], 0);
-						goto case 3;
-					}
-					goto case 4;
-				case 2:
-					if (_0024self_701.threads.Count > 0)
-					{
-						return Yield(2, null);
-					}
-					if (Extensions.get_length((System.Array)_0024vS_0024699) > 6)
-					{
-						RenderSettings.skybox.SetColor("_Tint", new Color(UnityBuiltins.parseFloat(_0024vS_0024699[6]), UnityBuiltins.parseFloat(_0024vS_0024699[7]), UnityBuiltins.parseFloat(_0024vS_0024699[8]), 0.5f));
-					}
-					goto IL_02bb;
-				case 3:
-					if (_0024self_701.threads.Count > 0)
-					{
-						return Yield(3, null);
-					}
-					if (Extensions.get_length((System.Array)_0024vS_0024699) > 1)
-					{
-						RenderSettings.skybox.SetColor("_Tint", new Color(UnityBuiltins.parseFloat(_0024vS_0024699[1]), UnityBuiltins.parseFloat(_0024vS_0024699[2]), UnityBuiltins.parseFloat(_0024vS_0024699[3]), 0.5f));
-					}
-					goto IL_02bb;
-				case 4:
-					if (_0024self_701.threads.Count > 0)
-					{
-						return Yield(4, null);
-					}
-					RenderSettings.skybox = (Material)RuntimeServices.Coerce(_0024self_701.GetAsset(_0024v700), typeof(Material));
-					if (!RenderSettings.skybox)
-					{
-						_0024self_701.info += "Skybox not found: " + _0024v700 + "\n";
-					}
-					goto IL_02bb;
-				case 1:
-					break;
-					IL_02bb:
-					Yield(1, null);
-					break;
-				}
-				bool result = default(bool);
-				return result;
-			}
-		}
-
-		internal string _0024v702;
-
-		internal WhirldIn _0024self_703;
-
-		public LoadSkybox_002456(string v, WhirldIn self_)
-		{
-			_0024v702 = v;
-			_0024self_703 = self_;
-		}
-
-		public override IEnumerator<object> GetEnumerator()
-		{
-			return new _0024(_0024v702, _0024self_703);
-		}
-	}
-
-	[Serializable]
-	[CompilerGenerated]
-	internal sealed class LoadTexture_002457 : GenericGenerator<object>
-	{
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<object>, IEnumerator
-		{
-			internal string[] _0024vS_0024599;
-
-			internal string _0024thread_0024600;
-
-			internal string _0024url_0024601;
-
-			internal WWW _0024www_0024602;
-
-			internal Texture2D _0024txt_0024603;
-
-			internal string _0024p604;
-
-			internal WhirldIn _0024self_605;
-
-			public _0024(string p, WhirldIn self_)
-			{
-				_0024p604 = p;
-				_0024self_605 = self_;
-			}
-
-			public override bool MoveNext()
-			{
-				checked
-				{
-					switch (_state)
-					{
-					default:
-						_0024self_605.threadTextures++;
-						goto case 2;
-					case 2:
-						if (_0024self_605.threads.Count >= _0024self_605.maxThreads)
-						{
-							return Yield(2, null);
-						}
-						_0024vS_0024599 = _0024p604.Split(","[0]);
-						_0024thread_0024600 = "Txt" + _0024self_605.threadTextures + " - " + _0024vS_0024599[0];
-						_0024self_605.threads.Add(_0024thread_0024600, string.Empty);
-						_0024url_0024601 = (string)RuntimeServices.Coerce(_0024self_605.GetURL(_0024vS_0024599[1]), typeof(string));
-						_0024www_0024602 = new WWW(_0024url_0024601);
-						goto case 3;
-					case 3:
-						if (!_0024www_0024602.isDone)
-						{
-							_0024self_605.threads[_0024thread_0024600] = _0024www_0024602.progress;
-							return Yield(3, null);
-						}
-						if (_0024www_0024602.error != null)
-						{
-							_0024self_605.info += "Failed to download texture: " + _0024url_0024601 + " (" + _0024www_0024602.error + ")\n";
-							_0024self_605.threads.Remove(_0024thread_0024600);
-							_0024self_605.threadTextures--;
-							break;
-						}
-						_0024self_605.threads[_0024thread_0024600] = "Initializing";
-						_0024txt_0024603 = new Texture2D(4, 4, TextureFormat.DXT1, true);
-						_0024www_0024602.LoadImageIntoTexture(_0024txt_0024603);
-						_0024txt_0024603.wrapMode = ((_0024vS_0024599[2] == null || RuntimeServices.EqualityOperator(_0024vS_0024599[2], 0)) ? TextureWrapMode.Clamp : TextureWrapMode.Repeat);
-						_0024txt_0024603.anisoLevel = RuntimeServices.UnboxInt32((_0024vS_0024599[3] == null) ? ((object)1) : _0024vS_0024599[3]);
-						_0024txt_0024603.Apply(true);
-						_0024txt_0024603.Compress(true);
-						_0024self_605.textures.Add(_0024vS_0024599[0], _0024txt_0024603);
-						_0024self_605.threads.Remove(_0024thread_0024600);
-						_0024self_605.threadTextures--;
-						Yield(1, null);
-						break;
-					case 1:
-						break;
-					}
-					bool result = default(bool);
-					return result;
-				}
-			}
-		}
-
-		internal string _0024p606;
-
-		internal WhirldIn _0024self_607;
-
-		public LoadTexture_002457(string p, WhirldIn self_)
-		{
-			_0024p606 = p;
-			_0024self_607 = self_;
-		}
-
-		public override IEnumerator<object> GetEnumerator()
-		{
-			return new _0024(_0024p606, _0024self_607);
-		}
-	}
-
-	[Serializable]
-	[CompilerGenerated]
 	internal sealed class LoadMeshTexture_002458 : GenericGenerator<object>
 	{
 		[Serializable]
@@ -1454,9 +1256,158 @@ public class WhirldIn
 
 	}
 
-	public IEnumerator LoadTexture(string p)
+    /*[Serializable]
+	[CompilerGenerated]
+	internal sealed class LoadTexture_002457 : GenericGenerator<object>
 	{
-		return new LoadTexture_002457(p, this).GetEnumerator();
+		[Serializable]
+		[CompilerGenerated]
+		private sealed class _0024 : GenericGeneratorEnumerator<object>, IEnumerator
+		{
+			internal string[] _0024vS_0024599;
+
+			internal string _0024thread_0024600;
+
+			internal string _0024url_0024601;
+
+			internal WWW _0024www_0024602;
+
+			internal Texture2D _0024txt_0024603;
+
+			internal string _0024p604;
+
+			internal WhirldIn _0024self_605;
+
+			public _0024(string p, WhirldIn self_)
+			{
+				_0024p604 = p;
+				_0024self_605 = self_;
+			}
+
+			public override bool MoveNext()
+			{
+				checked
+				{
+					switch (_state)
+					{
+					default:
+						_0024self_605.threadTextures++;
+						goto case 2;
+					case 2:
+						if (_0024self_605.threads.Count >= _0024self_605.maxThreads)
+						{
+							return Yield(2, null);
+						}
+						_0024vS_0024599 = _0024p604.Split(","[0]);
+						_0024thread_0024600 = "Txt" + _0024self_605.threadTextures + " - " + _0024vS_0024599[0];
+						_0024self_605.threads.Add(_0024thread_0024600, string.Empty);
+						_0024url_0024601 = (string)RuntimeServices.Coerce(_0024self_605.GetURL(_0024vS_0024599[1]), typeof(string));
+						_0024www_0024602 = new WWW(_0024url_0024601);
+						goto case 3;
+					case 3:
+						if (!_0024www_0024602.isDone)
+						{
+							_0024self_605.threads[_0024thread_0024600] = _0024www_0024602.progress;
+							return Yield(3, null);
+						}
+						if (_0024www_0024602.error != null)
+						{
+							_0024self_605.info += "Failed to download texture: " + _0024url_0024601 + " (" + _0024www_0024602.error + ")\n";
+							_0024self_605.threads.Remove(_0024thread_0024600);
+							_0024self_605.threadTextures--;
+							break;
+						}
+						_0024self_605.threads[_0024thread_0024600] = "Initializing";
+						_0024txt_0024603 = new Texture2D(4, 4, TextureFormat.DXT1, true);
+						_0024www_0024602.LoadImageIntoTexture(_0024txt_0024603);
+						_0024txt_0024603.wrapMode = ((_0024vS_0024599[2] == null || RuntimeServices.EqualityOperator(_0024vS_0024599[2], 0)) ? TextureWrapMode.Clamp : TextureWrapMode.Repeat);
+						_0024txt_0024603.anisoLevel = RuntimeServices.UnboxInt32((_0024vS_0024599[3] == null) ? ((object)1) : _0024vS_0024599[3]);
+						_0024txt_0024603.Apply(true);
+						_0024txt_0024603.Compress(true);
+						_0024self_605.textures.Add(_0024vS_0024599[0], _0024txt_0024603);
+						_0024self_605.threads.Remove(_0024thread_0024600);
+						_0024self_605.threadTextures--;
+						Yield(1, null);
+						break;
+					case 1:
+						break;
+					}
+					bool result = default(bool);
+					return result;
+				}
+			}
+		}
+
+		internal string _0024p606;
+
+		internal WhirldIn _0024self_607;
+
+		public LoadTexture_002457(string p, WhirldIn self_)
+		{
+			_0024p606 = p;
+			_0024self_607 = self_;
+		}
+
+		public override IEnumerator<object> GetEnumerator()
+		{
+			return new _0024(_0024p606, _0024self_607);
+		}
+	}*/
+
+	public IEnumerator LoadTexture(string p)    //[txt:name,url,wrapMode,anisoLevel]
+	{
+        threadTextures++;
+
+        //Don't overwhelm the computer by doing too many things @ once
+        while (threads.Count >= maxThreads) yield return null;
+
+        String[] vS = p.Split(","[0]);
+
+        String thread = "Txt" +
+            threadTextures +
+            " - " +
+            vS[0];
+        threads.Add(thread, "");
+
+        String url = (String)GetURL(vS[1]);
+        WWW www = new WWW(url);
+        while (!www.isDone)
+        {
+            threads[thread] = www.progress;
+            yield return null;
+        }
+        if (www.error != null)
+        {
+            info +=
+                "Failed to download texture: " +
+                url +
+                " (" +
+                www.error +
+                ")\n";
+            threads.Remove(thread);
+            threadTextures--;
+            yield break;
+        }
+
+        threads[thread] = "Initializing";
+        //Texture2D txt = www.texture;
+        Texture2D txt = new Texture2D(
+            4,
+            4,
+            TextureFormat.DXT1,
+            true);
+        www.LoadImageIntoTexture(txt);
+        txt.wrapMode = (
+            (vS[2] == null || float.Parse(vS[2]) == 0f) ?
+                TextureWrapMode.Clamp :
+                TextureWrapMode.Repeat);
+        txt.anisoLevel = (vS[3] != null ? int.Parse(vS[3]) : 1);
+        txt.Apply(true);
+        txt.Compress(true);
+        textures.Add(vS[0], txt);
+
+        threads.Remove(thread);
+        threadTextures--;
 	}
 
 	public IEnumerator LoadMeshTexture(string url, string materialName)
@@ -1553,7 +1504,63 @@ public class WhirldIn
 
 	public IEnumerator LoadSkybox(string v)
 	{
-		return new LoadSkybox_002456(v, this).GetEnumerator();
+        String[] vS = v.Split(","[0]);
+
+        //Multiple Image Skybox
+        if (vS.Length > 5)
+        { 
+            //Material skyMat = RenderSettings.skybox;
+            //RenderSettings.skybox = new Material();
+            //RenderSettings.skybox.CopyPropertiesFromMaterial(skymat);
+            LoadSkyboxTexture(vS[0], 1);
+            LoadSkyboxTexture(vS[1], 2);
+            LoadSkyboxTexture(vS[2], 3);
+            LoadSkyboxTexture(vS[3], 4);
+            LoadSkyboxTexture(vS[4], 5);
+            LoadSkyboxTexture(vS[5], 6);
+            //Wait for everything else to load
+            while (threads.Count > 0) yield return null;
+            if (vS.Length > 6)
+            {
+                RenderSettings.skybox.SetColor("_Tint", new Color(
+                    float.Parse(vS[6]),
+                    float.Parse(vS[7]),
+                    float.Parse(vS[8]),
+                    0.5f));
+            }
+        }
+
+        //Single JPG image for all sides
+        else if (vS[0].Substring(vS[0].LastIndexOf(".") + 1) == "jpg")
+        {
+            LoadSkyboxTexture(vS[0], 0);
+            //Wait for everything else to load
+            while (threads.Count > 0) yield return null;
+            if (vS.Length > 1)
+            {
+                RenderSettings.skybox.SetColor("_Tint", new Color(
+                    float.Parse(vS[1]),
+                    float.Parse(vS[2]),
+                    float.Parse(vS[3]),
+                    0.5f));
+            }
+        }
+
+        //AssetBundle Material Skybox
+        else
+        {
+            //Wait for everything else to load
+            while (threads.Count > 0) yield return null;
+            RenderSettings.skybox = (Material)GetAsset(v); //, Material
+            if (!RenderSettings.skybox)
+            {
+                info +=
+                    "Skybox not found: " +
+                    v +
+                    "\n";
+            }
+        }
+
 	}
 
 	[DuckTyped]
