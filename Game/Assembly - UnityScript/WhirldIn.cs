@@ -29,491 +29,6 @@ public class WhirldIn
 {
 	[Serializable]
 	[CompilerGenerated]
-	internal sealed class LoadMeshTexture_002458 : GenericGenerator<object>
-	{
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<object>, IEnumerator
-		{
-			internal string _0024thread_0024608;
-
-			internal WWW _0024www_0024609;
-
-			internal Texture2D _0024mshTxt_0024610;
-
-			internal string _0024url611;
-
-			internal string _0024materialName612;
-
-			internal WhirldIn _0024self_613;
-
-			public _0024(string url, string materialName, WhirldIn self_)
-			{
-				_0024url611 = url;
-				_0024materialName612 = materialName;
-				_0024self_613 = self_;
-			}
-
-			public override bool MoveNext()
-			{
-				checked
-				{
-					switch (_state)
-					{
-					default:
-						_0024self_613.threadTextures++;
-						goto case 2;
-					case 2:
-						if (_0024self_613.threads.Count >= _0024self_613.maxThreads)
-						{
-							return Yield(2, null);
-						}
-						_0024thread_0024608 = "MshTxt" + _0024self_613.threadTextures + " - " + _0024materialName612;
-						_0024self_613.threads.Add(_0024thread_0024608, string.Empty);
-						_0024url611 = (string)RuntimeServices.Coerce(_0024self_613.GetURL(_0024url611), typeof(string));
-						_0024www_0024609 = new WWW(_0024url611);
-						goto case 3;
-					case 3:
-						if (!_0024www_0024609.isDone)
-						{
-							_0024self_613.threads[_0024thread_0024608] = _0024www_0024609.progress;
-							return Yield(3, null);
-						}
-						if (_0024www_0024609.error != null)
-						{
-							_0024self_613.info += "Failed to download mesh texture: " + _0024url611 + " (" + _0024www_0024609.error + ")\n";
-							_0024self_613.threads.Remove(_0024thread_0024608);
-							_0024self_613.threadTextures--;
-							break;
-						}
-						_0024self_613.threads[_0024thread_0024608] = "Initializing";
-						_0024mshTxt_0024610 = new Texture2D(4, 4, TextureFormat.DXT1, true);
-						_0024www_0024609.LoadImageIntoTexture(_0024mshTxt_0024610);
-						_0024mshTxt_0024610.wrapMode = TextureWrapMode.Repeat;
-						_0024mshTxt_0024610.Apply(true);
-						_0024mshTxt_0024610.Compress(true);
-						RuntimeServices.SetProperty(_0024self_613.meshMaterials[_0024materialName612], "mainTexture", _0024mshTxt_0024610);
-						_0024self_613.threads.Remove(_0024thread_0024608);
-						_0024self_613.threadTextures--;
-						Yield(1, null);
-						break;
-					case 1:
-						break;
-					}
-					bool result = default(bool);
-					return result;
-				}
-			}
-		}
-
-		internal string _0024url614;
-
-		internal string _0024materialName615;
-
-		internal WhirldIn _0024self_616;
-
-		public LoadMeshTexture_002458(string url, string materialName, WhirldIn self_)
-		{
-			_0024url614 = url;
-			_0024materialName615 = materialName;
-			_0024self_616 = self_;
-		}
-
-		public override IEnumerator<object> GetEnumerator()
-		{
-			return new _0024(_0024url614, _0024materialName615, _0024self_616);
-		}
-	}
-
-	[Serializable]
-	[CompilerGenerated]
-	internal sealed class LoadMesh_002459 : GenericGenerator<object>
-	{
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<object>, IEnumerator
-		{
-			internal string[] _0024vS_0024617;
-
-			internal string _0024thread_0024618;
-
-			internal int _0024hasCollider_0024619;
-
-			internal WWW _0024www_0024620;
-
-			internal int _0024lastDot_0024621;
-
-			internal string _0024data_0024622;
-
-			internal string _0024ext_0024623;
-
-			internal Mesh _0024msh_0024624;
-
-			internal UnityScript.Lang.Array _0024verts_0024625;
-
-			internal UnityScript.Lang.Array _0024norms_0024626;
-
-			internal UnityScript.Lang.Array _0024uvs_0024627;
-
-			internal UnityScript.Lang.Array _0024tris_0024628;
-
-			internal UnityScript.Lang.Array _0024triangles_0024629;
-
-			internal UnityScript.Lang.Array _0024mats_0024630;
-
-			internal float _0024timer_0024631;
-
-			internal string[] _0024file_0024632;
-
-			internal string _0024str_0024633;
-
-			internal string[] _0024l_0024634;
-
-			internal int _0024i_0024635;
-
-			internal string[] _0024meshlib_0024636;
-
-			internal Material _0024curMat_0024637;
-
-			internal int _0024offset_0024638;
-
-			internal string _0024meshline_0024639;
-
-			internal string[] _0024ml_0024640;
-
-			internal string _0024shdr_0024641;
-
-			internal GameObject _0024mshObj_0024642;
-
-			internal int _0024___temp230_0024643;
-
-			internal string[] _0024___temp231_0024644;
-
-			internal int _0024___temp232_0024645;
-
-			internal int _0024___temp234_0024646;
-
-			internal string[] _0024___temp235_0024647;
-
-			internal int _0024___temp236_0024648;
-
-			internal string _0024v649;
-
-			internal WhirldIn _0024self_650;
-
-			public _0024(string v, WhirldIn self_)
-			{
-				_0024v649 = v;
-				_0024self_650 = self_;
-			}
-
-			public override bool MoveNext()
-			{
-				checked
-				{
-					switch (_state)
-					{
-					default:
-						if (_0024self_650.threads.Count >= _0024self_650.maxThreads)
-						{
-							return Yield(2, null);
-						}
-						_0024vS_0024617 = _0024v649.Split(","[0]);
-						_0024thread_0024618 = _0024vS_0024617[0];
-						_0024self_650.threads.Add(_0024thread_0024618, string.Empty);
-						_0024hasCollider_0024619 = ((Extensions.get_length((System.Array)_0024vS_0024617) > 2) ? UnityBuiltins.parseInt(_0024vS_0024617[2]) : 0);
-						_0024www_0024620 = new WWW((string)RuntimeServices.Coerce(_0024self_650.GetURL(_0024vS_0024617[1]), typeof(string)));
-						goto case 3;
-					case 3:
-						if (!_0024www_0024620.isDone)
-						{
-							_0024self_650.threads[_0024thread_0024618] = _0024www_0024620.progress;
-							return Yield(3, null);
-						}
-						if (_0024www_0024620.error != null)
-						{
-							_0024self_650.info += "Failed to download mesh: " + _0024self_650.url + " (" + _0024www_0024620.error + ")\n";
-							_0024self_650.threads.Remove(_0024thread_0024618);
-							break;
-						}
-						_0024self_650.threads[_0024thread_0024618] = "Decompressing";
-						return Yield(4, null);
-					case 4:
-						_0024lastDot_0024621 = _0024vS_0024617[1].LastIndexOf(".");
-						if (_0024vS_0024617[1].Substring(_0024lastDot_0024621 + 1) == "gz")
-						{
-							_0024data_0024622 = GZipStream.UncompressString(_0024www_0024620.bytes);
-							_0024vS_0024617[1] = _0024vS_0024617[1].Substring(0, _0024lastDot_0024621);
-						}
-						else
-						{
-							_0024data_0024622 = _0024www_0024620.data;
-						}
-						_0024self_650.threads[_0024thread_0024618] = "Generating";
-						_0024lastDot_0024621 = _0024vS_0024617[1].LastIndexOf(".");
-						_0024ext_0024623 = _0024vS_0024617[1].Substring(_0024lastDot_0024621 + 1);
-						if (!(_0024ext_0024623 == "utm"))
-						{
-							if (_0024ext_0024623 == "obj")
-							{
-								_0024msh_0024624 = new Mesh();
-								_0024verts_0024625 = new UnityScript.Lang.Array();
-								_0024norms_0024626 = new UnityScript.Lang.Array();
-								_0024uvs_0024627 = new UnityScript.Lang.Array();
-								_0024tris_0024628 = new UnityScript.Lang.Array();
-								_0024triangles_0024629 = new UnityScript.Lang.Array();
-								_0024mats_0024630 = new UnityScript.Lang.Array();
-								_0024timer_0024631 = Time.time + 0.1f;
-								_0024file_0024632 = _0024data_0024622.Split("\n"[0]);
-								_0024___temp234_0024646 = 0;
-								_0024___temp235_0024647 = _0024file_0024632;
-								_0024___temp236_0024648 = _0024___temp235_0024647.Length;
-								goto IL_0df5;
-							}
-							_0024self_650.info += "Mesh Type Unrecognized: " + _0024vS_0024617[0] + " " + _0024vS_0024617[1] + " (." + _0024ext_0024623 + ")\n";
-						}
-						goto IL_0fe7;
-					case 5:
-						_0024___temp234_0024646++;
-						goto IL_0df5;
-					case 1:
-						break;
-						IL_0df5:
-						if (_0024___temp234_0024646 < _0024___temp236_0024648)
-						{
-							if (!(_0024___temp235_0024647[_0024___temp234_0024646] == string.Empty))
-							{
-								_0024l_0024634 = _0024___temp235_0024647[_0024___temp234_0024646].Split(" "[0]);
-								if (_0024l_0024634[0] == "v")
-								{
-									_0024verts_0024625.Add(new Vector3(UnityBuiltins.parseFloat(_0024l_0024634[1]) * -1f, UnityBuiltins.parseFloat(_0024l_0024634[2]), UnityBuiltins.parseFloat(_0024l_0024634[3])));
-								}
-								else if (_0024l_0024634[0] == "vn")
-								{
-									_0024norms_0024626.Add(new Vector3(UnityBuiltins.parseFloat(_0024l_0024634[1]), UnityBuiltins.parseFloat(_0024l_0024634[2]), UnityBuiltins.parseFloat(_0024l_0024634[3])));
-								}
-								else if (_0024l_0024634[0] == "vt")
-								{
-									_0024uvs_0024627.Add(new Vector2(UnityBuiltins.parseFloat(_0024l_0024634[1]), UnityBuiltins.parseFloat(_0024l_0024634[2])));
-								}
-								else if (_0024l_0024634[0] == "f")
-								{
-									if (Extensions.get_length((System.Array)_0024l_0024634) == 4)
-									{
-										_0024tris_0024628.Add(UnityBuiltins.parseInt(_0024l_0024634[2].Substring(0, _0024l_0024634[2].IndexOf("/"))) - 1);
-										_0024tris_0024628.Add(UnityBuiltins.parseInt(_0024l_0024634[1].Substring(0, _0024l_0024634[1].IndexOf("/"))) - 1);
-										_0024tris_0024628.Add(UnityBuiltins.parseInt(_0024l_0024634[3].Substring(0, _0024l_0024634[3].IndexOf("/"))) - 1);
-									}
-									else
-									{
-										for (_0024i_0024635 = 2; _0024i_0024635 < Extensions.get_length((System.Array)_0024l_0024634); _0024i_0024635++)
-										{
-											UnityScript.Lang.Array array = _0024tris_0024628;
-											string[] array2 = _0024l_0024634;
-											string obj = array2[RuntimeServices.NormalizeArrayIndex(array2, _0024i_0024635)];
-											string[] array3 = _0024l_0024634;
-											array.Add(UnityBuiltins.parseInt(obj.Substring(0, array3[RuntimeServices.NormalizeArrayIndex(array3, _0024i_0024635)].IndexOf("/"))) - 1);
-											if (unchecked(_0024i_0024635 % 2) == 0)
-											{
-												_0024tris_0024628.Add(UnityBuiltins.parseInt(_0024l_0024634[1].Substring(0, _0024l_0024634[1].IndexOf("/"))) - 1);
-											}
-										}
-										while (unchecked(_0024tris_0024628.length % 3) != 0)
-										{
-											UnityScript.Lang.Array array4 = _0024tris_0024628;
-											string[] array5 = _0024l_0024634;
-											string obj2 = array5[RuntimeServices.NormalizeArrayIndex(array5, _0024i_0024635 - 2)];
-											string[] array6 = _0024l_0024634;
-											array4.Add(UnityBuiltins.parseInt(obj2.Substring(0, array6[RuntimeServices.NormalizeArrayIndex(array6, _0024i_0024635 - 2)].IndexOf("/"))) - 1);
-										}
-									}
-								}
-								else if (_0024l_0024634[0] == "usemtl")
-								{
-									if (_0024self_650.meshMaterials.ContainsKey(_0024l_0024634[1]))
-									{
-										_0024mats_0024630.Add(_0024self_650.meshMaterials[_0024l_0024634[1]]);
-									}
-									else
-									{
-										_0024self_650.info += "Mesh Material Missing: " + _0024l_0024634[1] + "\n";
-										_0024mats_0024630.Add(null);
-									}
-									if (_0024tris_0024628.length > 0)
-									{
-										_0024triangles_0024629.Add(_0024tris_0024628);
-										_0024tris_0024628 = new UnityScript.Lang.Array();
-									}
-								}
-								else if (_0024l_0024634[0] == "mtllib" && !_0024self_650.meshMatLibs.ContainsKey(_0024l_0024634[1]))
-								{
-									_0024self_650.meshMatLibs.Add(_0024l_0024634[1], true);
-									_0024www_0024620 = new WWW((string)RuntimeServices.Coerce(_0024self_650.GetURL(_0024l_0024634[1]), typeof(string)));
-									while (!_0024www_0024620.isDone)
-									{
-										_0024self_650.threads[_0024thread_0024618] = "Downloading Material Library (" + Mathf.RoundToInt(_0024www_0024620.progress * 100f) + "%)";
-									}
-									if (_0024www_0024620.error != null)
-									{
-										_0024self_650.info = (string)RuntimeServices.Coerce(RuntimeServices.InvokeBinaryOperator("op_Addition", _0024self_650.info, RuntimeServices.InvokeBinaryOperator("op_Addition", RuntimeServices.InvokeBinaryOperator("op_Addition", RuntimeServices.InvokeBinaryOperator("op_Addition", RuntimeServices.InvokeBinaryOperator("op_Addition", "Mesh Material Library Undownloadable: ", _0024self_650.GetURL(_0024l_0024634[1])), " ("), _0024www_0024620.error), ")\n")), typeof(string));
-									}
-									else
-									{
-										_0024self_650.threads[_0024thread_0024618] = "Initializing " + _0024vS_0024617[0] + string.Empty;
-										_0024meshlib_0024636 = _0024www_0024620.data.Split("\n"[0]);
-										_0024curMat_0024637 = null;
-										_0024offset_0024638 = -1;
-										while (true)
-										{
-											_0024offset_0024638 = _0024www_0024620.data.IndexOf("map_Ka", _0024offset_0024638 + 1);
-											if (_0024offset_0024638 == -1)
-											{
-												break;
-											}
-										}
-										_0024___temp230_0024643 = 0;
-										_0024___temp231_0024644 = _0024meshlib_0024636;
-										for (_0024___temp232_0024645 = _0024___temp231_0024644.Length; _0024___temp230_0024643 < _0024___temp232_0024645; _0024___temp230_0024643++)
-										{
-											_0024ml_0024640 = _0024___temp231_0024644[_0024___temp230_0024643].Split(" "[0]);
-											if (_0024ml_0024640[0] == "newmtl")
-											{
-												if ((bool)_0024curMat_0024637)
-												{
-													_0024self_650.meshMaterials.Add(_0024curMat_0024637.name, _0024curMat_0024637);
-												}
-												_0024curMat_0024637 = new Material(Shader.Find("VertexLit"));
-												_0024curMat_0024637.name = _0024ml_0024640[1];
-											}
-											else if (_0024ml_0024640[0] == "#Shader")
-											{
-												_0024shdr_0024641 = _0024___temp231_0024644[_0024___temp230_0024643].Substring(8).Replace("Diffuse", "VertexLit");
-												if (_0024shdr_0024641 != "VertexLit" && _0024shdr_0024641 != "VertexLit Fast")
-												{
-													_0024curMat_0024637.shader = Shader.Find(_0024shdr_0024641);
-												}
-											}
-											else if (_0024ml_0024640[0] == "Ka")
-											{
-												_0024curMat_0024637.color = new Color(UnityBuiltins.parseFloat(_0024ml_0024640[1]), UnityBuiltins.parseFloat(_0024ml_0024640[2]), UnityBuiltins.parseFloat(_0024ml_0024640[3]), 1f);
-											}
-											else if (_0024ml_0024640[0] == "Kd")
-											{
-												_0024curMat_0024637.SetColor("_Emission", new Color(UnityBuiltins.parseFloat(_0024ml_0024640[1]), UnityBuiltins.parseFloat(_0024ml_0024640[2]), UnityBuiltins.parseFloat(_0024ml_0024640[3]), 1f));
-											}
-											else if (_0024ml_0024640[0] == "Ks")
-											{
-												_0024curMat_0024637.SetColor("_SpecColor", new Color(UnityBuiltins.parseFloat(_0024ml_0024640[1]), UnityBuiltins.parseFloat(_0024ml_0024640[2]), UnityBuiltins.parseFloat(_0024ml_0024640[3]), 1f));
-											}
-											else if (_0024ml_0024640[0] == "Ns")
-											{
-												_0024curMat_0024637.SetFloat("_Shininess", UnityBuiltins.parseFloat(_0024ml_0024640[1]));
-											}
-											else if (_0024ml_0024640[0] == "map_Ka")
-											{
-												_0024curMat_0024637.mainTextureOffset = new Vector2(UnityBuiltins.parseFloat(_0024ml_0024640[2]), UnityBuiltins.parseFloat(_0024ml_0024640[3]));
-												_0024curMat_0024637.mainTextureScale = new Vector2(UnityBuiltins.parseFloat(_0024ml_0024640[5]), UnityBuiltins.parseFloat(_0024ml_0024640[6]));
-												_0024self_650.monoBehaviour.StartCoroutine(_0024self_650.LoadMeshTexture(_0024ml_0024640[7], _0024curMat_0024637.name));
-											}
-											else if (!(_0024ml_0024640[0] == "d"))
-											{
-											}
-										}
-										if ((bool)_0024curMat_0024637)
-										{
-											_0024self_650.meshMaterials.Add(_0024curMat_0024637.name, _0024curMat_0024637);
-										}
-									}
-								}
-								if (Time.time > _0024timer_0024631)
-								{
-									_0024timer_0024631 = Time.time + 0.1f;
-									return Yield(5, null);
-								}
-							}
-							goto case 5;
-						}
-						_0024self_650.threads[_0024thread_0024618] = "Initializing";
-						_0024msh_0024624.vertices = (Vector3[])_0024verts_0024625.ToBuiltin(typeof(Vector3));
-						_0024msh_0024624.normals = (Vector3[])_0024norms_0024626.ToBuiltin(typeof(Vector3));
-						_0024msh_0024624.uv = (Vector2[])_0024uvs_0024627.ToBuiltin(typeof(Vector2));
-						if (_0024triangles_0024629.length > 0)
-						{
-							_0024triangles_0024629.Add(_0024tris_0024628);
-							_0024msh_0024624.subMeshCount = _0024triangles_0024629.length;
-							for (_0024i_0024635 = 0; _0024i_0024635 < _0024triangles_0024629.length; _0024i_0024635++)
-							{
-								_0024msh_0024624.SetTriangles((int[])RuntimeServices.Coerce(RuntimeServices.Invoke(_0024triangles_0024629[_0024i_0024635], "ToBuiltin", new object[1] { typeof(int) }), typeof(int[])), _0024i_0024635);
-							}
-						}
-						else
-						{
-							_0024msh_0024624.triangles = (int[])_0024tris_0024628.ToBuiltin(typeof(int));
-						}
-						goto IL_0fe7;
-						IL_0fe7:
-						if (_0024hasCollider_0024619 != 1)
-						{
-							_0024mshObj_0024642 = new GameObject(_0024vS_0024617[0]);
-							_0024mshObj_0024642.AddComponent(typeof(MeshFilter));
-							RuntimeServices.SetProperty(_0024mshObj_0024642.GetComponent(typeof(MeshFilter)), "mesh", _0024msh_0024624);
-							_0024mshObj_0024642.AddComponent(typeof(MeshRenderer));
-							RuntimeServices.SetProperty(_0024mshObj_0024642.GetComponent(typeof(MeshRenderer)), "materials", _0024mats_0024630.ToBuiltin(typeof(Material)));
-							if (_0024hasCollider_0024619 != -1)
-							{
-								_0024mshObj_0024642.AddComponent(typeof(MeshCollider));
-								RuntimeServices.SetProperty(_0024mshObj_0024642.GetComponent(typeof(MeshCollider)), "mesh", _0024msh_0024624);
-							}
-							if (Extensions.get_length((System.Array)_0024msh_0024624.uv) < 1)
-							{
-								_0024self_650.TextureObject(_0024mshObj_0024642);
-							}
-							_0024self_650.objects.Add(_0024vS_0024617[0], _0024mshObj_0024642);
-							_0024mshObj_0024642.transform.parent = _0024self_650.whirldBuffer.transform;
-						}
-						else if (_0024self_650.objects.ContainsKey(_0024vS_0024617[0]))
-						{
-							_0024mshObj_0024642 = (GameObject)RuntimeServices.Coerce(_0024self_650.objects[_0024vS_0024617[0]], typeof(GameObject));
-							_0024mshObj_0024642.AddComponent(typeof(MeshCollider));
-							RuntimeServices.SetProperty(_0024mshObj_0024642.GetComponent(typeof(MeshCollider)), "mesh", _0024msh_0024624);
-						}
-						else
-						{
-							_0024mshObj_0024642 = new GameObject(_0024vS_0024617[0]);
-							_0024mshObj_0024642.AddComponent(typeof(MeshCollider));
-							RuntimeServices.SetProperty(_0024mshObj_0024642.GetComponent(typeof(MeshCollider)), "mesh", _0024msh_0024624);
-							_0024self_650.objects.Add(_0024vS_0024617[0], _0024mshObj_0024642);
-							_0024mshObj_0024642.transform.parent = _0024self_650.whirldBuffer.transform;
-						}
-						_0024msh_0024624.Optimize();
-						_0024self_650.threads.Remove(_0024thread_0024618);
-						Yield(1, null);
-						break;
-					}
-					bool result = default(bool);
-					return result;
-				}
-			}
-		}
-
-		internal string _0024v651;
-
-		internal WhirldIn _0024self_652;
-
-		public LoadMesh_002459(string v, WhirldIn self_)
-		{
-			_0024v651 = v;
-			_0024self_652 = self_;
-		}
-
-		public override IEnumerator<object> GetEnumerator()
-		{
-			return new _0024(_0024v651, _0024self_652);
-		}
-	}
-
-	[Serializable]
-	[CompilerGenerated]
 	internal sealed class LoadTerrain_002460 : GenericGenerator<object>
 	{
 		[Serializable]
@@ -1256,104 +771,6 @@ public class WhirldIn
 
 	}
 
-    /*[Serializable]
-	[CompilerGenerated]
-	internal sealed class LoadTexture_002457 : GenericGenerator<object>
-	{
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<object>, IEnumerator
-		{
-			internal string[] _0024vS_0024599;
-
-			internal string _0024thread_0024600;
-
-			internal string _0024url_0024601;
-
-			internal WWW _0024www_0024602;
-
-			internal Texture2D _0024txt_0024603;
-
-			internal string _0024p604;
-
-			internal WhirldIn _0024self_605;
-
-			public _0024(string p, WhirldIn self_)
-			{
-				_0024p604 = p;
-				_0024self_605 = self_;
-			}
-
-			public override bool MoveNext()
-			{
-				checked
-				{
-					switch (_state)
-					{
-					default:
-						_0024self_605.threadTextures++;
-						goto case 2;
-					case 2:
-						if (_0024self_605.threads.Count >= _0024self_605.maxThreads)
-						{
-							return Yield(2, null);
-						}
-						_0024vS_0024599 = _0024p604.Split(","[0]);
-						_0024thread_0024600 = "Txt" + _0024self_605.threadTextures + " - " + _0024vS_0024599[0];
-						_0024self_605.threads.Add(_0024thread_0024600, string.Empty);
-						_0024url_0024601 = (string)RuntimeServices.Coerce(_0024self_605.GetURL(_0024vS_0024599[1]), typeof(string));
-						_0024www_0024602 = new WWW(_0024url_0024601);
-						goto case 3;
-					case 3:
-						if (!_0024www_0024602.isDone)
-						{
-							_0024self_605.threads[_0024thread_0024600] = _0024www_0024602.progress;
-							return Yield(3, null);
-						}
-						if (_0024www_0024602.error != null)
-						{
-							_0024self_605.info += "Failed to download texture: " + _0024url_0024601 + " (" + _0024www_0024602.error + ")\n";
-							_0024self_605.threads.Remove(_0024thread_0024600);
-							_0024self_605.threadTextures--;
-							break;
-						}
-						_0024self_605.threads[_0024thread_0024600] = "Initializing";
-						_0024txt_0024603 = new Texture2D(4, 4, TextureFormat.DXT1, true);
-						_0024www_0024602.LoadImageIntoTexture(_0024txt_0024603);
-						_0024txt_0024603.wrapMode = ((_0024vS_0024599[2] == null || RuntimeServices.EqualityOperator(_0024vS_0024599[2], 0)) ? TextureWrapMode.Clamp : TextureWrapMode.Repeat);
-						_0024txt_0024603.anisoLevel = RuntimeServices.UnboxInt32((_0024vS_0024599[3] == null) ? ((object)1) : _0024vS_0024599[3]);
-						_0024txt_0024603.Apply(true);
-						_0024txt_0024603.Compress(true);
-						_0024self_605.textures.Add(_0024vS_0024599[0], _0024txt_0024603);
-						_0024self_605.threads.Remove(_0024thread_0024600);
-						_0024self_605.threadTextures--;
-						Yield(1, null);
-						break;
-					case 1:
-						break;
-					}
-					bool result = default(bool);
-					return result;
-				}
-			}
-		}
-
-		internal string _0024p606;
-
-		internal WhirldIn _0024self_607;
-
-		public LoadTexture_002457(string p, WhirldIn self_)
-		{
-			_0024p606 = p;
-			_0024self_607 = self_;
-		}
-
-		public override IEnumerator<object> GetEnumerator()
-		{
-			return new _0024(_0024p606, _0024self_607);
-		}
-	}*/
-
 	public IEnumerator LoadTexture(string p)    //[txt:name,url,wrapMode,anisoLevel]
 	{
         threadTextures++;
@@ -1412,12 +829,380 @@ public class WhirldIn
 
 	public IEnumerator LoadMeshTexture(string url, string materialName)
 	{
-		return new LoadMeshTexture_002458(url, materialName, this).GetEnumerator();
+        threadTextures++;
+
+        //Don't overwhelm the computer by doing too many things @ once
+        while (threads.Count >= maxThreads) yield return null;
+        String thread = "MshTxt" +
+            threadTextures +
+            " - " +
+            materialName;
+        threads.Add(thread, "");
+
+        url = (String)GetURL(url);
+        WWW www = new WWW(url);
+        while (!www.isDone)
+        {
+            threads[thread] = www.progress;
+            yield return null;
+        }
+        if (www.error != null)
+        {
+            info +=
+                "Failed to download mesh texture: " +
+                url +
+                " (" +
+                www.error +
+                ")\n";
+            threads.Remove(thread);
+            threadTextures--;
+            yield break;
+        }
+
+        threads[thread] = "Initializing";
+
+        Texture2D mshTxt = new Texture2D(
+            4,
+            4,
+            TextureFormat.DXT1,
+            true);
+        www.LoadImageIntoTexture(mshTxt);
+        mshTxt.wrapMode = TextureWrapMode.Repeat;
+        mshTxt.Apply(true);
+        mshTxt.Compress(true);
+        ((Material)meshMaterials[materialName]).mainTexture = mshTxt;
+
+        threads.Remove(thread);
+        threadTextures--;
 	}
 
-	public IEnumerator LoadMesh(string v)
+	public IEnumerator LoadMesh(string v) //[msh:name,url]
 	{
-		return new LoadMesh_002459(v, this).GetEnumerator();
+        Mesh msh = new Mesh();
+        List<Vector3> verts = new List<Vector3>();
+        List<Vector3> norms = new List<Vector3>();
+        List<Vector2> uvs = new List<Vector2>();
+        List<int> tris = new List<int>();
+        List<List<int>> triangles = new List<List<int>>();
+        List<Material> mats = new List<Material>();
+
+        //Don't overwhelm the computer by doing too many things @ once
+        while (threads.Count >= maxThreads) yield return null;
+
+        //Init Thread
+        String[] vS = v.Split(","[0]);
+        String thread = vS[0];
+        threads.Add(thread, "");
+
+        //Download Mesh Object
+        int hasCollider = (vS.Length > 2 ? int.Parse(vS[2]) : 0);
+        WWW www = new WWW((String)GetURL(vS[1]));
+        while (!www.isDone)
+        {
+            threads[thread] = www.progress;
+            yield return null;
+        }
+        if (www.error != null)
+        {
+            info +=
+                "Failed to download mesh: " +
+                url +
+                " (" +
+                www.error +
+                ")\n";
+            threads.Remove(thread);
+            yield break;
+        }
+
+        //Download All Textures Before Generating Mesh
+        //threads[thread] = "Loading Textures";
+        //while(threadTextures > 0) yield return null;
+
+        //Uncompress as necessary...
+        threads[thread] = "Decompressing";
+        yield return null;  //Rebuild GUI as we may be working for a while
+        int lastDot = vS[1].LastIndexOf(".");
+        String data;
+        if (vS[1].Substring(lastDot + 1) == "gz")
+        {
+            data = GZipStream.UncompressString(www.bytes);
+            vS[1] = vS[1].Substring(0, lastDot);
+        }
+        else data = www.data;
+
+        threads[thread] = "Generating";
+
+        lastDot = vS[1].LastIndexOf(".");
+        String ext = vS[1].Substring(lastDot + 1);
+
+        //Binary UnityMesh Object
+        if (ext == "utm")
+        {
+            //MeshSerializer has been depricated - it's totally nonstandard, and it didn't support submeshes anyway
+            //Mesh msh = MeshSerializer.ReadMesh(www.bytes);
+        }
+
+        //.obj File
+        else if (ext == "obj")
+        {
+            float timer = Time.time + 0.1f;
+            String[] file = data.Split("\n"[0]);
+            foreach (String str in file)
+            {
+                if (str == "") continue;
+                String[] l = str.Split(" "[0]);
+                if (l[0] == "v")
+                {
+                    verts.Add(new Vector3(
+                        -float.Parse(l[1]),
+                        float.Parse(l[2]),
+                        float.Parse(l[3])));
+                }
+                else if (l[0] == "vn")
+                {
+                    norms.Add(new Vector3(
+                        float.Parse(l[1]),
+                        float.Parse(l[2]),
+                        float.Parse(l[3])));
+                }
+                else if (l[0] == "vt")
+                {
+                    uvs.Add(new Vector2(
+                        float.Parse(l[1]),
+                        float.Parse(l[2])));
+                }
+                else if (l[0] == "f")
+                {
+                    if (l.Length == 4)
+                    {
+                        tris.Add(int.Parse(l[2].Substring(
+                            0,
+                            l[2].IndexOf("/"))) - 1);
+                        tris.Add(int.Parse(l[1].Substring(
+                            0,
+                            l[2].IndexOf("/"))) - 1);
+                        tris.Add(int.Parse(l[3].Substring(
+                            0,
+                            l[2].IndexOf("/"))) - 1);
+                    }
+                    //Attempt to triangulate face - hardly works, could use better routine here...
+                    else
+                    {
+                        int i;
+                        for (i = 2; i < l.Length; i++)
+                        {
+                            tris.Add(int.Parse(l[i].Substring(
+                                0,
+                                l[i].IndexOf("/"))) - 1);
+                            if (i % 2 == 0)
+                            {
+                                tris.Add(int.Parse(l[1].Substring(
+                                0,
+                                l[1].IndexOf("/"))) - 1);
+                            }
+                        }
+                        while (tris.Count % 3 != 0)
+                        {
+                            tris.Add(int.Parse(l[i = 2].Substring(
+                                0,
+                                l[i - 2].IndexOf("/"))) - 1);
+                        }
+                    }
+                }
+                else if (l[0] == "usemtl")
+                {
+                    if (meshMaterials.ContainsKey(l[1]))
+                    {
+                        mats.Add((Material)meshMaterials[l[1]]);
+                    }
+                    else
+                    {
+                        info +=
+                            "Mesh Material Missing: " +
+                            l[1] +
+                            "\n";
+                        mats.Add(null);
+                    }
+                    if (tris.Count > 0)
+                    {
+                        triangles.Add(tris);
+                        tris = new List<int>();
+                    }
+                }
+                else if (l[0] == "mtllib") //Time to load a material library!
+                {
+                    if (!meshMatLibs.ContainsKey(l[1]))
+                    {
+                        //Only load a material library once, even if it is referenced by multiple meshes
+                        meshMatLibs.Add(l[1], true);
+                        www = new WWW((String)GetURL(l[1]));
+                        while (!www.isDone)
+                        {
+                            threads[thread] =
+                                "Downloading Material Library (" +
+                                Mathf.RoundToInt(www.progress * 100) +
+                                "%)";
+                            //yield return null;
+                        }
+                        if (www.error != null)
+                        {
+                            info +=
+                                "Mesh Material Library Undownloadable: " +
+                                (String)GetURL(l[1]) +
+                                " (" +
+                                www.error +
+                                ")\n";
+                        }
+                        else
+                        {
+                            threads[thread] = "Initializing " + vS[0] + "";
+                            //yield return null;
+                            String[] meshlib = www.data.Split("\n"[0]);
+                            Material curMat = null;
+                            int offset = -1;
+                            while (true)
+                            {
+                                offset = www.data.IndexOf("map_Ka", offset + 1);
+                                if (offset == -1) break;
+                            }
+                            foreach (String meshline in meshlib)
+                            {
+                                String[] ml = meshline.Split(" "[0]);
+                                if (ml[0] == "newmtl") //Beginning of new material
+                                {
+                                    if (curMat) //Save current material
+                                    {
+                                        meshMaterials.Add(curMat.name, curMat);
+                                    }
+                                    curMat = new Material(Shader.Find("VertexLit"));
+                                    curMat.name = ml[1];
+                                }
+                                else if (ml[0] == "#Shader") //Set shader of current material
+                                {
+                                    String shdr = meshline.Substring(8).Replace("Diffuse", "VertexLit");
+                                    if (shdr != "VertexLit" && shdr != "VertexLit Fast")
+                                    {
+                                        curMat.shader = Shader.Find(shdr);
+                                    }
+                                }
+                                else if (ml[0] == "Ka") //Set color of current material
+                                {
+                                    curMat.color = new Color(
+                                        float.Parse(ml[1]),
+                                        float.Parse(ml[2]),
+                                        float.Parse(ml[3]),
+                                        1f);
+                                }
+                                else if (ml[0] == "Kd")
+                                {
+                                    curMat.SetColor("_Emission", new Color(
+                                        float.Parse(ml[1]),
+                                        float.Parse(ml[2]),
+                                        float.Parse(ml[3]),
+                                        1f));
+                                }
+                                else if (ml[0] == "Ks")
+                                {
+                                    curMat.SetColor("_SpecColor", new Color(
+                                        float.Parse(ml[1]),
+                                        float.Parse(ml[2]),
+                                        float.Parse(ml[3]),
+                                        1f));
+                                }
+                                else if (ml[0] == "Ns")
+                                {
+                                    curMat.SetFloat("_Shininess", float.Parse(ml[1]));
+                                }
+                                else if (ml[0] == "map_Ka") //Set texture of current material
+                                {
+                                    curMat.mainTextureOffset = new Vector2(
+                                        float.Parse(ml[2]),
+                                        float.Parse(ml[3]));
+                                    curMat.mainTextureScale = new Vector2(
+                                        float.Parse(ml[5]),
+                                        float.Parse(ml[6]));
+                                    monoBehaviour.StartCoroutine_Auto(LoadMeshTexture(
+                                        ml[7],
+                                        curMat.name));
+                                }
+                                else if (ml[0] == "d") //Set alpha cutoff of current material
+                                {
+                                    //curMat.shader = Shader.Find("Transparent/Cutout/VertexLit");
+                                    //curMat.SetFloat("_Cutoff", float.Parse(ml[1]));
+                                }
+                            }
+                            if (curMat) //Save last material (others get saved as file is read)
+                            {
+                                meshMaterials.Add(curMat.name, curMat);
+                            }
+                        }
+                    }
+                }
+                if (Time.time > timer) //Refresh GUI 10 times per second to keep the user entertained
+                {
+                    timer = Time.time + 0.1f;
+                    yield return null;
+                }
+            }
+
+            threads[thread] = "Initializing";
+
+            msh.vertices = verts.ToArray();
+            msh.normals = norms.ToArray();
+            msh.uv = uvs.ToArray();
+            if (triangles.Count > 0)
+            {
+                triangles.Add(tris);
+                msh.subMeshCount = triangles.Count;
+                for (int i = 0; i < triangles.Count; i++)
+                {
+                    msh.SetTriangles(triangles[i].ToArray(), i);
+                }
+            }
+            else msh.triangles = tris.ToArray();
+        }
+
+        //Unknown File Type
+        else info +=
+            "Mesh Type Unrecognized: " +
+            vS[0] +
+            " " +
+            vS[1] +
+            " (." +
+            ext +
+            ")\n";
+
+        if (hasCollider == 1) //This mesh is being created, and it has a renderer
+        {
+            GameObject mshObj = new GameObject(vS[0]);
+            mshObj.AddComponent(typeof(MeshFilter));
+            ((MeshFilter)mshObj.GetComponent(typeof(MeshFilter))).mesh = msh;
+            mshObj.AddComponent(typeof(MeshRenderer));
+            ((MeshRenderer)mshObj.GetComponent(typeof(MeshRenderer))).materials = mats.ToArray();
+            if (hasCollider != -1) //This mesh has a collider, and it is the same as it's rendered mesh
+            {
+                mshObj.AddComponent(typeof(MeshCollider));
+                ((MeshCollider)mshObj.GetComponent(typeof(MeshCollider))).mesh = msh;
+            }
+            if (msh.uv.Length < 1) TextureObject(mshObj);
+            objects.Add(vS[0], mshObj);
+            mshObj.transform.parent = whirldBuffer.transform;
+        }
+        else //This mesh has a custom collider
+        {
+            if (objects.ContainsKey(vS[0])) //This mesh already exists, add a custom collider to it
+            {
+                GameObject mshObj = new GameObject(vS[0]);
+                mshObj.AddComponent(typeof(MeshCollider));
+                ((MeshCollider)mshObj.GetComponent(typeof(MeshCollider))).mesh = msh;
+                objects.Add(vS[0], mshObj);
+                mshObj.transform.parent = whirldBuffer.transform;
+            }
+        }
+        msh.Optimize();
+
+        threads.Remove(thread);
+
 	}
 
 	public IEnumerator LoadTerrain(string v)
