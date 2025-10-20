@@ -1290,7 +1290,7 @@ public class WhirldIn : System.Object
                     whirldObject = (WhirldObject)obj.GetComponent(typeof(WhirldObject));
                     if ((bool)whirldObject)
                     {
-                        whirldObject.@params = new Hashtable();
+                        whirldObject.parameters = new Hashtable();
                     }
                     lightSource = (Light)obj.GetComponent(typeof(Light));
                 }
@@ -1384,7 +1384,7 @@ public class WhirldIn : System.Object
                             //Object Reference
                             if (v.Substring(0, 1) == "#")
                             {
-                                whirldObject.@params.Add(
+                                whirldObject.parameters.Add(
                                     n,
                                     GetAsset(v.Substring(1)));
                             }
@@ -1392,7 +1392,7 @@ public class WhirldIn : System.Object
                             //Text
                             else
                             {
-                                whirldObject.@params.Add(n, v);
+                                whirldObject.parameters.Add(n, v);
                             }
                         }
                         else if (n != "")

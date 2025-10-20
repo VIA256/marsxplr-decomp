@@ -13,25 +13,25 @@ public class JumpPoint : MonoBehaviour
 
     public void Start()
     {
-        if (!(bool)whirldObject || whirldObject.@params == null)
+        if (!(bool)whirldObject || whirldObject.parameters == null)
         {
             return;
         }
-        if ((bool)whirldObject.@params["JumpTime"])
+        if ((bool)whirldObject.parameters["JumpTime"])
         {
-            time = (int)whirldObject.@params["JumpTime"];
+            time = (int)whirldObject.parameters["JumpTime"];
         }
-        if ((bool)whirldObject.@params["JumpRandMin"])
+        if ((bool)whirldObject.parameters["JumpRandMin"])
         {
-            randMin = (int)whirldObject.@params["JumpRandMin"];
+            randMin = (int)whirldObject.parameters["JumpRandMin"];
         }
-        if ((bool)whirldObject.@params["JumpRandMax"])
+        if ((bool)whirldObject.parameters["JumpRandMax"])
         {
-            randMax = (int)whirldObject.@params["JumpRandMax"];
+            randMax = (int)whirldObject.parameters["JumpRandMax"];
         }
-        if ((bool)whirldObject.@params["JumpVelocity"])
+        if ((bool)whirldObject.parameters["JumpVelocity"])
         {
-            velocity = (int)whirldObject.@params["JumpVelocity"];
+            velocity = (int)whirldObject.parameters["JumpVelocity"];
         }
     }
 

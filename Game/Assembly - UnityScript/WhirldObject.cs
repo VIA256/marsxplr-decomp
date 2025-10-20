@@ -6,8 +6,7 @@ using UnityEngine;
 public class WhirldObject : MonoBehaviour
 {
 	public WhirldData[] data;
-
-	public Hashtable @params;
+	public Hashtable parameters;
 
 	public void Awake()
 	{
@@ -19,25 +18,25 @@ public class WhirldObject : MonoBehaviour
 		Activate();
 	}
 
+    //Futile, as HashTables aren't serialized inside AssetBUndles anyway ;(
+    /*public void OnSaveScene()
+    {
+        Activate();
+        data = null;
+    }*/
+
 	public void Activate()
 	{
-		if (@params != null || data.Length <= 0)
+		if (parameters != null || data.Length <= 0)
 		{
 			return;
 		}
-		@params = new Hashtable();
-		int i = 0;
-		WhirldData[] array = data;
-		for (int length = array.Length; i < length; i = checked(i + 1))
-		{
-			if ((bool)array[i].o)
-			{
-				@params.Add(array[i].n, array[i].o);
-			}
-			else
-			{
-				@params.Add(array[i].n, array[i].v);
-			}
-		}
+
+		parameters = new Hashtable();
+        foreach (WhirldData dat in data)
+        {
+            if (dat.o) parameters.Add(dat.n, dat.o);
+            else parameters.Add(dat.n, dat.v);
+        }
 	}
 }

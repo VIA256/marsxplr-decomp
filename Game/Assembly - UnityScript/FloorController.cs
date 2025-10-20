@@ -11,13 +11,13 @@ public class FloorController : MonoBehaviour
     {
 		if (
 			!whirldObject ||
-			whirldObject.@params["Texture"] == null ||
+			whirldObject.parameters["Texture"] == null ||
 			!floorObject
 		)
         {
 			return;
 		}
 
-        floorObject.renderer.material.mainTexture = (Texture)whirldObject.@params["Texture"];
+        floorObject.renderer.material.mainTexture = (Texture)whirldObject.parameters["Texture"];
 	}
 }

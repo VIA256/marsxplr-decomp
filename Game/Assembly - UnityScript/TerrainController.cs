@@ -22,8 +22,8 @@ public class TerrainController : MonoBehaviour
         //Find WhirldObject
         whirldObject = (WhirldObject)gameObject.GetComponent(typeof(WhirldObject));
         if (!whirldObject ||
-            whirldObject.@params == null ||
-            whirldObject.@params["SeaFloorTexture"] == null)
+            whirldObject.parameters == null ||
+            whirldObject.parameters["SeaFloorTexture"] == null)
         {
             Destroy(this);
             return;
@@ -42,7 +42,7 @@ public class TerrainController : MonoBehaviour
 
         //Add SeaFloorTexture Splat Channel to TerrainData Object
         splatsNew[splatsNew.Length - 1] = new SplatPrototype();
-        splatsNew[splatsNew.Length - 1].texture = (Texture2D)whirldObject.@params["SeaFloorTexture"];
+        splatsNew[splatsNew.Length - 1].texture = (Texture2D)whirldObject.parameters["SeaFloorTexture"];
         splatsNew[splatsNew.Length - 1].tileSize = new Vector2(15.0f, 15.0f);
         trnDat.splatPrototypes = splatsNew;
 

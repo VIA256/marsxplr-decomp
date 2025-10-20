@@ -37,15 +37,15 @@ public class SeaData : MonoBehaviour
 	{
         if (
             whirldObject == null ||
-            whirldObject.@params == null ||
+            whirldObject.parameters == null ||
             seaObject == null ||
-            !(bool)whirldObject.@params["Mode"])
+            !(bool)whirldObject.parameters["Mode"])
         {
             return;
         }
         SeaMode = (SeaModes)Enum.Parse(
             typeof(SeaModes),
-            whirldObject.@params["Mode"].ToString(),
+            whirldObject.parameters["Mode"].ToString(),
             true);
 	}
 
