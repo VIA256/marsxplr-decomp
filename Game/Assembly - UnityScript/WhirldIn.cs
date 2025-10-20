@@ -8,11 +8,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
-using Boo.Lang;
-using Boo.Lang.Runtime;
 using Ionic.Zlib;
 using UnityEngine;
-using UnityScript.Lang;
 
 [Serializable]
 public enum WhirldInStatus
@@ -25,97 +22,57 @@ public enum WhirldInStatus
 }
 
 [Serializable]
-public class WhirldIn
+public class WhirldIn : System.Object
 {
-	public WhirldInStatus status;
-
-	public string statusTxt;
-
-	public float progress;
-
-	public string info;
-
-	public string url;
-
+	public WhirldInStatus status = WhirldInStatus.Idle;
+	public string statusTxt = "";
+	public float progress = 0.00f;
+	public string info = "";
+	public string url = "";
 	public string data;
-
 	public GameObject world;
-
 	public GameObject whirldBuffer;
-
-	public string worldName;
-
+	public string worldName = "World";
 	public string urlPath;
-
-	public Hashtable worldParams;
-
-	public Hashtable threads;
-
-	public int threadAssetBundles;
-
-	public int threadTextures;
-
-	public int maxThreads;
-
-	public UnityScript.Lang.Array loadedAssetBundles;
-
-	public Hashtable objects;
-
-	public Hashtable textures;
-
-	public Hashtable meshMaterials;
-
-	public Hashtable meshMatLibs;
-
-	public MonoBehaviour monoBehaviour;
-
-	public int readChr;
-
-	public WhirldIn()
-	{
-		status = WhirldInStatus.Idle;
-		statusTxt = string.Empty;
-		progress = 0f;
-		info = string.Empty;
-		url = string.Empty;
-		worldName = "World";
-		worldParams = new Hashtable();
-		threads = new Hashtable();
-		threadAssetBundles = 0;
-		threadTextures = 0;
-		maxThreads = 5;
-		loadedAssetBundles = new UnityScript.Lang.Array();
-		objects = new Hashtable();
-		textures = new Hashtable();
-		meshMaterials = new Hashtable();
-		meshMatLibs = new Hashtable();
-		readChr = 0;
-	}
+	public Hashtable worldParams = new Hashtable();
+	public Hashtable threads = new Hashtable();
+	public int threadAssetBundles = 0;
+	public int threadTextures = 0;
+	public int maxThreads = 5;
+	public List<AssetBundle> loadedAssetBundles = new List<AssetBundle>();
+	public Hashtable objects = new Hashtable();
+	public Hashtable textures = new Hashtable();
+	public Hashtable meshMaterials = new Hashtable();
+	public Hashtable meshMatLibs = new Hashtable();
+    public MonoBehaviour monoBehaviour; //Needed for attaching Coroutines too
+	public int readChr = 0;
 
 	public void Load()
 	{
 		whirldBuffer = new GameObject("WhirldBuffer");
 		monoBehaviour = (MonoBehaviour)whirldBuffer.AddComponent(typeof(MonoBehaviourScript));
-		monoBehaviour.StartCoroutine(Generate());
+		
+        monoBehaviour.StartCoroutine(Generate());
 	}
 
 	public void Cleanup()
 	{
+
+        //We are still loading the world
 		if ((bool)whirldBuffer && (bool)monoBehaviour)
 		{
 			monoBehaviour.StopAllCoroutines();
-			UnityEngine.Object.Destroy(whirldBuffer);
+			GameObject.Destroy(whirldBuffer);
 		}
-		if (loadedAssetBundles.length > 0)
+
+        //Unload AssetBundles
+		if (loadedAssetBundles.Count > 0)
 		{
-			IEnumerator enumerator = UnityRuntimeServices.GetEnumerator(loadedAssetBundles);
-			while (enumerator.MoveNext())
-			{
-				AssetBundle assetBundle = (AssetBundle)RuntimeServices.Coerce(enumerator.Current, typeof(AssetBundle));
-				assetBundle.Unload(true);
-				UnityRuntimeServices.Update(enumerator, assetBundle);
-			}
-			loadedAssetBundles.Clear();
+            foreach (AssetBundle ab in loadedAssetBundles)
+            {
+                ab.Unload(true);
+            }
+            loadedAssetBundles.Clear();
 		}
 	}
 
@@ -160,7 +117,6 @@ public class WhirldIn
         world = GameObject.Find("World");
         if (world) GameObject.Destroy(world);
         world = new GameObject("World");
-        //for(i=0; i < 10; i++) prefabs.Add(Resources.Load("Prefab" + i));	//Populate prefabs array - which is necessary to generate TerrainData elements
         statusTxt = "Parsing World Definition";
 
         //Sanity Check
@@ -332,7 +288,7 @@ public class WhirldIn
         String url = p;
 
         //Download StreamedScene
-        url = (String)GetURL(url);
+        url = GetURL(url);
         WWW www = new WWW(url);
         while (!www.isDone)
         {
@@ -385,7 +341,7 @@ public class WhirldIn
         }
 
         //Download StreamedScene
-        url = (String)GetURL(url);
+        url = GetURL(url);
         WWW www = new WWW(url);
         while (!www.isDone)
         {
@@ -447,7 +403,7 @@ public class WhirldIn
             vS[0];
         threads.Add(thread, "");
 
-        String url = (String)GetURL(vS[1]);
+        String url = GetURL(vS[1]);
         WWW www = new WWW(url);
         while (!www.isDone)
         {
@@ -500,7 +456,7 @@ public class WhirldIn
             materialName;
         threads.Add(thread, "");
 
-        url = (String)GetURL(url);
+        url = GetURL(url);
         WWW www = new WWW(url);
         while (!www.isDone)
         {
@@ -557,7 +513,7 @@ public class WhirldIn
 
         //Download Mesh Object
         int hasCollider = (vS.Length > 2 ? int.Parse(vS[2]) : 0);
-        WWW www = new WWW((String)GetURL(vS[1]));
+        WWW www = new WWW(GetURL(vS[1]));
         while (!www.isDone)
         {
             threads[thread] = www.progress;
@@ -696,7 +652,7 @@ public class WhirldIn
                     {
                         //Only load a material library once, even if it is referenced by multiple meshes
                         meshMatLibs.Add(l[1], true);
-                        www = new WWW((String)GetURL(l[1]));
+                        www = new WWW(GetURL(l[1]));
                         while (!www.isDone)
                         {
                             threads[thread] =
@@ -709,7 +665,7 @@ public class WhirldIn
                         {
                             info +=
                                 "Mesh Material Library Undownloadable: " +
-                                (String)GetURL(l[1]) +
+                                GetURL(l[1]) +
                                 " (" +
                                 www.error +
                                 ")\n";
@@ -843,7 +799,7 @@ public class WhirldIn
             if (hasCollider != -1) //This mesh has a collider, and it is the same as it's rendered mesh
             {
                 mshObj.AddComponent(typeof(MeshCollider));
-                ((MeshCollider)mshObj.GetComponent(typeof(MeshCollider))).mesh = msh;
+                ((MeshCollider)mshObj.GetComponent(typeof(MeshCollider))).sharedMesh = msh;
             }
             if (msh.uv.Length < 1) TextureObject(mshObj);
             objects.Add(vS[0], mshObj);
@@ -855,7 +811,7 @@ public class WhirldIn
             {
                 GameObject mshObj = new GameObject(vS[0]);
                 mshObj.AddComponent(typeof(MeshCollider));
-                ((MeshCollider)mshObj.GetComponent(typeof(MeshCollider))).mesh = msh;
+                ((MeshCollider)mshObj.GetComponent(typeof(MeshCollider))).sharedMesh = msh;
                 objects.Add(vS[0], mshObj);
                 mshObj.transform.parent = whirldBuffer.transform;
             }
@@ -884,12 +840,12 @@ public class WhirldIn
         {
             String[] str = vS2[i2].Split(":"[0]);
             if (str[0] == "r") tRes = str[1].Split(","[0]);
-            else if (str[0] == "h") tHtmp = (String)GetURL(str[1]);
-            else if (str[0] == "l") tLtmp = (String)GetURL(str[1]);
-            else if (str[0] == "s") tSpmp = (String)GetURL(str[1]);
-            else if (str[0] == "s2") tSpmp2 = (String)GetURL(str[1]);
+            else if (str[0] == "h") tHtmp = GetURL(str[1]);
+            else if (str[0] == "l") tLtmp = GetURL(str[1]);
+            else if (str[0] == "s") tSpmp = GetURL(str[1]);
+            else if (str[0] == "s2") tSpmp2 = GetURL(str[1]);
             else if (str[0] == "t") tTxts = str[1].Split(","[0]);
-            else if (str[0] == "d") tDtmp = (String)GetURL(str[1]);
+            else if (str[0] == "d") tDtmp = GetURL(str[1]);
         }
 
         String thread = tName;
@@ -932,7 +888,7 @@ public class WhirldIn
                 br = new System.IO.BinaryReader(new System.IO.MemoryStream(
                     GZipStream.UncompressBuffer(www.bytes)));
             }
-            else br = new System.IO.BinaryReader(new System.IO.MemoryStream(www.bytes));
+            //else br = new System.IO.BinaryReader(new System.IO.MemoryStream(www.bytes));
             for (int x = 0; x < tHRes; x++)
             {
                 for (int y = 0; y < tHRes; y++)
@@ -952,7 +908,7 @@ public class WhirldIn
                 {
                     String[] splatTxt = tTxts[i].Split("="[0]);
                     String[] splatTxtSize = splatTxt[1].Split("x"[0]);
-                    www = new WWW((String)GetURL(splatTxt[0]));
+                    www = new WWW(GetURL(splatTxt[0]));
                     while (!www.isDone)
                     { 
                         //threads[thread] = "Initializing";
@@ -1107,7 +1063,7 @@ public class WhirldIn
 
 
         //Download Skybox Image
-        url = (string)GetURL(url);
+        url = GetURL(url);
         WWW www = new WWW(url);
         while (!www.isDone)
         {
@@ -1232,270 +1188,323 @@ public class WhirldIn
 
 	}
 
-	[DuckTyped]
-	public object GetAsset(string str)
+	public UnityEngine.Object GetAsset(string str)
 	{
-		if (loadedAssetBundles.length > 0)
-		{
-			IEnumerator enumerator = UnityRuntimeServices.GetEnumerator(loadedAssetBundles);
-			while (enumerator.MoveNext())
-			{
-				AssetBundle assetBundle = (AssetBundle)RuntimeServices.Coerce(enumerator.Current, typeof(AssetBundle));
-				if (assetBundle.Contains(str))
-				{
-					return assetBundle.Load(str);
-				}
-			}
-		}
-		object result = default(object);
-		return result;
+        if (loadedAssetBundles.Count > 0)
+        {
+            foreach (AssetBundle ab in loadedAssetBundles)
+            {
+                if (ab.Contains(str)) return ab.Load(str);
+            }
+        }
+        return null;
 	}
 
 	public void ReadObject(Transform parent)
 	{
-		string text = null;
-		int num = 0;
-		string text2 = string.Empty;
-		string text3 = string.Empty;
-		UnityScript.Lang.Array array = new UnityScript.Lang.Array();
-		GameObject gameObject = null;
-		checked
+		// /*UNUSED*/ string c = null;          //Character
+		int i = 0;                              //Index of param
+        string n = "";                          //Param name we are reading data for
+        string v = "";                          //Value we are building
+        List<String> d = new List<String>();    //Array of all values in current param data
+        GameObject obj = null;                  //Object we have created
+
+		GameObject goP = default(GameObject);
+		WhirldObject whirldObject = default(WhirldObject);
+		Light lightSource = default(Light);
+		while (true)
 		{
-			GameObject gameObject2 = default(GameObject);
-			WhirldObject whirldObject = default(WhirldObject);
-			Light light = default(Light);
-			while (true && readChr < Extensions.get_length(data))
+            if (readChr >= data.Length) return;
+
+            //Get Char
+			char s = data[readChr];
+
+            //Ignore spaces
+            if (s == ' ' || s == '\n' || s == '\t') { ; }
+
+            //Name fully read, begin collecting param value(s)
+			else if (s == ':')
 			{
-				char c = data[readChr];
-				if (!(c == ' ') && !(c == '\n') && !(c == '\t'))
-				{
-					if (c == ':')
-					{
-						text2 = text3;
-						text3 = string.Empty;
-					}
-					else if (c == ',')
-					{
-						array.Add(text3);
-						text3 = string.Empty;
-					}
-					else
-					{
-						if (c == '{')
-						{
-							readChr++;
-							ReadObject(gameObject.transform);
-							continue;
-						}
-						if (c == ';' || c == '}')
-						{
-							if (!gameObject)
-							{
-								if (objects.ContainsKey(text3))
-								{
-									if (!RuntimeServices.EqualityOperator(objects[text3], null))
-									{
-										gameObject2 = (GameObject)RuntimeServices.Coerce(objects[text3], typeof(GameObject));
-									}
-									else
-									{
-										Debug.Log("Whirld: Objects[" + text3 + "] is null");
-									}
-								}
-								else
-								{
-									gameObject2 = (GameObject)Resources.Load(text3);
-									if ((bool)gameObject2)
-									{
-										objects.Add(text3, gameObject2);
-									}
-								}
-								if ((bool)gameObject2)
-								{
-									gameObject = (GameObject)UnityEngine.Object.Instantiate(gameObject2);
-									gameObject.name = text3;
-								}
-								else
-								{
-									gameObject = new GameObject(text3);
-									objects.Add(text3, gameObject);
-								}
-								if (gameObject.name != "Base" && gameObject.name != "Sea" && gameObject.name != "JumpPoint" && gameObject.name != "Light")
-								{
-									gameObject.transform.parent = parent;
-								}
-								whirldObject = (WhirldObject)gameObject.GetComponent(typeof(WhirldObject));
-								if ((bool)whirldObject)
-								{
-									whirldObject.@params = new Hashtable();
-								}
-								light = (Light)gameObject.GetComponent(typeof(Light));
-							}
-							else if ((text2 == "p" || (text2 == string.Empty && num == 1)) && array.length == 2)
-							{
-								gameObject.transform.localPosition = new Vector3(RuntimeServices.UnboxSingle(RuntimeServices.Invoke(typeof(UnityBuiltins), "parseFloat", new object[1] { array[0] })), RuntimeServices.UnboxSingle(RuntimeServices.Invoke(typeof(UnityBuiltins), "parseFloat", new object[1] { array[1] })), UnityBuiltins.parseFloat(text3));
-							}
-							else if (text2 == "p" || (text2 == string.Empty && num == 1))
-							{
-								gameObject.transform.localPosition = Vector3.one * UnityBuiltins.parseFloat(text3);
-							}
-							else if ((text2 == "r" || (text2 == string.Empty && num == 2)) && array.length == 3)
-							{
-								gameObject.transform.rotation = new Quaternion(RuntimeServices.UnboxSingle(RuntimeServices.Invoke(typeof(UnityBuiltins), "parseFloat", new object[1] { array[0] })), RuntimeServices.UnboxSingle(RuntimeServices.Invoke(typeof(UnityBuiltins), "parseFloat", new object[1] { array[1] })), RuntimeServices.UnboxSingle(RuntimeServices.Invoke(typeof(UnityBuiltins), "parseFloat", new object[1] { array[2] })), UnityBuiltins.parseFloat(text3));
-							}
-							else if ((text2 == "r" || (text2 == string.Empty && num == 2)) && array.length == 2)
-							{
-								gameObject.transform.rotation = Quaternion.Euler(RuntimeServices.UnboxSingle(RuntimeServices.Invoke(typeof(UnityBuiltins), "parseFloat", new object[1] { array[0] })), RuntimeServices.UnboxSingle(RuntimeServices.Invoke(typeof(UnityBuiltins), "parseFloat", new object[1] { array[1] })), UnityBuiltins.parseFloat(text3));
-							}
-							else if ((text2 == "r" || (text2 == string.Empty && num == 2)) && array.length == 0)
-							{
-								gameObject.transform.rotation = Quaternion.identity;
-							}
-							else if ((text2 == "s" || (text2 == string.Empty && num == 3)) && array.length == 0)
-							{
-								gameObject.transform.localScale = Vector3.one * UnityBuiltins.parseFloat(text3);
-							}
-							else if (text2 == "s" || (text2 == string.Empty && num == 3))
-							{
-								gameObject.transform.localScale = new Vector3(RuntimeServices.UnboxSingle(RuntimeServices.Invoke(typeof(UnityBuiltins), "parseFloat", new object[1] { array[0] })), RuntimeServices.UnboxSingle(RuntimeServices.Invoke(typeof(UnityBuiltins), "parseFloat", new object[1] { array[1] })), UnityBuiltins.parseFloat(text3));
-							}
-							else if (text2 == "cc")
-							{
-								gameObject.AddComponent(typeof(CombineChildren));
-								worldParams["ccc"] = 1;
-							}
-							else if (text2 == "m")
-							{
-								info += "Inline Whirld mesh generation not supported\n";
-							}
-							else if ((bool)light && text2 == "color")
-							{
-								object value = UnityRuntimeServices.Invoke(typeof(UnityBuiltins), "parseFloat", new object[1] { array[0] }, typeof(MonoBehaviour));
-								Color color = light.color;
-								float num2 = (color.r = RuntimeServices.UnboxSingle(value));
-								Color color2 = (light.color = color);
-								object value2 = UnityRuntimeServices.Invoke(typeof(UnityBuiltins), "parseFloat", new object[1] { array[1] }, typeof(MonoBehaviour));
-								Color color4 = light.color;
-								float num3 = (color4.g = RuntimeServices.UnboxSingle(value2));
-								Color color5 = (light.color = color4);
-								float b = UnityBuiltins.parseFloat(text3);
-								Color color7 = light.color;
-								float num4 = (color7.b = b);
-								Color color8 = (light.color = color7);
-							}
-							else if ((bool)light && text2 == "intensity")
-							{
-								light.intensity = UnityBuiltins.parseFloat(text3);
-							}
-							else if ((bool)whirldObject)
-							{
-								if (text3.Substring(0, 1) == "#")
-								{
-									whirldObject.@params.Add(text2, GetAsset(text3.Substring(1)));
-								}
-								else
-								{
-									whirldObject.@params.Add(text2, text3);
-								}
-							}
-							else if (text2 != string.Empty)
-							{
-								Debug.Log(gameObject.name + " Unknown Param: " + text2 + " > " + text3);
-							}
-							text3 = string.Empty;
-							text2 = string.Empty;
-							if (array.length > 0)
-							{
-								array = new UnityScript.Lang.Array();
-							}
-							num++;
-							if (c == '}')
-							{
-								if (gameObject.name == "cube" || gameObject.name == "pyramid" || gameObject.name == "cone" || gameObject.name == "mesh")
-								{
-									TextureObject(gameObject);
-								}
-								readChr++;
-								while (readChr < Extensions.get_length(data) && (data[readChr] == ' ' || data[readChr] == '\n' || data[readChr] == '\t'))
-								{
-									readChr++;
-								}
-								if (readChr < Extensions.get_length(data) && data[readChr] == '{')
-								{
-									readChr++;
-									ReadObject(parent);
-								}
-								break;
-							}
-						}
-						else if (text2 != null)
-						{
-							text3 += c;
-						}
-						else
-						{
-							text2 += c;
-						}
-					}
-				}
-				readChr++;
+				n = v;
+				v = "";
 			}
+
+            //Move to next section of value
+			else if (s == ',')
+			{
+				d.Add(v);
+				v = "";
+			}
+
+            //Move to next section of value
+			else if (s == '{')
+			{
+				readChr++;
+				ReadObject(obj.transform);
+                //Continue to next obj once the child "thread" we just launched has finished parsing objects at it's level
+                continue;
+			}
+
+            //Assign current value to object, Begin reading new value
+			else if (s == ';' || s == '}')
+			{
+
+                //Object name just read, create object
+                if (!obj)
+                {
+                    if (objects.ContainsKey(v))
+                    {
+                        if (objects[v] != null)
+                        {
+                            goP = (GameObject)objects[v];
+                        }
+                        else
+                        {
+                            Debug.Log("Whirld: Objects[" + v + "] is null");
+                        }
+                        //else goP = gameObject.Find();
+                    }
+                    else
+                    {
+                        goP = (GameObject)Resources.Load(v);
+                        if ((bool)goP) objects.Add(v, goP);
+                    }
+                    if ((bool)goP)
+                    {
+                        obj = (GameObject)GameObject.Instantiate(goP);
+                        obj.name = v;
+                    }
+                    else
+                    {
+                        obj = new GameObject(v);
+                        objects.Add(v, obj);
+                    }
+                    if (
+                        obj.name != "Base" &&
+                        obj.name != "Sea" &&
+                        obj.name != "JumpPoint" &&
+                        obj.name != "Light")
+                    {
+                        obj.transform.parent = parent;
+                    }
+                    whirldObject = (WhirldObject)obj.GetComponent(typeof(WhirldObject));
+                    if ((bool)whirldObject)
+                    {
+                        whirldObject.@params = new Hashtable();
+                    }
+                    lightSource = (Light)obj.GetComponent(typeof(Light));
+                }
+
+                //Object already created, assign property to object
+                else
+                {
+                    if (
+                        (n == "p" || (n == "" && i == 1)) &&
+                        d.Count == 2)
+                    {
+                        obj.transform.localPosition = new Vector3(
+                            float.Parse(d[0]),
+                            float.Parse(d[1]),
+                            float.Parse(v));
+                    }
+                    else if (
+                        n == "p" ||
+                        (n == "" && i == 1))
+                    {
+                        obj.transform.localPosition = Vector3.one * float.Parse(v);
+                    }
+                    else if (
+                        (n == "r" || (n == string.Empty && i == 2)) &&
+                        d.Count == 3)
+                    {
+                        obj.transform.rotation = new Quaternion(
+                            float.Parse(d[0]),
+                            float.Parse(d[1]),
+                            float.Parse(d[2]),
+                            float.Parse(v));
+                    }
+                    else if (
+                        (n == "r" || (n == string.Empty && i == 2)) &&
+                        d.Count == 2)
+                    {
+                        obj.transform.rotation = Quaternion.Euler(
+                            float.Parse(d[0]),
+                            float.Parse(d[1]),
+                            float.Parse(v));
+                    }
+                    else if (
+                        (n == "r" || (n == string.Empty && i == 2)) &&
+                        d.Count == 0)
+                    {
+                        obj.transform.rotation = Quaternion.identity;
+                    }
+                    else if (
+                        (n == "s" || (n == string.Empty && i == 3)) &&
+                        d.Count == 0)
+                    {
+                        obj.transform.localScale = Vector3.one * float.Parse(v);
+                    }
+                    else if (
+                        n == "s" ||
+                        (n == "" && i == 3))
+                    {
+                        obj.transform.localScale = new Vector3(
+                            float.Parse(d[0]),
+                            float.Parse(d[1]),
+                            float.Parse(v));
+                    }
+                    else if (n == "cc")
+                    {
+                        obj.AddComponent(typeof(CombineChildren));
+                        worldParams["ccc"] = 1;
+                    }
+                    else if (n == "m")
+                    {
+                        //d.Add(v);
+                        //ReadMesh(obj, d);
+                        info += "Inline Whirld mesh generation not supported\n";
+                    }
+                    else if ((bool)lightSource && n == "color")
+                    {
+                        Color lsc = lightSource.color;
+                        lsc.r = float.Parse(d[0]);
+                        lsc.g = float.Parse(d[1]);
+                        lsc.b = float.Parse(v);
+                        lightSource.color = lsc;
+                    }
+                    else if ((bool)lightSource && n == "intensity")
+                    {
+                        lightSource.intensity = float.Parse(v);
+                    }
+                    else 
+                    {
+                        if ((bool)whirldObject)
+                        {
+                            
+                            //Object Reference
+                            if (v.Substring(0, 1) == "#")
+                            {
+                                whirldObject.@params.Add(
+                                    n,
+                                    GetAsset(v.Substring(1)));
+                            }
+
+                            //Text
+                            else
+                            {
+                                whirldObject.@params.Add(n, v);
+                            }
+                        }
+                        else if (n != "")
+                        {
+                            Debug.Log(
+                                obj.name +
+                                " Unknown Param: " +
+                                n +
+                                " > " +
+                                v);
+                        }
+                    }
+                }
+
+                //Reset properties
+				v = "";
+				n = "";
+				if (d.Count > 0) d = new List<String>();
+				i++;
+
+                //Done reading this object
+				if (s == '}')
+				{
+                    //Finish up this object
+					if (
+                        obj.name == "cube" ||
+                        obj.name == "pyramid" ||
+                        obj.name == "cone" ||
+                        obj.name == "mesh")
+					{
+						TextureObject(obj);
+					}
+
+                    //Increment ReadChar
+					readChr++;
+                    
+                    //Handle spaces
+					while (
+                        readChr < data.Length &&
+                        (
+                            data[readChr] == ' ' ||
+                            data[readChr] == '\n' ||
+                            data[readChr] == '\t'))
+					{
+						readChr++;
+					}
+
+                    //Read the next object
+                    if (readChr < data.Length && data[readChr] == '{')
+                    {
+                        readChr++;
+                        ReadObject(parent);
+                        return;
+                    }
+
+                    //Done reading objects at this level of recursion
+                    else return;
+				}
+			}
+
+            //Assign char to property we are reading
+			else 
+            {
+                if (n != null) v += s;
+			    else n += s;
+            }
+			readChr++;
 		}
 	}
 
 	public void TextureObject(GameObject go)
 	{
-		MeshFilter meshFilter = (MeshFilter)go.GetComponent(typeof(MeshFilter));
-		if (!meshFilter)
+		MeshFilter mf = (MeshFilter)go.GetComponent(typeof(MeshFilter));
+		if (!mf) return;
+		Mesh mesh = mf.mesh;
+		Vector2[] uvs = new Vector2[mesh.vertices.Length];
+		int[] tris = mesh.triangles;
+		for (int i = 0; i < tris.Length; i += 3)
 		{
-			return;
-		}
-		Mesh mesh = meshFilter.mesh;
-		Vector2[] array = new Vector2[mesh.vertices.Length];
-		int[] triangles = mesh.triangles;
-		checked
-		{
-			for (int i = 0; i < triangles.Length; i += 3)
+            Vector3 a = go.transform.TransformPoint(mesh.vertices[tris[i]]);
+            Vector3 b = go.transform.TransformPoint(mesh.vertices[tris[i+1]]);
+            Vector3 c = go.transform.TransformPoint(mesh.vertices[tris[i+2]]);
+			Vector3 n = Vector3.Cross(a-c, b-c).normalized;
+			if (
+                Vector3.Dot(Vector3.up, n) >= 0.5f ||
+                (Vector3.Dot(-Vector3.up, n) >= 0.5f))
 			{
-				Transform transform = go.transform;
-				Vector3[] vertices = mesh.vertices;
-				Vector3 vector = transform.TransformPoint(vertices[RuntimeServices.NormalizeArrayIndex(vertices, triangles[RuntimeServices.NormalizeArrayIndex(triangles, i)])]);
-				Transform transform2 = go.transform;
-				Vector3[] vertices2 = mesh.vertices;
-				Vector3 vector2 = transform2.TransformPoint(vertices2[RuntimeServices.NormalizeArrayIndex(vertices2, triangles[RuntimeServices.NormalizeArrayIndex(triangles, i + 1)])]);
-				Transform transform3 = go.transform;
-				Vector3[] vertices3 = mesh.vertices;
-				Vector3 vector3 = transform3.TransformPoint(vertices3[RuntimeServices.NormalizeArrayIndex(vertices3, triangles[RuntimeServices.NormalizeArrayIndex(triangles, i + 2)])]);
-				Vector3 normalized = Vector3.Cross(vector - vector3, vector2 - vector3).normalized;
-				if (Vector3.Dot(Vector3.up, normalized) >= 0.5f || !(Vector3.Dot(-Vector3.up, normalized) < 0.5f))
-				{
-					array[RuntimeServices.NormalizeArrayIndex(array, triangles[RuntimeServices.NormalizeArrayIndex(triangles, i)])] = new Vector2(vector.x, vector.z);
-					array[RuntimeServices.NormalizeArrayIndex(array, triangles[RuntimeServices.NormalizeArrayIndex(triangles, i + 1)])] = new Vector2(vector2.x, vector2.z);
-					array[RuntimeServices.NormalizeArrayIndex(array, triangles[RuntimeServices.NormalizeArrayIndex(triangles, i + 2)])] = new Vector2(vector3.x, vector3.z);
-				}
-				else if (Vector3.Dot(Vector3.right, normalized) >= 0.5f || !(Vector3.Dot(Vector3.left, normalized) < 0.5f))
-				{
-					array[RuntimeServices.NormalizeArrayIndex(array, triangles[RuntimeServices.NormalizeArrayIndex(triangles, i)])] = new Vector2(vector.y, vector.z);
-					array[RuntimeServices.NormalizeArrayIndex(array, triangles[RuntimeServices.NormalizeArrayIndex(triangles, i + 1)])] = new Vector2(vector2.y, vector2.z);
-					array[RuntimeServices.NormalizeArrayIndex(array, triangles[RuntimeServices.NormalizeArrayIndex(triangles, i + 2)])] = new Vector2(vector3.y, vector3.z);
-				}
-				else
-				{
-					array[RuntimeServices.NormalizeArrayIndex(array, triangles[RuntimeServices.NormalizeArrayIndex(triangles, i)])] = new Vector2(vector.y, vector.x);
-					array[RuntimeServices.NormalizeArrayIndex(array, triangles[RuntimeServices.NormalizeArrayIndex(triangles, i + 1)])] = new Vector2(vector2.y, vector2.x);
-					array[RuntimeServices.NormalizeArrayIndex(array, triangles[RuntimeServices.NormalizeArrayIndex(triangles, i + 2)])] = new Vector2(vector3.y, vector3.x);
-				}
+                uvs[tris[i]] = new Vector2(a.x, a.z);
+                uvs[tris[i+1]] = new Vector2(b.x, b.z);
+                uvs[tris[i+2]] = new Vector2(c.x, c.z);
 			}
-			mesh.uv = array;
+			else if (
+                Vector3.Dot(Vector3.right, n) >= 0.5f ||
+                (Vector3.Dot(Vector3.left, n) >= 0.5f))
+			{
+                uvs[tris[i]] = new Vector2(a.y, a.z);
+                uvs[tris[i+1]] = new Vector2(b.y, b.z);
+                uvs[tris[i+2]] = new Vector2(c.y, c.z);
+			}
+			else
+			{
+                uvs[tris[i]] = new Vector2(a.y, a.x);
+                uvs[tris[i + 1]] = new Vector2(b.y, b.x);
+                uvs[tris[i + 2]] = new Vector2(c.y, c.x);
+			}
 		}
+		mesh.uv = uvs;
 	}
 
-	public object GetURL(object url)
+	public String GetURL(String url)
 	{
-		if (!RuntimeServices.EqualityOperator(RuntimeServices.Invoke(url, "Substring", new object[2] { 0, 4 }), "http"))
-		{
-			url = RuntimeServices.InvokeBinaryOperator("op_Addition", urlPath, url);
-		}
-		return url;
+        if (url.Substring(0, 4) != "http") url = urlPath + url;
+        return url;
 	}
 }
