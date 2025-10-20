@@ -475,7 +475,7 @@ public class Vehicle : MonoBehaviour
             Game.Settings.lasersFatal &&
             Vector3.Distance(
                 transform.position,
-                World.@base.position) > 10f)
+                World.baseTF.position) > 10f)
 		{
 			myRigidbody.isKinematic = true;
 			networkView.RPC("lR", RPCMode.All);
@@ -488,7 +488,7 @@ public class Vehicle : MonoBehaviour
         if (
             Time.time - lastReset < 3f ||
             !myRigidbody ||
-            !World.@base)
+            !World.baseTF)
         {
             yield break; //We are already resetting...
         }
@@ -498,13 +498,13 @@ public class Vehicle : MonoBehaviour
             myRigidbody.isKinematic = true;
         }
         Game.Controller.mE(transform.position);
-        Game.Controller.mE(World.@base.position);
+        Game.Controller.mE(World.baseTF.position);
         ramoSphereScale = 0.01f;
         yield return new WaitForSeconds(2f);
         if (ramoSphere) Destroy(ramoSphere);
         if (isPlayer || isBot)
         {
-            transform.position = World.@base.position;
+            transform.position = World.baseTF.position;
             myRigidbody.isKinematic = false;
         }
         OnPrefsUpdated(); //Rebuild a new ramosphere

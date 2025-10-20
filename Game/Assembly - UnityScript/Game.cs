@@ -273,11 +273,11 @@ public class Game : MonoBehaviour
 					case 6:
 						if ((bool)GameObject.Find("Base"))
                         {
-							World.@base = GameObject.Find("Base").transform;
+							World.baseTF = GameObject.Find("Base").transform;
 						}
 						else
                         {
-							World.@base = (Transform)RuntimeServices.Coerce(RuntimeServices.GetProperty(UnityEngine.Object.Instantiate(Resources.Load("Base"), Vector3.up * 5f, Quaternion.identity), "transform"), typeof(Transform));
+							World.baseTF = (Transform)RuntimeServices.Coerce(RuntimeServices.GetProperty(UnityEngine.Object.Instantiate(Resources.Load("Base"), Vector3.up * 5f, Quaternion.identity), "transform"), typeof(Transform));
 						}
 						World.terrains = (Terrain[])UnityEngine.Object.FindObjectsOfType(typeof(Terrain));
 						if (!RuntimeServices.ToBool(_0024self_433.whirldIn.worldParams["env"]) || !RuntimeServices.EqualityOperator(_0024self_433.whirldIn.worldParams["env"], "space"))
@@ -306,7 +306,7 @@ public class Game : MonoBehaviour
                         {
 							UnityEngine.Object.Instantiate(Resources.Load("Light"));
 						}
-						_0024self_433.mE(World.@base.transform.position);
+						_0024self_433.mE(World.baseTF.transform.position);
 						return Yield(7, new WaitForSeconds(1f));
 					case 7:
 						if (Settings.buggyAllowed)
@@ -636,7 +636,7 @@ public class Game : MonoBehaviour
 				default:
 					_0024self_461.botsInGame = checked(_0024self_461.botsInGame + 1);
 					Messaging.broadcast(Player.name + " added " + ((_0024self_461.botsInGame != 1) ? ("bot " + _0024self_461.botsInGame) : "a bot"));
-					_0024self_461.materilizationEffect(World.@base.transform.position);
+					_0024self_461.materilizationEffect(World.baseTF.transform.position);
 					_0024temp_0024460 = GameData.userName + "'s bot" + ((_0024self_461.botsInGame != 1) ? (" " + _0024self_461.botsInGame) : string.Empty);
 					return Yield(2, new WaitForSeconds(2f));
 				case 2:
@@ -779,7 +779,7 @@ public class Game : MonoBehaviour
 					_0024pos_0024484 = Vector3.zero;
 					goto IL_008b;
 				case 2:
-					_0024pos_0024484 = World.@base.position;
+					_0024pos_0024484 = World.baseTF.position;
 					while (Physics.CheckSphere(_0024pos_0024484, 3f))
                     {
 						_0024pos_0024484 += Vector3.up;
@@ -808,9 +808,9 @@ public class Game : MonoBehaviour
 					_0024vehObj_0024486.transform.parent = _0024plyObj_0024485.transform;
 					_0024plyVeh_0024487 = _0024plyObj_0024485.GetComponent(typeof(Vehicle));
 					RuntimeServices.SetProperty(_0024plyVeh_0024487, "vehObj", _0024vehObj_0024486);
-					if (_0024viewID488.isMine && (bool)World.@base)
+					if (_0024viewID488.isMine && (bool)World.baseTF)
                     {
-						_0024plyObj_0024485.transform.rotation = World.@base.rotation;
+						_0024plyObj_0024485.transform.rotation = World.baseTF.rotation;
 					}
 					else
                     {
@@ -1102,8 +1102,8 @@ public class Game : MonoBehaviour
             {
 				UnityEngine.Object.Destroy(PlayerVeh.ramoSphere);
 			}
-			Player.transform.position = World.@base.position;
-			Player.transform.rotation = World.@base.rotation;
+			Player.transform.position = World.baseTF.position;
+			Player.transform.rotation = World.baseTF.rotation;
 			Player.rigidbody.isKinematic = false;
 			Player.rigidbody.velocity = Vector3.zero;
 			Settings.resetTime = -10f;
@@ -1338,14 +1338,14 @@ public class Game : MonoBehaviour
             {
 				if (!GUIPanels[4].active)
                 {
-					if (Vector3.Distance(Player.transform.position, World.@base.transform.position) < 20f && Settings.resetTime > -1f)
+					if (Vector3.Distance(Player.transform.position, World.baseTF.transform.position) < 20f && Settings.resetTime > -1f)
                     {
 						GUIPanels[4].openTime = Time.time;
 						GUIPanels[4].open = true;
 						GUIPanels[4].active = true;
 					}
 				}
-				else if (!(Vector3.Distance(Player.transform.position, World.@base.transform.position) < 20f) || !(Settings.resetTime > -1f))
+				else if (!(Vector3.Distance(Player.transform.position, World.baseTF.transform.position) < 20f) || !(Settings.resetTime > -1f))
                 {
 					GUIPanels[4].active = false;
 				}

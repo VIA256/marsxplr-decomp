@@ -209,7 +209,7 @@ public class VehicleBot : MonoBehaviour
 		{
 			vehicle.myRigidbody.velocity = vehicle.myRigidbody.velocity.normalized;
 			vehicle.myRigidbody.isKinematic = true;
-			vehicle.transform.position = World.@base.position;
+			vehicle.transform.position = World.baseTF.position;
 			vehicle.myRigidbody.isKinematic = false;
 			if ((bool)Game.Messaging)
 			{

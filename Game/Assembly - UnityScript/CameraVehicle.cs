@@ -134,7 +134,7 @@ public class CameraVehicle : MonoBehaviour
 			arrow.rotation, 
 			Quaternion.LookRotation(
 				((Game.PlayerVeh.isIt != 0 || !Game.QuarryVeh) ?
-					World.@base :
+					World.baseTF :
 					Game.QuarryVeh.gameObject.transform
 				).position - Game.Player.transform.position
 			),

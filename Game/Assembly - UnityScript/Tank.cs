@@ -146,9 +146,9 @@ public class Tank : MonoBehaviour
 
         vehicle.materialAccent = (Material[])materialAccents.ToArray();
 		
-        if ((bool)World.@base)
+        if ((bool)World.baseTF)
         {   //DRAGONHERE: why we need to do this I don't know, but if we don't, we will hover in mid air on local client instances
-			transform.position = World.@base.position;
+			transform.position = World.baseTF.position;
 		}
         //DRAGONHERE: VERY STRANGE UNITY BUG that sets localposition to -3 if a tank is already present in world...
 		transform.localPosition = Vector3.zero;
