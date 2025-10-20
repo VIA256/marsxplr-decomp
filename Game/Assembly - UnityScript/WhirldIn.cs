@@ -29,313 +29,6 @@ public class WhirldIn
 {
 	[Serializable]
 	[CompilerGenerated]
-	internal sealed class LoadTerrain_002460 : GenericGenerator<object>
-	{
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<object>, IEnumerator
-		{
-			internal string[] _0024vS2_0024653;
-
-			internal string _0024tName_0024654;
-
-			internal int _0024i2_0024655;
-
-			internal string[] _0024str_0024656;
-
-			internal string[] _0024tRes_0024657;
-
-			internal string _0024tHtmp_0024658;
-
-			internal string _0024tLtmp_0024659;
-
-			internal string _0024tSpmp_0024660;
-
-			internal string _0024tSpmp2_0024661;
-
-			internal string[] _0024tTxts_0024662;
-
-			internal string _0024tDtmp_0024663;
-
-			internal string _0024thread_0024664;
-
-			internal WWW _0024www_0024665;
-
-			internal int _0024tWidth_0024666;
-
-			internal int _0024tHeight_0024667;
-
-			internal int _0024tLength_0024668;
-
-			internal int _0024tHRes_0024669;
-
-			internal TerrainData _0024trnDat_0024670;
-
-			internal float[,] _0024hmap_0024671;
-
-			internal BinaryReader _0024br_0024672;
-
-			internal int _0024x_0024673;
-
-			internal int _0024y_0024674;
-
-			internal SplatPrototype[] _0024splatPrototypes_0024675;
-
-			internal int _0024i_0024676;
-
-			internal string[] _0024splatTxt_0024677;
-
-			internal string[] _0024splatTxtSize_0024678;
-
-			internal Color[] _0024mapColors2_0024679;
-
-			internal float[,,] _0024splatmapData_0024680;
-
-			internal Color[] _0024mapColors_0024681;
-
-			internal int _0024ht_0024682;
-
-			internal int _0024wd_0024683;
-
-			internal int _0024z_0024684;
-
-			internal GameObject _0024trnObj_0024685;
-
-			internal string _0024v686;
-
-			internal WhirldIn _0024self_687;
-
-			public _0024(string v, WhirldIn self_)
-			{
-				_0024v686 = v;
-				_0024self_687 = self_;
-			}
-
-			public override bool MoveNext()
-			{
-				checked
-				{
-					switch (_state)
-					{
-					default:
-						_0024vS2_0024653 = _0024v686.Split(";"[0]);
-						_0024tName_0024654 = _0024vS2_0024653[0];
-						for (_0024i2_0024655 = 1; _0024i2_0024655 < Extensions.get_length((System.Array)_0024vS2_0024653); _0024i2_0024655++)
-						{
-							string[] array = _0024vS2_0024653;
-							_0024str_0024656 = array[RuntimeServices.NormalizeArrayIndex(array, _0024i2_0024655)].Split(":"[0]);
-							if (_0024str_0024656[0] == "r")
-							{
-								_0024tRes_0024657 = _0024str_0024656[1].Split(","[0]);
-							}
-							else if (_0024str_0024656[0] == "h")
-							{
-								_0024tHtmp_0024658 = (string)RuntimeServices.Coerce(_0024self_687.GetURL(_0024str_0024656[1]), typeof(string));
-							}
-							else if (_0024str_0024656[0] == "l")
-							{
-								_0024tLtmp_0024659 = (string)RuntimeServices.Coerce(_0024self_687.GetURL(_0024str_0024656[1]), typeof(string));
-							}
-							else if (_0024str_0024656[0] == "s")
-							{
-								_0024tSpmp_0024660 = (string)RuntimeServices.Coerce(_0024self_687.GetURL(_0024str_0024656[1]), typeof(string));
-							}
-							else if (_0024str_0024656[0] == "s2")
-							{
-								_0024tSpmp2_0024661 = (string)RuntimeServices.Coerce(_0024self_687.GetURL(_0024str_0024656[1]), typeof(string));
-							}
-							else if (_0024str_0024656[0] == "t")
-							{
-								_0024tTxts_0024662 = _0024str_0024656[1].Split(","[0]);
-							}
-							else if (_0024str_0024656[0] == "d")
-							{
-								_0024tDtmp_0024663 = (string)RuntimeServices.Coerce(_0024self_687.GetURL(_0024str_0024656[1]), typeof(string));
-							}
-						}
-						_0024thread_0024664 = _0024tName_0024654;
-						_0024self_687.threads.Add(_0024thread_0024664, string.Empty);
-						_0024www_0024665 = new WWW(_0024tHtmp_0024658);
-						goto case 2;
-					case 2:
-						if (!_0024www_0024665.isDone)
-						{
-							_0024self_687.threads[_0024thread_0024664] = _0024www_0024665.progress;
-							return Yield(2, null);
-						}
-						if (_0024www_0024665.error != null)
-						{
-							_0024self_687.info += "Terrain Undownloadable: " + _0024tName_0024654 + " " + _0024tHtmp_0024658 + " (" + _0024www_0024665.error + ")\n";
-						}
-						else
-						{
-							_0024self_687.threads[_0024thread_0024664] = "Initializing";
-							_0024tWidth_0024666 = UnityBuiltins.parseInt(_0024tRes_0024657[0]);
-							_0024tHeight_0024667 = UnityBuiltins.parseInt(_0024tRes_0024657[1]);
-							_0024tLength_0024668 = UnityBuiltins.parseInt(_0024tRes_0024657[2]);
-							_0024tHRes_0024669 = UnityBuiltins.parseInt(_0024tRes_0024657[3]);
-							_0024trnDat_0024670 = new TerrainData();
-							_0024trnDat_0024670.heightmapResolution = _0024tHRes_0024669;
-							_0024hmap_0024671 = _0024trnDat_0024670.GetHeights(0, 0, _0024tHRes_0024669, _0024tHRes_0024669);
-							_0024br_0024672 = null;
-							if (true)
-							{
-								_0024br_0024672 = new BinaryReader(new MemoryStream(GZipStream.UncompressBuffer(_0024www_0024665.bytes)));
-							}
-							else
-							{
-								_0024br_0024672 = new BinaryReader(new MemoryStream(_0024www_0024665.bytes));
-							}
-							for (_0024x_0024673 = 0; _0024x_0024673 < _0024tHRes_0024669; _0024x_0024673++)
-							{
-								for (_0024y_0024674 = 0; _0024y_0024674 < _0024tHRes_0024669; _0024y_0024674++)
-								{
-									_0024hmap_0024671.SetValue((float)unchecked((int)_0024br_0024672.ReadUInt16()) / 65535f, new int[2] { _0024x_0024673, _0024y_0024674 });
-								}
-							}
-							_0024trnDat_0024670.SetHeights(0, 0, _0024hmap_0024671);
-							_0024trnDat_0024670.size = new Vector3(_0024tWidth_0024666, _0024tHeight_0024667, _0024tLength_0024668);
-							if (_0024tTxts_0024662 != null)
-							{
-								_0024splatPrototypes_0024675 = new SplatPrototype[Extensions.get_length((System.Array)_0024tTxts_0024662)];
-								for (_0024i_0024676 = 0; _0024i_0024676 < Extensions.get_length((System.Array)_0024tTxts_0024662); _0024i_0024676++)
-								{
-									string[] array2 = _0024tTxts_0024662;
-									_0024splatTxt_0024677 = array2[RuntimeServices.NormalizeArrayIndex(array2, _0024i_0024676)].Split("="[0]);
-									_0024splatTxtSize_0024678 = _0024splatTxt_0024677[1].Split("x"[0]);
-									_0024www_0024665 = new WWW((string)RuntimeServices.Coerce(_0024self_687.GetURL(_0024splatTxt_0024677[0]), typeof(string)));
-									while (!_0024www_0024665.isDone)
-									{
-									}
-									if (_0024www_0024665.error != null)
-									{
-										_0024self_687.info += "Terrain Texture Undownloadable: #" + (_0024i_0024676 + 1) + " (" + _0024splatTxt_0024677[0] + ")\n";
-									}
-									else
-									{
-										SplatPrototype[] array3 = _0024splatPrototypes_0024675;
-										array3[RuntimeServices.NormalizeArrayIndex(array3, _0024i_0024676)] = new SplatPrototype();
-										SplatPrototype[] array4 = _0024splatPrototypes_0024675;
-										array4[RuntimeServices.NormalizeArrayIndex(array4, _0024i_0024676)].texture = new Texture2D(4, 4, TextureFormat.DXT1, true);
-										WWW wWW = _0024www_0024665;
-										SplatPrototype[] array5 = _0024splatPrototypes_0024675;
-										wWW.LoadImageIntoTexture(array5[RuntimeServices.NormalizeArrayIndex(array5, _0024i_0024676)].texture);
-										SplatPrototype[] array6 = _0024splatPrototypes_0024675;
-										array6[RuntimeServices.NormalizeArrayIndex(array6, _0024i_0024676)].texture.Apply(true);
-										SplatPrototype[] array7 = _0024splatPrototypes_0024675;
-										array7[RuntimeServices.NormalizeArrayIndex(array7, _0024i_0024676)].texture.Compress(true);
-										SplatPrototype[] array8 = _0024splatPrototypes_0024675;
-										array8[RuntimeServices.NormalizeArrayIndex(array8, _0024i_0024676)].tileSize = new Vector2(UnityBuiltins.parseInt(_0024splatTxtSize_0024678[0]), UnityBuiltins.parseInt(_0024splatTxtSize_0024678[1]));
-									}
-								}
-							}
-							_0024trnDat_0024670.splatPrototypes = _0024splatPrototypes_0024675;
-							if (_0024tLtmp_0024659 != null)
-							{
-								_0024www_0024665 = new WWW(_0024tLtmp_0024659);
-								while (!_0024www_0024665.isDone)
-								{
-								}
-								if (_0024www_0024665.error != null)
-								{
-									_0024self_687.info += "Terrain Lightmap Undownloadable: " + _0024tName_0024654 + " " + _0024tLtmp_0024659 + " (" + _0024www_0024665.error + "\n";
-								}
-								else
-								{
-									_0024trnDat_0024670.lightmap = _0024www_0024665.texture;
-								}
-							}
-							if (_0024tSpmp_0024660 != null)
-							{
-								if (_0024tSpmp2_0024661 != null)
-								{
-									_0024www_0024665 = new WWW(_0024tSpmp2_0024661);
-									while (!_0024www_0024665.isDone)
-									{
-									}
-									_0024mapColors2_0024679 = _0024www_0024665.texture.GetPixels();
-								}
-								_0024www_0024665 = new WWW(_0024tSpmp_0024660);
-								while (!_0024www_0024665.isDone)
-								{
-								}
-								if (_0024www_0024665.error != null)
-								{
-									_0024self_687.info += "Terrain Texturemap Undownloadable: " + _0024tName_0024654 + " " + _0024tLtmp_0024659 + " (" + _0024www_0024665.error + ")\n";
-								}
-								else if (_0024www_0024665.texture.format != TextureFormat.ARGB32 || _0024www_0024665.texture.width != _0024www_0024665.texture.height || Mathf.ClosestPowerOfTwo(_0024www_0024665.texture.width) != _0024www_0024665.texture.width)
-								{
-									_0024self_687.info += "Terrain Splatmap Unusable: Splatmap must be in RGBA 32 bit format, square, and it's size a power of 2\n";
-								}
-								else
-								{
-									_0024trnDat_0024670.alphamapResolution = _0024www_0024665.texture.width;
-									_0024splatmapData_0024680 = _0024trnDat_0024670.GetAlphamaps(0, 0, _0024www_0024665.texture.width, _0024www_0024665.texture.width);
-									_0024mapColors_0024681 = _0024www_0024665.texture.GetPixels();
-									_0024ht_0024682 = _0024www_0024665.texture.height;
-									_0024wd_0024683 = _0024www_0024665.texture.width;
-									for (_0024y_0024674 = 0; _0024y_0024674 < _0024ht_0024682; _0024y_0024674++)
-									{
-										for (_0024x_0024673 = 0; _0024x_0024673 < _0024wd_0024683; _0024x_0024673++)
-										{
-											for (_0024z_0024684 = 0; _0024z_0024684 < _0024trnDat_0024670.alphamapLayers; _0024z_0024684++)
-											{
-												if (_0024z_0024684 < 4)
-												{
-													float[,,] array9 = _0024splatmapData_0024680;
-													Color[] array10 = _0024mapColors_0024681;
-													array9.SetValue(array10[RuntimeServices.NormalizeArrayIndex(array10, _0024x_0024673 * _0024wd_0024683 + _0024y_0024674)][_0024z_0024684], new int[3] { _0024x_0024673, _0024y_0024674, _0024z_0024684 });
-												}
-												else
-												{
-													float[,,] array11 = _0024splatmapData_0024680;
-													Color[] array12 = _0024mapColors2_0024679;
-													array11.SetValue(array12[RuntimeServices.NormalizeArrayIndex(array12, _0024x_0024673 * _0024wd_0024683 + _0024y_0024674)][_0024z_0024684 - 4], new int[3] { _0024x_0024673, _0024y_0024674, _0024z_0024684 });
-												}
-											}
-										}
-									}
-									_0024trnDat_0024670.SetAlphamaps(0, 0, _0024splatmapData_0024680);
-								}
-							}
-							_0024trnObj_0024685 = new GameObject(_0024tName_0024654);
-							_0024trnObj_0024685.AddComponent(typeof(Terrain));
-							RuntimeServices.SetProperty(_0024trnObj_0024685.GetComponent(typeof(Terrain)), "terrainData", _0024trnDat_0024670);
-							_0024trnObj_0024685.AddComponent(typeof(TerrainCollider));
-							RuntimeServices.SetProperty(_0024trnObj_0024685.GetComponent(typeof(TerrainCollider)), "terrainData", _0024trnDat_0024670);
-							_0024self_687.objects.Add(_0024tName_0024654, _0024trnObj_0024685);
-							_0024trnObj_0024685.transform.parent = _0024self_687.whirldBuffer.transform;
-						}
-						_0024self_687.threads.Remove(_0024thread_0024664);
-						Yield(1, null);
-						break;
-					case 1:
-						break;
-					}
-					bool result = default(bool);
-					return result;
-				}
-			}
-		}
-
-		internal string _0024v688;
-
-		internal WhirldIn _0024self_689;
-
-		public LoadTerrain_002460(string v, WhirldIn self_)
-		{
-			_0024v688 = v;
-			_0024self_689 = self_;
-		}
-
-		public override IEnumerator<object> GetEnumerator()
-		{
-			return new _0024(_0024v688, _0024self_689);
-		}
-	}
-
-	[Serializable]
-	[CompilerGenerated]
 	internal sealed class Generate_002464 : GenericGenerator<WaitForSeconds>
 	{
 		[Serializable]
@@ -1205,9 +898,232 @@ public class WhirldIn
 
 	}
 
+    //v = "name;r:width,height,length,heightmapResolution	//,detailResolution,controlResolution,textureResolution;h:heightMapUrl";
 	public IEnumerator LoadTerrain(string v)
 	{
-		return new LoadTerrain_002460(v, this).GetEnumerator();
+        String[] vS2 = v.Split(";"[0]);
+        String tName = vS2[0];
+
+        String[] tRes = null;
+        String tHtmp = null;
+        String tLtmp = null;
+        String tSpmp = null;
+        String tSpmp2 = null;
+        String[] tTxts = null;
+        String tDtmp = null;
+
+        for (int i2 = 1; i2 < vS2.Length; i2++)
+        {
+            String[] str = vS2[i2].Split(":"[0]);
+            if (str[0] == "r") tRes = str[1].Split(","[0]);
+            else if (str[0] == "h") tHtmp = (String)GetURL(str[1]);
+            else if (str[0] == "l") tLtmp = (String)GetURL(str[1]);
+            else if (str[0] == "s") tSpmp = (String)GetURL(str[1]);
+            else if (str[0] == "s2") tSpmp2 = (String)GetURL(str[1]);
+            else if (str[0] == "t") tTxts = str[1].Split(","[0]);
+            else if (str[0] == "d") tDtmp = (String)GetURL(str[1]);
+        }
+
+        String thread = tName;
+        threads.Add(thread, "");
+        WWW www = new WWW(tHtmp);
+        while (!www.isDone)
+        {
+            threads[thread] = www.progress;
+            yield return null;
+        }
+        if (www.error != null)
+        {
+            info +=
+                "Terrain Undownloadable: " +
+                tName +
+                " " +
+                tHtmp +
+                " (" +
+                www.error +
+                ")\n";
+        }
+        else
+        {
+            threads[thread] = "Initializing";
+            //yield return null;
+
+            int tWidth = int.Parse(tRes[0]);
+            int tHeight = int.Parse(tRes[1]);
+            int tLength = int.Parse(tRes[2]);
+            int tHRes = int.Parse(tRes[3]);
+
+            TerrainData trnDat = new TerrainData();
+
+            //Heights
+            trnDat.heightmapResolution = tHRes;
+            float[,] hmap = trnDat.GetHeights(0, 0, tHRes, tHRes);
+            System.IO.BinaryReader br;
+            if (true) //Terrain RAW file is compressed
+            {
+                br = new System.IO.BinaryReader(new System.IO.MemoryStream(
+                    GZipStream.UncompressBuffer(www.bytes)));
+            }
+            else br = new System.IO.BinaryReader(new System.IO.MemoryStream(www.bytes));
+            for (int x = 0; x < tHRes; x++)
+            {
+                for (int y = 0; y < tHRes; y++)
+                {
+                    hmap[x, y] = br.ReadUInt16() / 65535.00000000f;
+                }
+            }
+            trnDat.SetHeights(0, 0, hmap);
+            trnDat.size = new Vector3(tWidth, tHeight, tLength);
+
+            //Textures
+            SplatPrototype[] splatPrototypes = null;
+            if (tTxts != null)
+            {
+                splatPrototypes = new SplatPrototype[tTxts.Length];
+                for (int i = 0; i < tTxts.Length; i++)
+                {
+                    String[] splatTxt = tTxts[i].Split("="[0]);
+                    String[] splatTxtSize = splatTxt[1].Split("x"[0]);
+                    www = new WWW((String)GetURL(splatTxt[0]));
+                    while (!www.isDone)
+                    { 
+                        //threads[thread] = "Initializing";
+                        //yield return new WaitForSeconds(0.1f);
+                    }
+                    if (www.error != null)
+                    {
+                        info +=
+                            "Terrain Texture Undownloadable: #" +
+                            (i + 1) +
+                            " (" +
+                            splatTxt[0] +
+                            ")\n";
+                    }
+                    else
+                    { 
+                        //yield return null;
+                        splatPrototypes[i] = new SplatPrototype();
+                        splatPrototypes[i].texture = new Texture2D(
+                            4,
+                            4,
+                            TextureFormat.DXT1,
+                            true);
+                        www.LoadImageIntoTexture(splatPrototypes[i].texture);
+                        splatPrototypes[i].texture.Apply(true);
+                        splatPrototypes[i].texture.Compress(true);
+                        splatPrototypes[i].tileSize = new Vector2(
+                            int.Parse(splatTxtSize[0]),
+                            int.Parse(splatTxtSize[1]));
+                    }
+                }
+            }
+            trnDat.splatPrototypes = splatPrototypes;
+
+            //Lightmap
+            if (tLtmp != null)
+            { 
+                //whirld.statusTxt = "Downloading Terrain Lightmap (" + tName + ")";
+                www = new WWW(tLtmp);
+                while (!www.isDone)
+                { 
+                    //whirld.progress = www.progress;
+                    //yield return new WaitForSeconds(0.1f);
+                }
+                if (www.error != null)
+                {
+                    info +=
+                        "Terrain Lightmap Undownloadable: " +
+                        tName +
+                        " " +
+                        tLtmp +
+                        " (" +
+                        www.error +
+                        ")\n";
+                }
+                else
+                {
+                    trnDat.lightmap = www.texture;
+                }
+            }
+
+            //Splatmap
+
+            if (tSpmp != null)
+            {
+                Color[] mapColors2 = null;
+                if (tSpmp2 != null)
+                {
+                    //whirld.statusTxt = "Downloading Augmentative Terrain Texturemap (" + tName + ")";
+                    www = new WWW(tSpmp2);
+                    while (!www.isDone)
+                    { 
+                        //whirld.progress = www.progress;
+                        //yield return new WaitForSeconds(0.1f);
+                    }
+                    mapColors2 = www.texture.GetPixels();
+                }
+                //whirld.statusTxt = "Downloading Terrain Texturemap (" + tName + ")";
+                www = new WWW(tSpmp);
+                while (!www.isDone)
+                {
+                    //whirld.progress = www.progress;
+                    //yield return new WaitForSeconds(0.1f);
+                }
+                //whirld.statusTxt = "Mapping Terrain Textures...";
+                //yield return null;
+                if (www.error != null)
+                {
+                    info +=
+                        "Terrain Texturemap Undownloadable: " +
+                        tName +
+                        " " +
+                        tLtmp +
+                        " (" +
+                        www.error +
+                        ")\n";
+                }
+                else
+                {
+                    trnDat.alphamapResolution = www.texture.width;
+                    float[, ,] splatmapData = trnDat.GetAlphamaps(
+                        0,
+                        0,
+                        www.texture.width,
+                        www.texture.width);
+                    Color[] mapColors = www.texture.GetPixels();
+                    int ht = www.texture.height;
+                    int wd = www.texture.width;
+                    for (int y = 0; y < ht; y++)
+                    {
+                        for (int x = 0; x < wd; x++)
+                        {
+                            for (int z = 0; z < trnDat.alphamapLayers; z++)
+                            {
+                                if (z < 4)
+                                {
+                                    splatmapData[x, y, z] = mapColors[x * wd + y][z];
+                                }
+                                else splatmapData[x, y, z] = mapColors2[x * wd + y][z - 4];
+                            }
+                        }
+                    }
+                    trnDat.SetAlphamaps(0, 0, splatmapData);
+                }
+            }
+
+            //Go !
+            GameObject trnObj = new GameObject(tName);
+            trnObj.AddComponent(typeof(Terrain));
+            ((Terrain)trnObj.GetComponent(typeof(Terrain))).terrainData = trnDat;
+            trnObj.AddComponent(typeof(TerrainCollider));
+            ((TerrainCollider)trnObj.GetComponent(typeof(TerrainCollider))).terrainData = trnDat;
+
+            objects.Add(tName, trnObj);
+            //Delete this temporary terrain object AFTER world is fully loaded
+            trnObj.transform.parent = whirldBuffer.transform;
+        }
+
+        threads.Remove(thread);
 	}
 
 	public IEnumerator LoadSkyboxTexture(string url, int dest)
