@@ -27,234 +27,6 @@ public enum WhirldInStatus
 [Serializable]
 public class WhirldIn
 {
-	[Serializable]
-	[CompilerGenerated]
-	internal sealed class Generate_002464 : GenericGenerator<WaitForSeconds>
-	{
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<WaitForSeconds>, IEnumerator
-		{
-			internal WWW _0024www_0024569;
-
-			internal char _0024s_0024570;
-
-			internal string _0024n_0024571;
-
-			internal string _0024v_0024572;
-
-			internal string[] _0024vS_0024573;
-
-			internal Terrain _0024trn_0024574;
-
-			internal IEnumerator _0024___iterator62_0024575;
-
-			internal GameObject _0024go_0024576;
-
-			internal IEnumerator _0024___iterator63_0024577;
-
-			internal WhirldIn _0024self_578;
-
-			public _0024(WhirldIn self_)
-			{
-				_0024self_578 = self_;
-			}
-
-			public override bool MoveNext()
-			{
-				checked
-				{
-					switch (_state)
-					{
-					default:
-						_0024self_578.status = WhirldInStatus.Working;
-						if (_0024self_578.url != string.Empty)
-						{
-							_0024self_578.statusTxt = "Downloading World Definition";
-							_0024self_578.info = string.Empty;
-							_0024self_578.urlPath = _0024self_578.url.Substring(0, _0024self_578.url.LastIndexOf("/") + 1);
-							_0024www_0024569 = new WWW(_0024self_578.url);
-							goto case 2;
-						}
-						goto IL_0182;
-					case 2:
-						if (!_0024www_0024569.isDone)
-						{
-							_0024self_578.progress = _0024www_0024569.progress;
-							return Yield(2, new WaitForSeconds(0.1f));
-						}
-						_0024self_578.progress = 1f;
-						if (_0024www_0024569.error != null)
-						{
-							_0024self_578.info = "Failed to download Whirld definition file: " + _0024self_578.url + " (" + _0024www_0024569.error + ")\n";
-							_0024self_578.status = WhirldInStatus.WWWError;
-							break;
-						}
-						_0024self_578.data = _0024www_0024569.data;
-						goto IL_0182;
-					case 3:
-						if (_0024self_578.threads.Count > 0)
-						{
-							return Yield(3, null);
-						}
-						_0024self_578.statusTxt = "Initializing World";
-						_0024self_578.ReadObject(_0024self_578.world.transform);
-						_0024___iterator62_0024575 = UnityRuntimeServices.GetEnumerator(UnityEngine.Object.FindObjectsOfType(typeof(Terrain)));
-						while (_0024___iterator62_0024575.MoveNext())
-						{
-							_0024trn_0024574 = (Terrain)RuntimeServices.Coerce(_0024___iterator62_0024575.Current, typeof(Terrain));
-							RuntimeServices.SetProperty(_0024trn_0024574.gameObject.AddComponent(typeof(TerrainController)), "trnDat", _0024trn_0024574.terrainData);
-							UnityRuntimeServices.Update(_0024___iterator62_0024575, _0024trn_0024574);
-						}
-						UnityEngine.Object.Destroy(_0024self_578.whirldBuffer);
-						_0024___iterator63_0024577 = UnityRuntimeServices.GetEnumerator(UnityEngine.Object.FindObjectsOfType(typeof(GameObject)));
-						while (_0024___iterator63_0024577.MoveNext())
-						{
-							_0024go_0024576 = (GameObject)RuntimeServices.Coerce(_0024___iterator63_0024577.Current, typeof(GameObject));
-							_0024go_0024576.SendMessage("OnSceneGenerated", SendMessageOptions.DontRequireReceiver);
-							UnityRuntimeServices.Update(_0024___iterator63_0024577, _0024go_0024576);
-						}
-						_0024self_578.status = WhirldInStatus.Success;
-						_0024self_578.statusTxt = "World Loaded Successfully";
-						if (_0024self_578.info != string.Empty)
-						{
-							Debug.Log("Whirld Loading Info: " + _0024self_578.info);
-						}
-						Yield(1, null);
-						break;
-					case 1:
-						break;
-						IL_02a5:
-						_0024self_578.status = WhirldInStatus.SyntaxError;
-						break;
-						IL_0182:
-						_0024self_578.readChr = 0;
-						_0024self_578.world = GameObject.Find("World");
-						if ((bool)_0024self_578.world)
-						{
-							UnityEngine.Object.Destroy(_0024self_578.world);
-						}
-						_0024self_578.world = new GameObject("World");
-						_0024self_578.statusTxt = "Parsing World Definition";
-						if (_0024self_578.data[0] != '[' && _0024self_578.data[0] != '{')
-						{
-							_0024self_578.status = WhirldInStatus.SyntaxError;
-							break;
-						}
-						while (true)
-						{
-							_0024s_0024570 = _0024self_578.data[_0024self_578.readChr];
-							_0024self_578.readChr++;
-							if (_0024self_578.readChr < Extensions.get_length(_0024self_578.data))
-							{
-								if (_0024s_0024570 == '\n' || _0024s_0024570 == '\t')
-								{
-									continue;
-								}
-								if (_0024s_0024570 == '{')
-								{
-									break;
-								}
-								if (_0024s_0024570 == '[')
-								{
-									_0024n_0024571 = string.Empty;
-									_0024v_0024572 = string.Empty;
-								}
-								else if (_0024s_0024570 == ':' && _0024n_0024571 == string.Empty)
-								{
-									_0024n_0024571 = _0024v_0024572;
-									_0024v_0024572 = string.Empty;
-								}
-								else if (_0024s_0024570 == ']')
-								{
-									if (_0024n_0024571 == string.Empty)
-									{
-										_0024n_0024571 = _0024v_0024572;
-										_0024v_0024572 = string.Empty;
-									}
-									if (_0024n_0024571 == "ab")
-									{
-										_0024self_578.monoBehaviour.StartCoroutine(_0024self_578.LoadAssetBundle(_0024v_0024572));
-									}
-									if (_0024n_0024571 == "ss")
-									{
-										_0024self_578.monoBehaviour.StartCoroutine(_0024self_578.LoadStreamedScene(_0024v_0024572));
-									}
-									else if (_0024n_0024571 == "rndSkybox")
-									{
-										_0024self_578.monoBehaviour.StartCoroutine(_0024self_578.LoadSkybox(_0024v_0024572));
-									}
-									else if (_0024n_0024571 == "txt")
-									{
-										_0024self_578.monoBehaviour.StartCoroutine(_0024self_578.LoadTexture(_0024v_0024572));
-									}
-									else if (_0024n_0024571 == "msh")
-									{
-										_0024self_578.monoBehaviour.StartCoroutine(_0024self_578.LoadMesh(_0024v_0024572));
-									}
-									else if (_0024n_0024571 == "trn")
-									{
-										_0024self_578.monoBehaviour.StartCoroutine(_0024self_578.LoadTerrain(_0024v_0024572));
-									}
-									else if (_0024n_0024571 == "rndFogColor" || _0024n_0024571 == "rndFogDensity" || _0024n_0024571 == "rndAmbientLight" || _0024n_0024571 == "rndHaloStrength" || _0024n_0024571 == "rndFlareStrength")
-									{
-										_0024vS_0024573 = _0024v_0024572.Split(","[0]);
-										if (_0024n_0024571 == "rndFogColor")
-										{
-											RenderSettings.fogColor = new Color(UnityBuiltins.parseFloat(_0024vS_0024573[0]), UnityBuiltins.parseFloat(_0024vS_0024573[1]), UnityBuiltins.parseFloat(_0024vS_0024573[2]), 1f);
-										}
-										else if (_0024n_0024571 == "rndFogDensity")
-										{
-											RenderSettings.fogDensity = UnityBuiltins.parseFloat(_0024v_0024572);
-										}
-										else if (_0024n_0024571 == "rndAmbientLight")
-										{
-											RenderSettings.ambientLight = new Color(UnityBuiltins.parseFloat(_0024vS_0024573[0]), UnityBuiltins.parseFloat(_0024vS_0024573[1]), UnityBuiltins.parseFloat(_0024vS_0024573[2]), UnityBuiltins.parseFloat(_0024vS_0024573[3]));
-										}
-										else if (_0024n_0024571 == "rndHaloStrength")
-										{
-											RenderSettings.haloStrength = UnityBuiltins.parseFloat(_0024v_0024572);
-										}
-										else if (_0024n_0024571 == "rndFlareStrength")
-										{
-											RenderSettings.flareStrength = UnityBuiltins.parseFloat(_0024v_0024572);
-										}
-									}
-									else
-									{
-										_0024self_578.worldParams.Add(_0024n_0024571, _0024v_0024572);
-									}
-								}
-								else
-								{
-									_0024v_0024572 += _0024s_0024570;
-								}
-								continue;
-							}
-							goto IL_02a5;
-						}
-						_0024self_578.statusTxt = "Downloading World Assets";
-						goto case 3;
-					}
-					bool result = default(bool);
-					return result;
-				}
-			}
-		}
-
-		internal WhirldIn _0024self_579;
-
-		public Generate_002464(WhirldIn self_)
-		{
-			_0024self_579 = self_;
-		}
-
-		public override IEnumerator<WaitForSeconds> GetEnumerator()
-		{
-			return new _0024(_0024self_579);
-		}
-	}
-
 	public WhirldInStatus status;
 
 	public string statusTxt;
@@ -349,7 +121,203 @@ public class WhirldIn
 
 	public IEnumerator Generate()
 	{
-		return new Generate_002464(this).GetEnumerator();
+
+        status = WhirldInStatus.Working;
+
+        if (url != "")
+        { 
+            
+            //Download Whirld File
+            statusTxt = "Downloading World Definition";
+            info = "";
+            urlPath = url.Substring(0, url.LastIndexOf("/") + 1);
+            WWW www = new WWW(url);
+            while (!www.isDone)
+            {
+                progress = www.progress;
+                yield return new WaitForSeconds(0.1f);
+            }
+            progress = 1f;
+
+            //Verify Successful Download
+            if (www.error != null)
+            {
+                info =
+                    "Failed to download Whirld definition file: " +
+                    url +
+                    " (" +
+                    www.error +
+                    ")\n";
+                status = WhirldInStatus.WWWError;
+                yield break;
+            }
+            data = www.data;
+
+        }
+
+        //Init
+        readChr = 0;
+        world = GameObject.Find("World");
+        if (world) GameObject.Destroy(world);
+        world = new GameObject("World");
+        //for(i=0; i < 10; i++) prefabs.Add(Resources.Load("Prefab" + i));	//Populate prefabs array - which is necessary to generate TerrainData elements
+        statusTxt = "Parsing World Definition";
+
+        //Sanity Check
+        if (
+            data == null ||
+            data.Length < 10 ||
+            (data[0] != '[' && data[0] != '{'))
+        {
+            status = WhirldInStatus.SyntaxError;
+            yield break;
+        }
+
+        //Read Whirld Headers
+        String n = null;
+        String v = null;
+        while (true)
+        {
+            //Read next char
+            char s = data[readChr];
+            readChr++;
+
+            //Incorrectly nested header []s
+            if (readChr >= data.Length)
+            {
+                status = WhirldInStatus.SyntaxError;
+                yield break;
+            }
+
+            //Ignore Newlines and Tabs
+            else if (s == '\n' || s == '\t') continue;
+
+            else if (s == '{') break;    //Finished reading headers
+            else if (s == '[')          //Beginning new header
+            {
+                n = "";
+                v = "";
+            }
+
+            //Header name read, read value
+            else if (s == ':' && n == "")
+            {
+                n = v;
+                v = "";
+            }
+
+            //Header ended
+            else if (s == ']')
+            {
+                //[name] header
+                if (n == "")
+                {
+                    n = v;
+                    v = "";
+                }
+
+                //AssetBundle
+                if (n == "ab") monoBehaviour.StartCoroutine_Auto(LoadAssetBundle(v));
+
+                //StreamedScene
+                if (n == "ss") monoBehaviour.StartCoroutine_Auto(LoadStreamedScene(v));
+
+                //Skybox
+                else if (n == "rndSkybox") monoBehaviour.StartCoroutine_Auto(LoadSkybox(v));
+
+                //Texture
+                else if (n == "txt") monoBehaviour.StartCoroutine_Auto(LoadTexture(v));
+
+                //Mesh
+                else if (n == "msh") monoBehaviour.StartCoroutine_Auto(LoadMesh(v));
+
+                //Terrain
+                else if (n == "trn") monoBehaviour.StartCoroutine_Auto(LoadTerrain(v));
+
+                //Rendering Settings
+                else if (
+                    n == "rndFogColor" ||
+                    n == "rndFogDensity" ||
+                    n == "rndAmbientLight" ||
+                    n == "rndHaloStrength" ||
+                    n == "rndFlareStrength")
+                {
+                    String[] vS = v.Split(","[0]);
+                    if (n == "rndFogColor")
+                    {
+                        RenderSettings.fogColor = new Color(
+                            float.Parse(vS[0]),
+                            float.Parse(vS[1]),
+                            float.Parse(vS[2]),
+                            1);
+                    }
+                    else if (n == "rndFogDensity")
+                    {
+                        RenderSettings.fogDensity = float.Parse(v);
+                    }
+                    else if (n == "rndAmbientLight")
+                    {
+                        RenderSettings.ambientLight = new Color(
+                            float.Parse(vS[0]),
+                            float.Parse(vS[1]),
+                            float.Parse(vS[2]),
+                            float.Parse(vS[3]));
+                    }
+                    else if (n == "rndHaloStrength")
+                    {
+                        RenderSettings.haloStrength = float.Parse(v);
+                    }
+                    else if (n == "rndFlareStrength")
+                    {
+                        RenderSettings.flareStrength = float.Parse(v);
+                    }
+                }
+
+                //Arbitrary Data
+                else worldParams.Add(n, v);
+
+            }
+
+            //Header char read
+            else v += s;
+        }
+
+        statusTxt = "Downloading World Assets";
+
+        //Wait for all "threads" to finish working
+        while (threads.Count > 0)
+        {
+            yield return null;
+        }
+
+        //Generate World
+        statusTxt = "Initializing World";
+        ReadObject(world.transform);
+
+        //Add TerrainControllers to Terrain objects
+        foreach (Terrain trn in GameObject.FindObjectsOfType(typeof(Terrain)))
+        {
+            ((TerrainController)trn.gameObject.AddComponent(typeof(TerrainController))).trnDat = trn.terrainData;
+        }
+
+        //Cleanup
+        GameObject.Destroy(whirldBuffer);
+
+        //Send Scene Generation Notice to each object
+        foreach (GameObject go in GameObject.FindObjectsOfType(typeof(GameObject)))
+        {
+            go.SendMessage(
+                "OnSceneGenerated",
+                SendMessageOptions.DontRequireReceiver);
+        }
+
+        //Success!
+        status = WhirldInStatus.Success;
+        statusTxt = "World Loaded Successfully";
+        if (info != "")
+        {
+            Debug.Log("Whirld Loading Info: " + info);
+        }
 	}
 
     public IEnumerator LoadAssetBundle(string p)
