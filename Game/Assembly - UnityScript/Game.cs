@@ -30,126 +30,6 @@ public class Game : MonoBehaviour
 {
 	[Serializable]
 	[CompilerGenerated]
-	internal sealed class registerHost_002468 : GenericGenerator<WaitForSeconds>
-    {
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<WaitForSeconds>, IEnumerator
-        {
-			internal string playerList;
-			internal int lagCount;
-			internal float lagVal;
-			internal int botCount;
-			
-			internal DictionaryEntry plrE;
-			internal VehicleNet vehNet;
-			internal IEnumerator iterPlrE;
-
-			internal string bannedIPs;
-			internal string[] banned;
-
-			internal string _0024dat_0024475;
-			internal string[] val;
-			internal int iterBannedDat;
-			internal string[] bannedDat;
-			internal int lenBannedDat;
-			internal Game self;
-
-			public _0024(Game self_)
-            {
-				self = self_;
-			}
-
-			public override bool MoveNext()
-            {
-				checked
-                {
-					switch (_state)
-                    {
-					default:
-						if (self.serverHidden || !Network.isServer)
-                        {
-							break;
-						}
-						return Yield(2, new WaitForSeconds(1f));
-					case 2:
-						playerList = string.Empty;
-						lagCount = default(int);
-						lagVal = default(float);
-						botCount = default(int);
-						iterPlrE = UnityRuntimeServices.GetEnumerator(Players);
-						while (iterPlrE.MoveNext())
-                        {
-							plrE = (DictionaryEntry)iterPlrE.Current;
-							if (!RuntimeServices.ToBool(plrE.Value))
-                            {
-								continue;
-							}
-							if (RuntimeServices.ToBool(RuntimeServices.GetProperty(plrE.Value, "isBot")))
-                            {
-								botCount++;
-								continue;
-							}
-							playerList = (string)RuntimeServices.Coerce(RuntimeServices.InvokeBinaryOperator("op_Addition", playerList, RuntimeServices.InvokeBinaryOperator("op_Addition", (!(playerList == string.Empty)) ? "," : string.Empty, RuntimeServices.GetProperty(plrE.Value, "name"))), typeof(string));
-							UnityRuntimeServices.Update(iterPlrE, plrE);
-							if (!RuntimeServices.ToBool(RuntimeServices.GetProperty(RuntimeServices.GetProperty(plrE.Value, "networkView"), "isMine")))
-                            {
-								vehNet = (VehicleNet)RuntimeServices.Coerce(UnityRuntimeServices.Invoke(RuntimeServices.GetProperty(plrE.Value, "gameObject"), "GetComponent", new object[1] { typeof(VehicleNet) }, typeof(MonoBehaviour)), typeof(VehicleNet));
-								UnityRuntimeServices.Update(iterPlrE, plrE);
-								if ((bool)vehNet)
-                                {
-									lagCount++;
-									lagVal += vehNet.ping;
-								}
-							}
-						}
-						if (botCount > 0)
-                        {
-							playerList += ",and " + botCount + " bots";
-						}
-						if (Settings.bannedIPs != string.Empty)
-                        {
-							bannedIPs = string.Empty;
-							banned = Settings.bannedIPs.Split("\n"[0]);
-							iterBannedDat = 0;
-							bannedDat = banned;
-							for (lenBannedDat = bannedDat.Length; iterBannedDat < lenBannedDat; iterBannedDat++)
-                            {
-								if (!(bannedDat[iterBannedDat] == string.Empty))
-                                {
-									val = bannedDat[iterBannedDat].Split(" "[0]);
-									bannedIPs += ((!(bannedIPs == string.Empty)) ? string.Empty : ",") + val[0];
-								}
-							}
-							bannedIPs = ";b=" + bannedIPs;
-						}
-						MasterServer.RegisterHost(GameData.gameName, self.serverName, "v=" + GameData.gameVersion + ";w=" + self.WorldDesc.name + ";p=" + playerList + ";u=" + self.WorldDesc.url + ((lagCount <= 0) ? string.Empty : (";s=" + Mathf.RoundToInt(lagVal / (float)lagCount * 1000f))) + ((!(self.serverPassword != string.Empty)) ? string.Empty : ";l=1") + bannedIPs);
-						Yield(1, null);
-						break;
-					case 1:
-						break;
-					}
-					bool result = default(bool);
-					return result;
-				}
-			}
-		}
-
-		internal Game _0024self_481;
-
-		public registerHost_002468(Game self_)
-        {
-			_0024self_481 = self_;
-		}
-
-		public override IEnumerator<WaitForSeconds> GetEnumerator()
-        {
-			return new _0024(_0024self_481);
-		}
-	}
-
-	[Serializable]
-	[CompilerGenerated]
 	internal sealed class registerHostSet_002469 : GenericGenerator<WaitForSeconds>
     {
 		[Serializable]
@@ -2103,7 +1983,69 @@ public class Game : MonoBehaviour
 
 	public IEnumerator registerHost()
     {
-		return new registerHost_002468(this).GetEnumerator();
+        if (serverHidden || !Network.isServer) yield break;
+        yield return new WaitForSeconds(1f);
+        String playerList = "";
+        int lagCount = 0;
+        float lagVal = 0.0f;
+        int botCount = 0;
+        foreach (DictionaryEntry plrE in Players)
+        {
+            if (plrE.Value == null) continue;
+
+            if (((Vehicle)plrE.Value).isBot) botCount++;
+            else
+            {
+                playerList +=
+                    (playerList == "" ? "" : ",") +
+                    ((Vehicle)plrE.Value).name;
+                if (!((Vehicle)plrE.Value).networkView.isMine)
+                {
+                    VehicleNet vehNet = (VehicleNet)((Vehicle)plrE.Value)
+                        .gameObject.GetComponent(typeof(VehicleNet));
+                    if (vehNet)
+                    {
+                        lagCount++;
+                        lagVal += vehNet.ping;
+                    }
+                }
+            }
+        }
+        if (botCount > 0)
+        {
+            playerList +=
+                ",and " +
+                botCount +
+                " bots";
+        }
+        String bannedIPs = "";
+        if (Settings.bannedIPs != "")
+        {
+            String[] banned = Settings.bannedIPs.Split("\n"[0]);
+            foreach (String dat in banned)
+            {
+                if (dat == "") continue;
+                String[] val = dat.Split(" "[0]);
+                bannedIPs += (bannedIPs == "" ? "," : "") + val[0];
+            }
+            bannedIPs = ";b=" + bannedIPs;
+        }
+        MasterServer.RegisterHost(
+            GameData.gameName,
+            serverName,
+            "v=" +
+                GameData.gameVersion +
+                ";w=" +
+                WorldDesc.name +
+                ";p=" +
+                playerList +
+                ";u=" +
+                WorldDesc.url +
+                (lagCount > 0 ?
+                    ";s=" + Mathf.RoundToInt((lagVal / lagCount) * 1000f) :
+                    "") +
+                (serverPassword != "" ? ";l=1" : "") +
+                bannedIPs);
 	}
 
 	public IEnumerator registerHostSet()
