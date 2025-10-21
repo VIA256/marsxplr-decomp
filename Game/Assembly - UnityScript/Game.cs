@@ -201,14 +201,17 @@ public class Game : MonoBehaviour
 	[HideInInspector]
 	public void Start()
     {
+		//Network.minimumAllocatableViewIDs = 3;
 		if (Network.peerType == NetworkPeerType.Disconnected)
         {
+			//We are running in the editor, and have started the game in world load mode
 			Network.InitializeServer(9, 2500);
 		}
 		if (Network.isServer)
         {
 			isHost = true;
 		}
+		
 		objectVehicle = objectVehicleObj;
 		objectMarker = objectMarkerObj;
 		objectMarkerQuarry = objectMarkerQuarryObj;
@@ -216,23 +219,21 @@ public class Game : MonoBehaviour
 		objectRocket = objectRocketObj;
 		objectRocketSnipe = objectRocketSnipeObj;
 		Skin = GameSkin;
-		CameraVehicle = (CameraVehicle)Camera.main.GetComponent("CameraVehicle");
-		Settings = (Settings)gameObject.GetComponent("Settings");
-		Messaging = (Messaging)gameObject.GetComponent("Messaging");
-		Controller = (Game)gameObject.GetComponent("Game");
-		if (GameData.userName == string.Empty)
-        {
-			GameData.userName = "MarsRacer";
-		}
+		CameraVehicle = (CameraVehicle)Camera.main.GetComponent<CameraVehicle>();
+		Settings = (Settings)gameObject.GetComponent<Settings>();
+		Messaging = (Messaging)gameObject.GetComponent<Messaging>();
+		Controller = (Game)gameObject.GetComponent<Game>();
+		if (GameData.userName == "") GameData.userName = "MarsRacer";
 		Settings.bannedIPs = GameData.masterBlacklist;
 		Settings.networkMode = GameData.networkMode;
 		Players = new Hashtable();
+		
 		botsInGame = 0;
 		worldLoaded = false;
-		if (GameData.gameWorlds == null)
-        {
-			GameData.gameWorlds = GameWorlds;
-		}
+		
+		if (GameData.gameWorlds == null) GameData.gameWorlds = GameWorlds;
+		//whirldIn = new WhirldIn();
+		//whirldIn.worldTerrainTextures = worldTerrainTextures;
 		StartCoroutine_Auto(Init());
 	}
 
