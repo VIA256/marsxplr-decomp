@@ -25,153 +25,6 @@ public class unauthPlayer
 [Serializable]
 public class Game : MonoBehaviour
 {
-	[Serializable]
-	[CompilerGenerated]
-	internal sealed class iV_002493 : GenericGenerator<WaitForSeconds>
-    {
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<WaitForSeconds>, IEnumerator
-        {
-			internal Vector3 _0024pos_0024484;
-
-			internal GameObject _0024plyObj_0024485;
-
-			internal GameObject _0024vehObj_0024486;
-
-			internal object _0024plyVeh_0024487;
-
-			internal NetworkViewID _0024viewID488;
-
-			internal int _0024networkMode489;
-
-			internal int _0024vehId490;
-
-			internal string _0024vehName491;
-
-			internal int _0024isBot492;
-
-			internal int _0024isIt493;
-
-			internal int _0024score494;
-
-			internal int _0024specialInput495;
-
-			public _0024(NetworkViewID viewID, int networkMode, int vehId, string vehName, int isBot, int isIt, int score, int specialInput)
-            {
-				_0024viewID488 = viewID;
-				_0024networkMode489 = networkMode;
-				_0024vehId490 = vehId;
-				_0024vehName491 = vehName;
-				_0024isBot492 = isBot;
-				_0024isIt493 = isIt;
-				_0024score494 = score;
-				_0024specialInput495 = specialInput;
-			}
-
-			public override bool MoveNext()
-            {
-				GameObject[] gameVehicles;
-				switch (_state)
-                {
-				default:
-					if (_0024viewID488.isMine)
-                    {
-						return Yield(2, new WaitForSeconds(0.25f));
-					}
-					_0024pos_0024484 = Vector3.zero;
-					goto IL_008b;
-				case 2:
-					_0024pos_0024484 = World.baseTF.position;
-					while (Physics.CheckSphere(_0024pos_0024484, 3f))
-                    {
-						_0024pos_0024484 += Vector3.up;
-					}
-					goto IL_008b;
-				case 1:
-					break;
-					IL_008b:
-					if (_0024networkMode489 == 0)
-                    {
-						objectVehicle.networkView.stateSynchronization = NetworkStateSynchronization.Unreliable;
-					}
-					else if (_0024networkMode489 == 1)
-                    {
-						objectVehicle.networkView.stateSynchronization = NetworkStateSynchronization.ReliableDeltaCompressed;
-					}
-					else
-                    {
-						objectVehicle.networkView.stateSynchronization = NetworkStateSynchronization.Off;
-					}
-					objectVehicle.networkView.viewID = _0024viewID488;
-					_0024plyObj_0024485 = (GameObject)UnityEngine.Object.Instantiate(objectVehicle, _0024pos_0024484, Quaternion.identity);
-					_0024plyObj_0024485.networkView.viewID = _0024viewID488;
-					gameVehicles = Controller.GameVehicles;
-					_0024vehObj_0024486 = (GameObject)UnityEngine.Object.Instantiate(gameVehicles[RuntimeServices.NormalizeArrayIndex(gameVehicles, _0024vehId490)], _0024pos_0024484, Quaternion.identity);
-					_0024vehObj_0024486.transform.parent = _0024plyObj_0024485.transform;
-					_0024plyVeh_0024487 = _0024plyObj_0024485.GetComponent(typeof(Vehicle));
-					RuntimeServices.SetProperty(_0024plyVeh_0024487, "vehObj", _0024vehObj_0024486);
-					if (_0024viewID488.isMine && (bool)World.baseTF)
-                    {
-						_0024plyObj_0024485.transform.rotation = World.baseTF.rotation;
-					}
-					else
-                    {
-						_0024plyObj_0024485.transform.rotation = Quaternion.identity;
-					}
-					_0024plyObj_0024485.name = _0024vehName491;
-					RuntimeServices.SetProperty(_0024plyVeh_0024487, "networkMode", _0024networkMode489);
-					RuntimeServices.SetProperty(_0024plyVeh_0024487, "vehId", _0024vehId490);
-					RuntimeServices.SetProperty(_0024plyVeh_0024487, "isBot", _0024isBot492 == 1);
-					RuntimeServices.SetProperty(_0024plyVeh_0024487, "isIt", _0024isIt493);
-					RuntimeServices.SetProperty(_0024plyVeh_0024487, "score", _0024score494);
-					RuntimeServices.SetProperty(_0024plyVeh_0024487, "specialInput", _0024specialInput495);
-					if (_0024viewID488.isMine && _0024isBot492 == 0)
-                    {
-						Player = _0024plyObj_0024485;
-					}
-					Yield(1, null);
-					break;
-				}
-				bool result = default(bool);
-				return result;
-			}
-		}
-
-		internal NetworkViewID _0024viewID496;
-
-		internal int _0024networkMode497;
-
-		internal int _0024vehId498;
-
-		internal string _0024vehName499;
-
-		internal int _0024isBot500;
-
-		internal int _0024isIt501;
-
-		internal int _0024score502;
-
-		internal int _0024specialInput503;
-
-		public iV_002493(NetworkViewID viewID, int networkMode, int vehId, string vehName, int isBot, int isIt, int score, int specialInput)
-        {
-			_0024viewID496 = viewID;
-			_0024networkMode497 = networkMode;
-			_0024vehId498 = vehId;
-			_0024vehName499 = vehName;
-			_0024isBot500 = isBot;
-			_0024isIt501 = isIt;
-			_0024score502 = score;
-			_0024specialInput503 = specialInput;
-		}
-
-		public override IEnumerator<WaitForSeconds> GetEnumerator()
-        {
-			return new _0024(_0024viewID496, _0024networkMode497, _0024vehId498, _0024vehName499, _0024isBot500, _0024isIt501, _0024score502, _0024specialInput503);
-		}
-	}
-
 	public GUISkin GameSkin;
 
 	public static GUISkin Skin;
@@ -1863,9 +1716,75 @@ public class Game : MonoBehaviour
 	}
 
 	[RPC]
-	public IEnumerator iV(NetworkViewID viewID, int networkMode, int vehId, string vehName, int isBot, int isIt, int score, int specialInput)
+	public IEnumerator iV(
+        NetworkViewID viewID,
+        int networkMode,
+        int vehId,
+        string vehName,
+        int isBot,
+        int isIt,
+        int score,
+        int specialInput)
     {
-		return new iV_002493(viewID, networkMode, vehId, vehName, isBot, isIt, score, specialInput).GetEnumerator();
+		//while(worldLoaded == false) yield return null;
+
+        Vector3 pos = Vector3.zero;
+        if (viewID.isMine)
+        {
+            //Dragonhere: possibly gove other client instances time to build their vehicles before they are bombarded with NetworkViews that they can't handle.
+            yield return new WaitForSeconds(0.25f);
+
+            //Determine Safe Spawn Point
+            pos = World.baseTF.position;
+            while (Physics.CheckSphere(pos, 3)) pos += Vector3.up;
+        }
+
+        //Create Vehicle
+        switch (networkMode)
+        { 
+            case 0:
+                objectVehicle.networkView.stateSynchronization = NetworkStateSynchronization.Unreliable;
+                break;
+            case 1:
+                objectVehicle.networkView.stateSynchronization = NetworkStateSynchronization.ReliableDeltaCompressed;
+                break;
+            default:
+                objectVehicle.networkView.stateSynchronization = NetworkStateSynchronization.Off;
+                break;
+        }
+        objectVehicle.networkView.viewID = viewID;
+        GameObject plyObj = (GameObject)Instantiate(
+            objectVehicle,
+            pos,
+            Quaternion.identity);
+        plyObj.networkView.viewID = viewID;
+        GameObject vehObj = (GameObject)Instantiate(
+            Game.Controller.GameVehicles[vehId],
+            pos,
+            Quaternion.identity);
+        vehObj.transform.parent = plyObj.transform;
+        Vehicle plyVeh = plyObj.GetComponent<Vehicle>();
+        plyVeh.vehObj = vehObj;
+        if (viewID.isMine && World.baseTF != null)
+        {
+            //DRAGONHERE - MAJOR UNITY BUG: If we are instantiated at any other than the identity rotation, it totally messes up rotation locking on vehicle joints such as tank tracks
+            plyObj.transform.rotation = World.baseTF.rotation;
+        }
+        else
+        {
+            plyObj.transform.rotation = Quaternion.identity;
+        }
+
+        //Configure Vehicle
+        plyObj.name = vehName;
+        plyVeh.networkMode = networkMode;
+        plyVeh.vehId = vehId;
+        plyVeh.isBot = (isBot == 1);
+        plyVeh.isIt = isIt;
+        plyVeh.score = score;
+        plyVeh.specialInput = (specialInput == 1);
+
+        if (viewID.isMine && isBot == 0) Player = plyObj;
 	}
 
 	[RPC]
