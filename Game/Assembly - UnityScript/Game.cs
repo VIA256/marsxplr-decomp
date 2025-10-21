@@ -27,143 +27,6 @@ public class Game : MonoBehaviour
 {
 	[Serializable]
 	[CompilerGenerated]
-	internal sealed class OnPlayerConnected_002475 : GenericGenerator<WaitForSeconds>
-    {
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<WaitForSeconds>, IEnumerator
-        {
-			internal string[] _0024banned_0024435;
-
-			internal string _0024dat_0024436;
-
-			internal string[] _0024val_0024437;
-
-			internal bool _0024playerIsConnected_0024438;
-
-			internal NetworkPlayer _0024plyr_0024439;
-
-			internal DictionaryEntry _0024plrE_0024440;
-
-			internal Vehicle _0024veh_0024441;
-
-			internal IEnumerator _0024___iterator74_0024442;
-
-			internal int _0024___temp118_0024443;
-
-			internal string[] _0024___temp119_0024444;
-
-			internal int _0024___temp120_0024445;
-
-			internal int _0024___temp122_0024446;
-
-			internal NetworkPlayer[] _0024___temp123_0024447;
-
-			internal int _0024___temp124_0024448;
-
-			internal NetworkPlayer _0024player449;
-
-			internal Game _0024self_450;
-
-			public _0024(NetworkPlayer player, Game self_)
-            {
-				_0024player449 = player;
-				_0024self_450 = self_;
-			}
-
-			public override bool MoveNext()
-            {
-				checked
-                {
-					switch (_state)
-                    {
-					default:
-						if (Settings.bannedIPs != string.Empty)
-                        {
-							_0024banned_0024435 = Settings.bannedIPs.Split("\n"[0]);
-							_0024___temp118_0024443 = 0;
-							_0024___temp119_0024444 = _0024banned_0024435;
-							for (_0024___temp120_0024445 = _0024___temp119_0024444.Length; _0024___temp118_0024443 < _0024___temp120_0024445; _0024___temp118_0024443++)
-                            {
-								_0024val_0024437 = _0024___temp119_0024444[_0024___temp118_0024443].Split(" "[0]);
-								if (_0024val_0024437[0] == _0024player449.ipAddress)
-                                {
-									_0024self_450.networkView.RPC("dN", _0024player449, 2);
-									Network.CloseConnection(_0024player449, true);
-								}
-							}
-						}
-						goto case 2;
-					case 2:
-						if (_0024self_450.serverPassword != string.Empty && !_0024self_450.authenticatedPlayers.ContainsKey(_0024player449))
-                        {
-							_0024playerIsConnected_0024438 = false;
-							_0024___temp122_0024446 = 0;
-							_0024___temp123_0024447 = Network.connections;
-							for (_0024___temp124_0024448 = _0024___temp123_0024447.Length; _0024___temp122_0024446 < _0024___temp124_0024448; _0024___temp122_0024446++)
-                            {
-								if (_0024___temp123_0024447[_0024___temp122_0024446] == _0024player449)
-                                {
-									_0024playerIsConnected_0024438 = true;
-								}
-							}
-							if (!_0024playerIsConnected_0024438)
-                            {
-								break;
-							}
-							return Yield(2, null);
-						}
-						_0024___iterator74_0024442 = UnityRuntimeServices.GetEnumerator(Players);
-						while (_0024___iterator74_0024442.MoveNext())
-                        {
-							_0024plrE_0024440 = (DictionaryEntry)_0024___iterator74_0024442.Current;
-							_0024veh_0024441 = (Vehicle)RuntimeServices.Coerce(_0024plrE_0024440.Value, typeof(Vehicle));
-							UnityRuntimeServices.Update(_0024___iterator74_0024442, _0024plrE_0024440);
-							_0024self_450.networkView.RPC("iV", _0024player449, _0024veh_0024441.networkView.viewID, _0024veh_0024441.networkMode, _0024veh_0024441.vehId, _0024veh_0024441.gameObject.name, _0024veh_0024441.isBot ? 1 : 0, _0024veh_0024441.isIt, _0024veh_0024441.score, _0024veh_0024441.specialInput ? 1 : 0);
-							_0024veh_0024441.networkView.RPC("sC", _0024player449, _0024veh_0024441.vehicleColor.r, _0024veh_0024441.vehicleColor.g, _0024veh_0024441.vehicleColor.b, _0024veh_0024441.vehicleAccent.r, _0024veh_0024441.vehicleAccent.g, _0024veh_0024441.vehicleAccent.b);
-						}
-						if (Settings.serverString != Settings.serverDefault)
-                        {
-							Settings.serverString = Settings.packServerPrefs();
-							_0024self_450.networkView.RPC("sSS", _0024player449, Settings.serverString);
-						}
-						_0024self_450.networkView.RPC("lW", _0024player449, "url=" + _0024self_450.WorldDesc.url);
-						if (Settings.serverWelcome != string.Empty)
-                        {
-							_0024self_450.networkView.RPC("msg", _0024player449, Settings.serverWelcome, UnityBuiltins.parseInt(1));
-						}
-						return Yield(3, new WaitForSeconds(5f));
-					case 3:
-						_0024self_450.StartCoroutine_Auto(_0024self_450.registerHost());
-						Yield(1, null);
-						break;
-					case 1:
-						break;
-					}
-					bool result = default(bool);
-					return result;
-				}
-			}
-		}
-
-		internal NetworkPlayer _0024player451;
-
-		internal Game _0024self_452;
-
-        public OnPlayerConnected_002475(NetworkPlayer player, Game self_)
-        {
-			_0024player451 = player;
-			_0024self_452 = self_;
-		}
-
-		public override IEnumerator<WaitForSeconds> GetEnumerator()
-        {
-			return new _0024(_0024player451, _0024self_452);
-		}
-	}
-
-	[Serializable]
-	[CompilerGenerated]
 	internal sealed class OnPlayerDisconnected_002477 : GenericGenerator<WaitForSeconds>
     {
 		[Serializable]
@@ -1512,8 +1375,98 @@ public class Game : MonoBehaviour
 
 	public IEnumerator OnPlayerConnected(NetworkPlayer player)
     {
-		return new OnPlayerConnected_002475(player, this).GetEnumerator();
-	}
+		//Make sure they aren't banned
+        if (Settings.bannedIPs != "")
+        {
+            String[] banned = Settings.bannedIPs.Split("\n"[0]);
+            foreach (String dat in banned)
+            {
+                String[] val = dat.Split(" "[0]);
+                if (val[0] == player.ipAddress)
+                {
+                    //Game.Messaging.broadcast(player.ipAddress + " attempted to rejoin");
+                    networkView.RPC("dN", player, 2);
+                    Network.CloseConnection(player, true);
+                }
+            }
+        }
+
+        //Authenticate them if necessary
+        while (serverPassword != "")
+        {
+            if (authenticatedPlayers.ContainsKey(player)) break; //They sent the right password in an RPC - let them join the game
+            bool playerIsConnected = false;
+            foreach (NetworkPlayer plyr in Network.connections)
+            {
+                if (plyr == player)
+                {
+                    playerIsConnected = true;
+                }
+            }
+            if (!playerIsConnected) yield break; //They gave up, and are no longer connected
+            yield return null;
+        }
+
+        //Sync Vehicles
+        foreach (DictionaryEntry plrE in Players)
+        {
+            Vehicle veh = (Vehicle)plrE.Value;
+            networkView.RPC(
+                "iV",
+                player,
+                veh.networkView.viewID,
+                veh.networkMode,
+                veh.vehId,
+                veh.gameObject.name,
+                veh.isBot ? 1 : 0,
+                veh.isIt,
+                veh.score,
+                veh.specialInput ? 1 : 0);
+            veh.networkView.RPC(
+                "sC",
+                player,
+                veh.vehicleColor.r,
+                veh.vehicleColor.g,
+                veh.vehicleColor.b,
+                veh.vehicleAccent.r,
+                veh.vehicleAccent.g,
+                veh.vehicleAccent.b);
+        }
+
+        //Sync Server Prefs
+        if (Settings.serverString != Settings.serverDefault)
+        {
+            Settings.serverString = Settings.packServerPrefs();
+            networkView.RPC("sSS", player, Settings.serverString);
+        }
+
+        //Send Them World
+        networkView.RPC("lW", player, "url=" + WorldDesc.url);
+
+        //Welcome them!
+        if (Settings.serverWelcome != "")
+        {
+            networkView.RPC(
+                "msg",
+                player,
+                Settings.serverWelcome,
+                (int)chatOrigins.Remote);
+        }
+
+        //Force-Refresh Everyone's NetworkViews
+        // /*DEAD LINK*/ http://forum.unity3d.com/viewtopic.php?t=35724&postdays=0&postorder=asc&start=105
+        foreach (DictionaryEntry plrE in Players)
+        {
+            if (plrE.Value == null) continue;
+            ((Vehicle)plrE.Value).networkView.enabled = false;
+            yield return null;
+            ((Vehicle)plrE.Value).networkView.enabled = true;
+        }
+
+        //Update Master Server Listing
+        yield return new WaitForSeconds(5f);
+        StartCoroutine_Auto(registerHost());
+    }
 
 	public IEnumerator OnPlayerDisconnected(NetworkPlayer player)
     {
