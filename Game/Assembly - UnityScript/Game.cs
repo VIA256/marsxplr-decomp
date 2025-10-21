@@ -443,50 +443,54 @@ public class Game : MonoBehaviour
 	public void Update()
     {
 		Application.runInBackground = true;
-		if (Settings.resetTime > 0f && 10f - (Time.time - Settings.resetTime) < 1f)
+		
+		if (
+			Settings.resetTime > 0f &&
+			10f - (Time.time - Settings.resetTime) < 1f)
         {
-			if ((bool)PlayerVeh.ramoSphere)
-            {
-				UnityEngine.Object.Destroy(PlayerVeh.ramoSphere);
-			}
+			if ((bool)PlayerVeh.ramoSphere) Destroy(PlayerVeh.ramoSphere);
 			Player.transform.position = World.baseTF.position;
 			Player.transform.rotation = World.baseTF.rotation;
 			Player.rigidbody.isKinematic = false;
 			Player.rigidbody.velocity = Vector3.zero;
 			Settings.resetTime = -10f;
-			Settings.updatePrefs();
+			Settings.updatePrefs(); //Rebuild a new ramosphere
 		}
-		else if (Settings.resetTime < -1f)
-        {
-			Settings.resetTime += Time.deltaTime;
-		}
-		if (Settings.serverUpdateTime != 0f && Settings.serverUpdateTime < Time.time)
+		else if (Settings.resetTime < -1f) Settings.resetTime += Time.deltaTime;
+		
+		if (
+			Settings.serverUpdateTime != 0f &&
+			Settings.serverUpdateTime < Time.time)
         {
 			Settings.serverString = Settings.packServerPrefs();
 			networkView.RPC("sSS", RPCMode.Others, Settings.serverString);
 			if (isHost && !Network.isServer)
             {
+				//Send dedicated server my default settings
 				sSHS();
 			}
 			Settings.serverUpdateTime = 0f;
 		}
-		if (Settings.colorUpdateTime != 0f && Settings.colorUpdateTime < Time.time)
+		
+		if (
+			Settings.colorUpdateTime != 0f &&
+			Settings.colorUpdateTime < Time.time)
         {
 			Settings.colorUpdateTime = 0f;
 			Settings.saveVehicleColor();
 		}
+
+		//Fade GUI Out
 		if (GuiAnimate == 1)
         {
-			if (!(GUIAlpha > 0f))
+			if (GUIAlpha <= 0f)
             {
 				GUIAlpha = 0f;
 				GuiAnimate = 0;
 			}
-			else
-            {
-				GUIAlpha -= Time.deltaTime * 0.35f;
-			}
+			else GUIAlpha -= Time.deltaTime * 0.35f;
 		}
+		//Fade GUI In
 		else if (GuiAnimate == -1)
         {
 			GUIAlpha = 0f;
@@ -494,30 +498,48 @@ public class Game : MonoBehaviour
 		}
 		else if (GuiAnimate == -2)
         {
-			if (!(GUIAlpha < 1f))
+			if (GUIAlpha >= 1)
             {
 				GUIAlpha = 1f;
 				GuiAnimate = 0;
 			}
-			else
-            {
-				GUIAlpha += Time.deltaTime * 0.35f;
-			}
+			else GUIAlpha += Time.deltaTime * 0.35f;
 		}
-		if (Network.peerType != NetworkPeerType.Disconnected && !isHost && WorldDesc.url == string.Empty && Time.time - authUpdateTime > 1f && Time.timeSinceLevelLoad > 3f)
+
+		//Let server know that we are knocking at the door
+		if (
+			Network.peerType != NetworkPeerType.Disconnected &&
+			!isHost &&
+			WorldDesc.url == "" &&
+			Time.time - authUpdateTime > 1f &&
+			Time.timeSinceLevelLoad > 3f)
         {
-			networkView.RPC("lMI", RPCMode.Others, Network.player, GameData.userName);
+			networkView.RPC(
+				"lMI",
+				RPCMode.Others,
+				Network.player,
+				GameData.userName);
 			authUpdateTime = Time.time;
 		}
-		if (!worldLoaded && CameraVehicle.mb.blurAmount < 1f)
+		
+		if (!worldLoaded)
         {
-			CameraVehicle.mb.blurAmount = CameraVehicle.mb.blurAmount + Time.deltaTime;
+			if(CameraVehicle.mb.blurAmount < 1f)
+			{
+				CameraVehicle.mb.blurAmount = CameraVehicle.mb.blurAmount + Time.deltaTime;
+			}
 		}
-		if (Input.GetKeyDown(KeyCode.Alpha0) && !Messaging.chatting && Time.time > kpTime)
+
+		//Handle toggling fullscreen
+		if (
+			Input.GetKeyDown(KeyCode.Alpha0) &&
+			!Messaging.chatting &&
+			Time.time > kpTime)
         {
 			kpTime = Time.time + kpDur;
 			Settings.toggleFullscreen();
 		}
+		//:33333
 		checked
         {
 			fpsFrames++;
