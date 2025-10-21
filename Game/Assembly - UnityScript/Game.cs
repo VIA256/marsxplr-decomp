@@ -30,61 +30,6 @@ public class Game : MonoBehaviour
 {
 	[Serializable]
 	[CompilerGenerated]
-	internal sealed class registerHostSet_002469 : GenericGenerator<WaitForSeconds>
-    {
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<WaitForSeconds>, IEnumerator
-        {
-			internal Game _0024self_482;
-
-			public _0024(Game self_)
-            {
-				_0024self_482 = self_;
-			}
-
-			public override bool MoveNext()
-            {
-				switch (_state)
-				{
-				default:
-					if (_0024self_482.serverHidden)
-                    {
-						break;
-					}
-					_0024self_482.hostRegistered = true;
-					goto case 2;
-				case 2:
-					if (_0024self_482.hostRegistered)
-                    {
-						_0024self_482.StartCoroutine_Auto(_0024self_482.registerHost());
-						return Yield(2, new WaitForSeconds(60f));
-					}
-					Yield(1, null);
-					break;
-				case 1:
-					break;
-				}
-				bool result = default(bool);
-				return result;
-			}
-		}
-
-		internal Game _0024self_483;
-
-		public registerHostSet_002469(Game self_)
-        {
-			_0024self_483 = self_;
-		}
-
-		public override IEnumerator<WaitForSeconds> GetEnumerator()
-        {
-			return new _0024(_0024self_483);
-		}
-	}
-
-	[Serializable]
-	[CompilerGenerated]
 	internal sealed class Init_002471 : GenericGenerator<WaitForSeconds>
     {
 		[Serializable]
@@ -2050,7 +1995,13 @@ public class Game : MonoBehaviour
 
 	public IEnumerator registerHostSet()
     {
-		return new registerHostSet_002469(this).GetEnumerator();
+        if (serverHidden) yield break;
+        hostRegistered = true;
+        while (hostRegistered)
+        {
+            StartCoroutine_Auto(registerHost());
+            yield return new WaitForSeconds(60f);
+        }
 	}
 
 	public void unregisterHost()
