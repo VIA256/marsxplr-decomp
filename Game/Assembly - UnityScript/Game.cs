@@ -27,79 +27,6 @@ public class Game : MonoBehaviour
 {
 	[Serializable]
 	[CompilerGenerated]
-	internal sealed class OnPlayerDisconnected_002477 : GenericGenerator<WaitForSeconds>
-    {
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<WaitForSeconds>, IEnumerator
-        {
-			internal string _0024pName_0024453;
-
-			internal DictionaryEntry _0024plrE_0024454;
-
-			internal IEnumerator _0024___iterator76_0024455;
-
-			internal NetworkPlayer _0024player456;
-
-			internal Game _0024self_457;
-
-			public _0024(NetworkPlayer player, Game self_)
-            {
-				_0024player456 = player;
-				_0024self_457 = self_;
-			}
-
-			public override bool MoveNext()
-            {
-				switch (_state)
-                {
-				default:
-					_0024pName_0024453 = string.Empty;
-					_0024___iterator76_0024455 = UnityRuntimeServices.GetEnumerator(Players);
-					while (_0024___iterator76_0024455.MoveNext())
-                    {
-						_0024plrE_0024454 = (DictionaryEntry)_0024___iterator76_0024455.Current;
-						if (RuntimeServices.EqualityOperator(RuntimeServices.GetProperty(RuntimeServices.GetProperty(_0024plrE_0024454.Value, "networkView"), "owner"), _0024player456))
-                        {
-							_0024self_457.networkView.RPC("pD", RPCMode.All, _0024plrE_0024454.Key);
-							UnityRuntimeServices.Update(_0024___iterator76_0024455, _0024plrE_0024454);
-							break;
-						}
-					}
-					Network.RemoveRPCs(_0024player456);
-					Network.DestroyPlayerObjects(_0024player456);
-					return Yield(2, new WaitForSeconds(1f));
-				case 2:
-					_0024self_457.eSI();
-					_0024self_457.StartCoroutine_Auto(_0024self_457.registerHost());
-					Yield(1, null);
-					break;
-				case 1:
-					break;
-				}
-				bool result = default(bool);
-				return result;
-			}
-		}
-
-		internal NetworkPlayer _0024player458;
-
-		internal Game _0024self_459;
-
-		public OnPlayerDisconnected_002477(NetworkPlayer player, Game self_)
-        {
-			_0024player458 = player;
-			_0024self_459 = self_;
-		}
-
-		public override IEnumerator<WaitForSeconds> GetEnumerator()
-        {
-			return new _0024(_0024player458, _0024self_459);
-		}
-	}
-
-	[Serializable]
-	[CompilerGenerated]
 	internal sealed class addBot_002479 : GenericGenerator<WaitForSeconds>
     {
 		[Serializable]
@@ -1470,7 +1397,22 @@ public class Game : MonoBehaviour
 
 	public IEnumerator OnPlayerDisconnected(NetworkPlayer player)
     {
-		return new OnPlayerDisconnected_002477(player, this).GetEnumerator();
+        // /*UNUSED*/ String pName = "";
+
+        foreach (DictionaryEntry plrE in Players)
+        {
+            if (((Vehicle)plrE.Value).networkView.owner == player)
+            {
+                networkView.RPC("pD", RPCMode.All, plrE.Key);
+                break;
+            }
+        }
+
+        Network.RemoveRPCs(player);
+        Network.DestroyPlayerObjects(player);
+        yield return new WaitForSeconds(1f);
+        eSI();
+        StartCoroutine_Auto(registerHost());
 	}
 
 	public void WindowServerSetup(int id)
