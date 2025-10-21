@@ -239,10 +239,8 @@ public class Game : MonoBehaviour
 
 	public void OnDisable()
     {
-		if (whirldIn != null)
-        {
-			whirldIn.Cleanup();
-		}
+		//Unload whatever AssetBundles we were using
+		if (whirldIn != null) whirldIn.Cleanup();
 	}
 
 	public IEnumerator Init()
