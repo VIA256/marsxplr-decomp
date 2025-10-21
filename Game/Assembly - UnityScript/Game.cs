@@ -27,116 +27,6 @@ public class Game : MonoBehaviour
 {
 	[Serializable]
 	[CompilerGenerated]
-	internal sealed class addBot_002479 : GenericGenerator<WaitForSeconds>
-    {
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<WaitForSeconds>, IEnumerator
-        {
-			internal string _0024temp_0024460;
-
-			internal Game _0024self_461;
-
-			public _0024(Game self_)
-            {
-				_0024self_461 = self_;
-			}
-
-			public override bool MoveNext()
-            {
-				switch (_state)
-                {
-				default:
-					_0024self_461.botsInGame = checked(_0024self_461.botsInGame + 1);
-					Messaging.broadcast(Player.name + " added " + ((_0024self_461.botsInGame != 1) ? ("bot " + _0024self_461.botsInGame) : "a bot"));
-					_0024self_461.materilizationEffect(World.baseTF.transform.position);
-					_0024temp_0024460 = GameData.userName + "'s bot" + ((_0024self_461.botsInGame != 1) ? (" " + _0024self_461.botsInGame) : string.Empty);
-					return Yield(2, new WaitForSeconds(2f));
-				case 2:
-					_0024self_461.networkView.RPC("iV", RPCMode.All, Network.AllocateViewID(), Settings.networkMode, _0024self_461.GameVehicleID, _0024temp_0024460, 1, 0, 0, 0);
-					Yield(1, null);
-					break;
-				case 1:
-					break;
-				}
-				bool result = default(bool);
-				return result;
-			}
-		}
-
-		internal Game _0024self_462;
-
-		public addBot_002479(Game self_)
-        {
-			_0024self_462 = self_;
-		}
-
-		public override IEnumerator<WaitForSeconds> GetEnumerator()
-        {
-			return new _0024(_0024self_462);
-		}
-	}
-
-	[Serializable]
-	[CompilerGenerated]
-	internal sealed class axeBot_002480 : GenericGenerator<WaitForSeconds>
-    {
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<WaitForSeconds>, IEnumerator
-        {
-			internal GameObject _0024bot_0024463;
-
-			internal Game _0024self_464;
-
-			public _0024(Game self_)
-            {
-				_0024self_464 = self_;
-			}
-
-			public override bool MoveNext()
-            {
-				switch (_state)
-                {
-				default:
-					_0024bot_0024463 = GameObject.Find(Player.name + "'s bot" + ((_0024self_464.botsInGame == 1) ? string.Empty : (" " + _0024self_464.botsInGame)));
-					if (!_0024bot_0024463)
-                    {
-						break;
-					}
-					Messaging.broadcast(Player.name + " removed " + ((_0024self_464.botsInGame != 1) ? ("bot " + _0024self_464.botsInGame) : "the last bot"));
-					_0024self_464.botsInGame = checked(_0024self_464.botsInGame - 1);
-					_0024self_464.materilizationEffect(_0024bot_0024463.transform.position);
-					_0024bot_0024463.rigidbody.isKinematic = true;
-					Network.Destroy(_0024bot_0024463.rigidbody.networkView.viewID);
-					return Yield(2, new WaitForSeconds(0.5f));
-				case 2:
-					_0024self_464.eSI();
-					Yield(1, null);
-					break;
-				case 1:
-					break;
-				}
-				bool result = default(bool);
-				return result;
-			}
-		}
-
-		internal Game _0024self_465;
-
-		public axeBot_002480(Game self_)
-        {
-			_0024self_465 = self_;
-		}
-
-		public override IEnumerator<WaitForSeconds> GetEnumerator()
-        {
-			return new _0024(_0024self_465);
-		}
-	}
-
-	[Serializable]
-	[CompilerGenerated]
 	internal sealed class iV_002493 : GenericGenerator<WaitForSeconds>
     {
 		[Serializable]
@@ -1756,12 +1646,50 @@ public class Game : MonoBehaviour
 
 	public IEnumerator addBot()
     {
-		return new addBot_002479(this).GetEnumerator();
+        botsInGame++;
+        Messaging.broadcast(
+            Player.name +
+            " added " +
+            (botsInGame == 1 ? "a bot" : "bot " + botsInGame));
+        materilizationEffect(World.baseTF.transform.position);
+        String temp =
+            GameData.userName +
+            "'s bot" +
+            (botsInGame == 1 ? "" : " " + botsInGame);
+        yield return new WaitForSeconds(2f);
+        networkView.RPC(
+            "iV",
+            RPCMode.All,
+            Network.AllocateViewID(),
+            Settings.networkMode,
+            GameVehicleID,
+            temp,
+            1,
+            0,
+            0,
+            0);
 	}
 
 	public IEnumerator axeBot()
     {
-		return new axeBot_002480(this).GetEnumerator();
+        GameObject bot = GameObject.Find(
+            Player.name +
+            "'s bot" +
+            (botsInGame != 1 ? " " + botsInGame : ""));
+        if (!bot) yield break;
+        Messaging.broadcast(
+            Player.name +
+            " removed " +
+            (botsInGame == 1 ? "the last bot" : ("bot " + botsInGame)));
+        botsInGame--;
+        materilizationEffect(bot.transform.position);
+        bot.rigidbody.isKinematic = true;
+
+        Network.Destroy(bot.rigidbody.networkView.viewID);
+
+        yield return new WaitForSeconds(0.5f);
+        eSI();
+        //renderAdjustMax = 0; //Give the autorender settings algorithym a chance to take advantage of new settings...
 	}
 
 	public void setVeh(int setVehicleTo)
