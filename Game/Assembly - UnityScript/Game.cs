@@ -12,11 +12,8 @@ using UnityScript.Lang;
 public class unauthPlayer
 {
     public NetworkPlayer p;
-
     public string n;
-
     public float t;
-
     public unauthPlayer(NetworkPlayer p, string n, float t)
     {
         this.p = p;
@@ -28,205 +25,6 @@ public class unauthPlayer
 [Serializable]
 public class Game : MonoBehaviour
 {
-	[Serializable]
-	[CompilerGenerated]
-	internal sealed class Init_002471 : GenericGenerator<WaitForSeconds>
-    {
-		[Serializable]
-		[CompilerGenerated]
-		private sealed class _0024 : GenericGeneratorEnumerator<WaitForSeconds>, IEnumerator
-        {
-			internal GameObject _0024worldOBJ_0024425;
-
-			internal object _0024objs_0024426;
-
-			internal bool _0024thereisalight_0024427;
-
-			internal Light _0024light_0024428;
-
-			internal IEnumerator _0024___iterator66_0024429;
-
-			internal int _0024veh_0024430;
-
-			internal string _0024temp_0024431;
-
-			internal int _0024i_0024432;
-
-			internal Game _0024self_433;
-
-			public _0024(Game self_)
-            {
-				_0024self_433 = self_;
-			}
-
-			public override bool MoveNext()
-            {
-				checked
-                {
-					switch (_state)
-                    {
-					default:
-						return Yield(2, null);
-					case 2:
-						Network.isMessageQueueRunning = true;
-						goto case 3;
-					case 3:
-						if (!_0024self_433.worldLoaded)
-                        {
-							return Yield(3, null);
-						}
-						Settings.fogColor = RenderSettings.fogColor;
-						_0024self_433.GuiAnimate = 1;
-						goto case 4;
-					case 4:
-						if (_0024self_433.GuiAnimate != 0)
-                        {
-							return Yield(4, null);
-						}
-						return Yield(5, new WaitForSeconds(0.25f));
-					case 5:
-						_0024self_433.GuiAnimate = -1;
-						_0024self_433.loadingWorld = false;
-						_0024self_433.worldLoadTime = Time.time;
-						_0024worldOBJ_0024425 = GameObject.Find(_0024self_433.whirldIn.worldName);
-						_0024objs_0024426 = _0024worldOBJ_0024425.GetComponentsInChildren(typeof(Transform));
-						if (!RuntimeServices.EqualityOperator(_0024self_433.whirldIn.worldParams["ccc"], 1) && RuntimeServices.ToBool(RuntimeServices.InvokeBinaryOperator("op_GreaterThan", RuntimeServices.GetProperty(_0024objs_0024426, "Length"), 15)))
-                        {
-							_0024worldOBJ_0024425.AddComponent(typeof(CombineChildren));
-						}
-						return Yield(6, null);
-					case 6:
-						if ((bool)GameObject.Find("Base"))
-                        {
-							World.baseTF = GameObject.Find("Base").transform;
-						}
-						else
-                        {
-							World.baseTF = (Transform)RuntimeServices.Coerce(RuntimeServices.GetProperty(UnityEngine.Object.Instantiate(Resources.Load("Base"), Vector3.up * 5f, Quaternion.identity), "transform"), typeof(Transform));
-						}
-						World.terrains = (Terrain[])UnityEngine.Object.FindObjectsOfType(typeof(Terrain));
-						if (!RuntimeServices.ToBool(_0024self_433.whirldIn.worldParams["env"]) || !RuntimeServices.EqualityOperator(_0024self_433.whirldIn.worldParams["env"], "space"))
-                        {
-							if ((bool)GameObject.Find("Sea"))
-                            {
-								World.sea = GameObject.Find("Sea").transform;
-								Settings.lavaAlt = World.sea.position.y;
-							}
-							if (!GameObject.Find("Floor") && !RuntimeServices.ToBool(UnityEngine.Object.FindObjectOfType(typeof(Terrain))) && !World.sea && !RuntimeServices.ToBool(_0024self_433.whirldIn.worldParams["nofloor"]) && !RuntimeServices.EqualityOperator(_0024self_433.whirldIn.worldParams["floor"], "0"))
-                            {
-								UnityEngine.Object.Instantiate(Resources.Load("Floor"), Vector3.zero, Quaternion.identity);
-							}
-						}
-						_0024thereisalight_0024427 = false;
-						_0024___iterator66_0024429 = UnityRuntimeServices.GetEnumerator(UnityEngine.Object.FindObjectsOfType(typeof(Light)));
-						while (_0024___iterator66_0024429.MoveNext())
-                        {
-							_0024light_0024428 = (Light)RuntimeServices.Coerce(_0024___iterator66_0024429.Current, typeof(Light));
-							if (_0024light_0024428.gameObject.name != "VehicleLight")
-                            {
-								_0024thereisalight_0024427 = true;
-							}
-						}
-						if (!_0024thereisalight_0024427)
-                        {
-							UnityEngine.Object.Instantiate(Resources.Load("Light"));
-						}
-						_0024self_433.mE(World.baseTF.transform.position);
-						return Yield(7, new WaitForSeconds(1f));
-					case 7:
-						if (Settings.buggyAllowed)
-                        {
-							_0024veh_0024430 = 0;
-						}
-						else if (Settings.tankAllowed)
-                        {
-							_0024veh_0024430 = 2;
-						}
-						else if (Settings.hoverAllowed)
-                        {
-							_0024veh_0024430 = 1;
-						}
-						else if (Settings.jetAllowed)
-                        {
-							_0024veh_0024430 = 3;
-						}
-						else
-                        {
-							_0024veh_0024430 = 0;
-						}
-						_0024self_433.GameVehicleID = _0024veh_0024430;
-						_0024temp_0024431 = GameData.userName;
-						_0024i_0024432 = 1;
-						while ((_0024i_0024432 == 1 && GameObject.Find(_0024temp_0024431) != null) || GameObject.Find(_0024temp_0024431 + " " + _0024i_0024432) != null)
-                        {
-							_0024i_0024432++;
-						}
-						_0024self_433.networkView.RPC("iV", RPCMode.All, Network.AllocateViewID(), Settings.networkMode, _0024self_433.GameVehicleID, (_0024i_0024432 == 1) ? _0024temp_0024431 : (_0024temp_0024431 + " " + _0024i_0024432), 0, _0024self_433.isHost ? 1 : 0, 0, 0);
-						if (_0024self_433.isHost)
-                        {
-							if (!Network.isServer)
-                            {
-								_0024self_433.sSHS();
-							}
-							if (Network.isServer)
-                            {
-								Messaging.broadcast("You are hosting a server!\n" + ((!(_0024self_433.serverPassword != string.Empty)) ? string.Empty : ("Password: " + _0024self_433.serverPassword + "\n")) + "IP: " + Network.player.ipAddress + "\n" + ((Network.player.externalIP == null) ? string.Empty : ("External: " + Network.player.externalIP)) + "\nPort: " + Network.player.port);
-								return Yield(8, new WaitForSeconds(1f));
-							}
-							Messaging.broadcast("You are hosting a game on a dedicated server!\n" + ((!(_0024self_433.serverPassword != string.Empty)) ? string.Empty : ("Password: " + _0024self_433.serverPassword + "\n")) + "IP: " + Network.connections[0].ipAddress + "\n" + ((Network.connections[0].externalIP == null) ? string.Empty : ("External: " + Network.connections[0].externalIP)) + "\nPort: " + Network.connections[0].port);
-							goto IL_0831;
-						}
-						Messaging.broadcast(((_0024i_0024432 == 1) ? _0024temp_0024431 : (_0024temp_0024431 + " " + _0024i_0024432)) + " has joined!");
-						goto IL_0997;
-					case 8:
-						_0024self_433.StartCoroutine_Auto(_0024self_433.registerHostSet());
-						goto IL_0831;
-					case 9:
-						Settings.colorCustom = PlayerPrefs.GetInt("vehColCustom") == 1;
-						if (!Settings.colorCustom)
-                        {
-							Settings.StartCoroutine_Auto(Settings.ramdomizeVehicleColor());
-						}
-						Yield(1, null);
-						break;
-					case 1:
-						break;
-						IL_0997:
-						Settings.serverDefault = Settings.packServerPrefs();
-						Settings.serverString = Settings.serverDefault;
-						Settings.updatePrefs();
-						return Yield(9, null);
-						IL_0831:
-						if (RuntimeServices.ToBool(_0024self_433.whirldIn.worldParams["message"]))
-                        {
-							Settings.serverWelcome = (string)RuntimeServices.Coerce(_0024self_433.whirldIn.worldParams["message"], typeof(string));
-							_0024self_433.networkView.RPC("msg", RPCMode.All, Settings.serverWelcome, UnityBuiltins.parseInt(1));
-						}
-						if (RuntimeServices.ToBool(_0024self_433.whirldIn.worldParams["marsxplr"]))
-                        {
-							_0024self_433.networkView.RPC("sSS", RPCMode.All, _0024self_433.whirldIn.worldParams["marsxplr"]);
-						}
-						goto IL_0997;
-					}
-					bool result = default(bool);
-					return result;
-				}
-			}
-		}
-
-		internal Game _0024self_434;
-
-		public Init_002471(Game self_)
-        {
-			_0024self_434 = self_;
-		}
-
-		public override IEnumerator<WaitForSeconds> GetEnumerator()
-        {
-			return new _0024(_0024self_434);
-		}
-	}
-
 	[Serializable]
 	[CompilerGenerated]
 	internal sealed class OnPlayerConnected_002475 : GenericGenerator<WaitForSeconds>
@@ -915,7 +713,199 @@ public class Game : MonoBehaviour
 
 	public IEnumerator Init()
     {
-		return new Init_002471(this).GetEnumerator();
+        //Wait for Server to send us players via RPC - Probably totally unnecessary
+        yield return null;
+        //We are now ready to recieve RPC calls!
+        Network.isMessageQueueRunning = true;
+
+        //Allow World to Load
+        while (worldLoaded == false) yield return null;
+        Settings.fogColor = RenderSettings.fogColor;
+        GuiAnimate = 1;
+        while (GuiAnimate != 0) yield return null;
+        yield return new WaitForSeconds(0.25f);
+        GuiAnimate = -1;
+        loadingWorld = false;
+        worldLoadTime = Time.time;
+        GameObject worldOBJ = GameObject.Find(whirldIn.worldName);
+        Transform[] objs = worldOBJ.GetComponentsInChildren<Transform>();
+        if (
+            (whirldIn.worldParams["ccc"] != null && (int)whirldIn.worldParams["ccc"] != 1) &&
+            objs.Length > 15)
+        {
+            worldOBJ.AddComponent<CombineChildren>();
+        }
+        //Give the combine children script a chance to create the optimized world meshes before we start assigning layers to everything...
+        yield return null;
+        
+        //Ensure standard world components are present
+        if (GameObject.Find("Base"))
+        {
+            World.baseTF = GameObject.Find("Base").transform;
+        }
+        else
+        {
+            World.baseTF = ((GameObject)GameObject.Instantiate(
+                Resources.Load("Base"),
+                Vector3.up * 5,
+                Quaternion.identity))
+                .transform;
+        }
+
+        World.terrains = (Terrain[])FindObjectsOfType(typeof(Terrain));
+        
+        if (
+            whirldIn.worldParams["env"] != null &&
+            (String)whirldIn.worldParams["env"] == "space")
+        {
+            //usedSkybox = RenderSettings.skybox = SkyboxSpace;
+            //RenderSettings.fogColor = new Color(0.07f, 0.02f, 0.095f, 1f);
+        }
+        else
+        {
+            if (GameObject.Find("Sea"))
+            {
+                World.sea = GameObject.Find("Sea").transform;
+                Settings.lavaAlt = World.sea.position.y;
+            }
+            /*else
+            {
+                Settings.lavaAlt = -10f;
+                World.sea = ((GameObject)GameObject.Instantiate(
+                    Resources.Load("Sea"),
+                    new Vector3(0f, Settings.lavaAlt, 0f),
+                    Quaternion.identity))
+                    .transform;
+            }*/
+            if (
+                !GameObject.Find("Floor") &&
+                !FindObjectOfType(typeof(Terrain)) &&
+                !World.sea &&
+                whirldIn.worldParams["nofloor"] == null &&
+                (String)whirldIn.worldParams["floor"] != "0")
+            {
+                GameObject.Instantiate(
+                    Resources.Load("Floor"),
+                    Vector3.zero,
+                    Quaternion.identity);
+            }
+        }
+
+        bool thereisalight = false;
+        foreach (Light light in (Light[])FindObjectsOfType(typeof(Light)))
+        {
+            if (light.gameObject.name != "VehicleLight")
+            {
+                thereisalight = true;
+            }
+        }
+        //Make sure there is a light in the scene
+        if (!thereisalight) GameObject.Instantiate(Resources.Load("Light"));
+
+        //Add Player!
+        mE(World.baseTF.transform.position);
+        yield return new WaitForSeconds(1f); //Give server settings a chance to load
+        int veh = 0;
+        if (Settings.buggyAllowed) veh = 0;
+        else if (Settings.tankAllowed) veh = 2;
+        else if (Settings.hoverAllowed) veh = 1;
+        else if (Settings.jetAllowed) veh = 3;
+        GameVehicleID = veh;
+        String temp = GameData.userName;
+        int i = 1;
+        while (
+            (i == 1 && GameObject.Find(temp) != null) ||
+            (GameObject.Find(temp + " " + i) != null))
+        {
+            i++;
+        }
+        networkView.RPC(
+            "iV",
+            RPCMode.All,
+            Network.AllocateViewID(),
+            Settings.networkMode,
+            GameVehicleID,
+            (i != 1 ? temp + " " + i : temp),
+            0,
+            (isHost ? 1 : 0),
+            0,
+            0);
+
+        if (isHost)
+        {
+            if (!Network.isServer)
+            {
+                sSHS(); //Send dedicated server my default settings
+            }
+            
+            if (Network.isServer)
+            {
+                Game.Messaging.broadcast(
+                    "You are hosting a server!\n" +
+                    (serverPassword != "" ?
+                        "Password: " + serverPassword + "\n" :
+                        "") +
+                    "IP: " +
+                    Network.player.ipAddress +
+                    "\n" +
+                    (Network.player.externalIP != "" ?
+                        "External: " + Network.player.externalIP :
+                        "") +
+                    "\nPort: " +
+                    Network.player.port);
+                yield return new WaitForSeconds(1f);
+                StartCoroutine_Auto(registerHostSet());
+            }
+            else
+            {
+                Game.Messaging.broadcast(
+                    "You are hosting a game on a dedicated server!\n" +
+                    (serverPassword != "" ?
+                        "Password: " + serverPassword + "\n" :
+                        "") +
+                    "IP: " +
+                    Network.connections[0].ipAddress +
+                    "\n" +
+                    (Network.connections[0].externalIP != "" ?
+                        "External: " + Network.connections[0].externalIP :
+                        "") +
+                    "\nPort: " +
+                    Network.connections[0].port);
+            }
+
+            if (whirldIn.worldParams["message"] != null)
+            {
+                Settings.serverWelcome = (String)whirldIn.worldParams["message"];
+                networkView.RPC(
+                    "msg",
+                    RPCMode.All,
+                    Settings.serverWelcome,
+                    (int)chatOrigins.Remote);
+            }
+            if (whirldIn.worldParams["marsxplr"] != null)
+            {
+                networkView.RPC(
+                    "sSS",
+                    RPCMode.All,
+                    whirldIn.worldParams["marsxplr"]);
+            }
+        }
+        else
+        {
+            Game.Messaging.broadcast(
+                (i != 1 ? temp + " " + i : temp) +
+                " has joined!");
+        }
+
+        //Init Game Prefs
+        Settings.serverDefault = Settings.packServerPrefs();
+        Settings.serverString = Settings.serverDefault;
+        Settings.updatePrefs();
+
+        //Randomize new player colors if they are not custom
+        yield return null;
+        Settings.colorCustom = (PlayerPrefs.GetInt("vehColCustom") == 1);
+        if (!Settings.colorCustom) StartCoroutine_Auto(Settings.ramdomizeVehicleColor());
 	}
 
 	public void Update()
