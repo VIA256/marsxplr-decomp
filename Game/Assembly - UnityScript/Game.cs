@@ -470,62 +470,56 @@ public class Game : MonoBehaviour
 			kpTime = Time.time + kpDur;
 			Settings.toggleFullscreen();
 		}
-		//:33333
-		checked
+
+        fpsFrames++;
+        if (Time.time > fpsTime)
         {
-			fpsFrames++;
-			if (!(Time.time > fpsTime))
-            {
-				return;
-			}
-			fps = unchecked(fpsFrames / heavyTickRate);
+			fps = fpsFrames / heavyTickRate;
 			fpsTime = Time.time + (float)heavyTickRate;
 			fpsFrames = 0;
+
+            //Prune Unauth Players list
 			if (isHost)
             {
 				for (int i = 0; i < unauthPlayers.Count; i++)
                 {
-					if (RuntimeServices.ToBool(RuntimeServices.InvokeBinaryOperator("op_GreaterThan", RuntimeServices.InvokeBinaryOperator("op_Subtraction", Time.time, RuntimeServices.GetProperty(unauthPlayers[i], "t")), 2)))
+                    if (Time.time - unauthPlayers[i].t > 2f)
                     {
-						unauthPlayers.RemoveAt(i);
-					}
+                        unauthPlayers.RemoveAt(i);
+                    }
 				}
 			}
-			IEnumerator enumerator = UnityRuntimeServices.GetEnumerator(Players);
-			while (enumerator.MoveNext())
+
+            //Prune Players list
+            foreach (DictionaryEntry plrE in Players)
             {
-				DictionaryEntry dictionaryEntry = (DictionaryEntry)enumerator.Current;
-				if (!RuntimeServices.ToBool(dictionaryEntry.Value))
+                if (plrE.Value == null)
                 {
-					Debug.Log(RuntimeServices.InvokeBinaryOperator("op_Addition", dictionaryEntry.Key, " null - removed from players list"));
-					UnityRuntimeServices.Update(enumerator, dictionaryEntry);
-					Players.Remove(dictionaryEntry.Key);
-					UnityRuntimeServices.Update(enumerator, dictionaryEntry);
-					break;
-				}
-			}
-			int j = 0;
-			GameObject[] array = GameObject.FindGameObjectsWithTag("Player");
-			for (int length = array.Length; j < length; j++)
+                    Debug.Log(plrE.Key + " null - removed from players list");
+                    Players.Remove(plrE.Key);
+                    break; //Don't want to continue iterating through players, as the hashtable is now out of sync.
+                }
+            }
+
+            //Prune Ghosts
+            foreach (GameObject go in GameObject.FindGameObjectsWithTag("Player"))
             {
-				bool flag = false;
-				IEnumerator enumerator2 = UnityRuntimeServices.GetEnumerator(Players);
-				while (enumerator2.MoveNext())
+                bool found = false;
+                foreach (DictionaryEntry plrE in Players)
                 {
-					DictionaryEntry dictionaryEntry2 = (DictionaryEntry)enumerator2.Current;
-					if (RuntimeServices.EqualityOperator(dictionaryEntry2.Key, array[j].name))
+                    if ((String)plrE.Key == go.name)
                     {
-						flag = true;
-						break;
-					}
-				}
-				if (!flag)
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) //This vehicle is deserted
                 {
-					UnityEngine.Object.Destroy(array[j]);
-					Debug.Log("Abandoned vehicle destroyed: " + array[j].name);
-					break;
-				}
-			}
+                    Destroy(go);
+                    Debug.Log("Abandoned vehicle destroyed: " + go.name);
+                    break;
+                }
+            }
 		}
 	}
 
