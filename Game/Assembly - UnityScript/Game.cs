@@ -979,53 +979,49 @@ public class Game : MonoBehaviour
 
 	public void showDialogVehicles()
     {
-		if (RuntimeServices.EqualityOperator(GameVehicleID, null))
+        if (GameVehicleID == -1) return;
+        GUILayout.FlexibleSpace();
+        GUILayout.Space(5f);
+        GUILayout.Label(
+            "You are currently commanding a " +
+            GameVehicles[GameVehicleID].name +
+            ":");
+        GUILayout.Space(10f);
+        GUILayout.FlexibleSpace();
+
+        int i = -1;
+        foreach (GameObject veh in GameVehicles)
         {
-			return;
-		}
-		GUILayout.FlexibleSpace();
-		GUILayout.Space(5f);
-		GameObject[] gameVehicles = GameVehicles;
-		GUILayout.Label("You are currently commanding a " + gameVehicles[RuntimeServices.NormalizeArrayIndex(gameVehicles, GameVehicleID)].name + ":");
-		GUILayout.Space(10f);
-		GUILayout.FlexibleSpace();
-		int num = -1;
-		int i = 0;
-		GameObject[] gameVehicles2 = GameVehicles;
-		checked
-        {
-			for (int length = gameVehicles2.Length; i < length; i++)
+            i++;
+            if (i == GameVehicleID) continue;
+            if (i == 0 && !Settings.buggyAllowed)
             {
-				num++;
-				if (num != GameVehicleID)
-                {
-					if (num == 0 && !Settings.buggyAllowed)
-                    {
-						GUILayout.Label("(Buggy unavailable)", GUILayout.Height(25f));
-					}
-					else if (num == 1 && !Settings.hoverAllowed)
-                    {
-						GUILayout.Label("(Hovercraft unavailable)", GUILayout.Height(25f));
-					}
-					else if (num == 2 && !Settings.tankAllowed)
-                    {
-						GUILayout.Label("(Tank unavailable)", GUILayout.Height(25f));
-					}
-					else if (num == 3 && !Settings.jetAllowed)
-                    {
-						GUILayout.Label("(Jet unavailable)", GUILayout.Height(25f));
-					}
-					else if (GUILayout.Button(">> Switch to a " + gameVehicles2[i].name, GUILayout.Height(40f)))
-                    {
-						Settings.resetTime = -10f;
-						setVeh(num);
-					}
-				}
-			}
-			GUILayout.Space(10f);
-			GUILayout.FlexibleSpace();
-			GUILayout.Label("(You can only switch when at this location)");
-		}
+                GUILayout.Label("(Buggy unavailable)", GUILayout.Height(25));
+            }
+            else if (i == 0 && !Settings.hoverAllowed)
+            {
+                GUILayout.Label("(Hovercraft unavailable)", GUILayout.Height(25));
+            }
+            else if (i == 0 && !Settings.tankAllowed)
+            {
+                GUILayout.Label("(Tank unavailable)", GUILayout.Height(25));
+            }
+            else if (i == 0 && !Settings.jetAllowed)
+            {
+                GUILayout.Label("(Jet unavailable)", GUILayout.Height(25));
+            }
+            else if (GUILayout.Button(
+                ">> Switch to a " + veh.name,
+                GUILayout.Height(40)))
+            {
+                Settings.resetTime = -10;
+                setVeh(i);
+            }
+        }
+
+        GUILayout.Space(10);
+        GUILayout.FlexibleSpace();
+        GUILayout.Label("(You can only switch when at this location)");
 	}
 
 	public void showDialogRenderHints()
