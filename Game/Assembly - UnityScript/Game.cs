@@ -1028,17 +1028,27 @@ public class Game : MonoBehaviour
     {
 		if (fps < 20f)
         {
-			GUILayout.Label("Low Framerate: " + fps.ToString("f0") + " FPS\n\nClick \"Game Settings\" above and decrease (<<) the Rendering Quality to speed up your framerate");
+			GUILayout.Label(
+                "Low Framerate: " +
+                fps.ToString("f0") +
+                " FPS\n\nClick \"Game Settings\" above and decrease (<<) the Rendering Quality to speed up your framerate");
 		}
 		else
         {
-			GUILayout.Label("High Framerate: " + fps.ToString("f0") + " FPS\n\nClick \"Game Settings\" above and increase (>>) the Rendering Quality to make everything look nicer");
+			GUILayout.Label(
+                "High Framerate: " +
+                fps.ToString("f0") +
+                " FPS\n\nClick \"Game Settings\" above and increase (>>) the Rendering Quality to make everything look nicer");
 		}
 		GUILayout.Space(5f);
-		if (GUILayout.Toggle(Settings.showHints, "Enable Settings Advisor") != Settings.showHints)
+		if (GUILayout.Toggle(
+            Settings.showHints,
+            "Enable Settings Advisor") != Settings.showHints)
         {
 			Settings.showHints = !Settings.showHints;
-			PlayerPrefs.SetInt("showHints", Settings.showHints ? 1 : 0);
+			PlayerPrefs.SetInt(
+                "showHints",
+                Settings.showHints ? 1 : 0);
 			Settings.updatePrefs();
 		}
 	}
