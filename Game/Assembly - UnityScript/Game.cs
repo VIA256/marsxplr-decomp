@@ -932,19 +932,23 @@ public class Game : MonoBehaviour
 
 	public void GUIPanel(int id)
     {
-		int num = checked(id - 20);
-		GUIStyle style = GUI.skin.GetStyle("close_button");
-		if (GUI.Button(new Rect(style.padding.left, style.padding.top, style.normal.background.width, style.normal.background.height), string.Empty, "close_button"))
+		int i = id - 20;
+		GUIStyle closeButtonStyle = GUI.skin.GetStyle("close_button");
+		if (GUI.Button(
+            new Rect(
+                closeButtonStyle.padding.left,
+                closeButtonStyle.padding.top,
+                closeButtonStyle.normal.background.width,
+                closeButtonStyle.normal.background.height),
+            "",
+            "close_button"))
         {
-			GUIPanel[] gUIPanels = GUIPanels;
-			gUIPanels[RuntimeServices.NormalizeArrayIndex(gUIPanels, num)].open = false;
+            GUIPanels[i].open = false;
 		}
-		GUILayout.Space(5f);
-		GUIPanel[] gUIPanels2 = GUIPanels;
-		GUIPanel obj = gUIPanels2[RuntimeServices.NormalizeArrayIndex(gUIPanels2, num)];
-		GUIPanel[] gUIPanels3 = GUIPanels;
-		obj.scrollPos = GUILayout.BeginScrollView(gUIPanels3[RuntimeServices.NormalizeArrayIndex(gUIPanels3, num)].scrollPos);
-		switch (num)
+        GUIPanels[i].scrollPos = GUILayout.BeginScrollView(GUIPanels[i].scrollPos);
+
+
+		switch (i)
         {
 		case 0:
 			Settings.showDialogServer();
@@ -968,6 +972,7 @@ public class Game : MonoBehaviour
 			GUILayout.Label("{Unknown Panel}");
 			break;
 		}
+
 		GUILayout.Space(5f);
 		GUILayout.EndScrollView();
 	}
