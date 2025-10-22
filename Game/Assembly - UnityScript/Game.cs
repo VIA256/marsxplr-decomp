@@ -525,356 +525,409 @@ public class Game : MonoBehaviour
 
 	public void OnGUI()
     {
-		Rect position;
-		Texture2D image;
-		if (Screen.lockCursor)
+		//Cursor Locking
+        if (Screen.lockCursor)
         {
-			GUI.depth = -999;
-			position = new Rect((float)(Screen.width / 2) - cursorOffset.x, (float)(Screen.height / 2) - cursorOffset.y, cursor.width, cursor.height);
-			if (Settings.lasersAllowed)
-            {
-				int[] firepower = Settings.firepower;
-				if (firepower[RuntimeServices.NormalizeArrayIndex(firepower, PlayerVeh.vehId)] > 0)
-                {
-					image = cursor;
-					goto IL_009c;
-				}
-			}
-			image = cursorLook;
-			goto IL_009c;
-		}
-		goto IL_00a1;
-		IL_00a1:
-		GUI.skin = Skin;
-		float gUIAlpha = GUIAlpha;
-		Color color = GUI.color;
-		float num = (color.a = gUIAlpha);
-		Color color2 = (GUI.color = color);
-		GUI.depth = 1;
-		checked
+            GUI.depth = -999;
+            GUI.Label(
+                new Rect(
+                    Screen.width / 2 - cursorOffset.x,
+                    Screen.height / 2 - cursorOffset.y,
+                    cursor.width,
+                    cursor.height),
+                (Game.Settings.lasersAllowed &&
+                    Game.Settings.firepower[PlayerVeh.vehId] > 0 ?
+                    cursor :
+                    cursorLook));
+        }
+
+        //Basic Setup
+        GUI.skin = Skin;
+
+        Color guicol = GUI.color;
+        guicol.a = GUIAlpha;
+        GUI.color = guicol;
+
+        GUI.depth = 1;
+
+        //World Setup
+        if (loadingWorld)
         {
-			if (loadingWorld)
+            GUI.Window(
+                3,
+                new Rect(
+                    Screen.width / 2 - 300,
+                    Screen.height / 2 - 250,
+                    600,
+                    500),
+                WindowServerSetup,
+                "",
+                "windowChromeless");
+            return;
+        }
+
+        //Exit Game
+        float hght = (Game.Settings.simplified ? 40 : 25);
+        float wdth = (Game.Settings.simplified ?
+            40 :
+            Mathf.Min(Mathf.Max(
+                170f,
+                Screen.width / 4), 250));
+        if (isHost)
+        {
+            if (worldLoaded)
             {
-				GUI.Window(3, new Rect(unchecked(Screen.width / 2) - 300, unchecked(Screen.height / 2) - 250, 600f, 500f), WindowServerSetup, string.Empty, "windowChromeless");
-				return;
-			}
-			int num2 = ((!Settings.simplified) ? 25 : 40);
-			int num3 = ((!Settings.simplified) ? Mathf.Min(Mathf.Max(170, unchecked(Screen.width / 4)), 250) : 40);
-			if (isHost)
-            {
-				if (worldLoaded)
+                if (killServer == false)
                 {
-					if (!killServer)
+                    if (GUI.Button(
+                        new Rect(10, 10, wdth, hght),
+                        (Game.Settings.simplified ?
+                            "<<" :
+                            "<< Stop Hosting Game")))
                     {
-						if (GUI.Button(new Rect(10f, 10f, num3, num2), (!Settings.simplified) ? "<<  Stop Hosting Game" : "<<"))
+                        if (
+                            !Network.isServer ||
+                            Network.connections.Length < 1)
                         {
-							if (!Network.isServer || Extensions.get_length((System.Array)Network.connections) < 1)
-                            {
-								netKillMode = 1;
-								Network.Disconnect();
-								unregisterHost();
-							}
-							else
-							{
-								killServer = true;
-							}
-						}
-					}
-					else {
-						if (GUI.Button(new Rect(10f, 10f, num3, num2), (!Settings.simplified) ? "<<  Confirm Stop" : "<<"))
+                            netKillMode = 1;
+                            Network.Disconnect();
+                            unregisterHost();
+                        }
+                        else
                         {
-							netKillMode = 1;
-							Network.Disconnect();
-							unregisterHost();
-						}
-						if (GUI.Button(new Rect(unchecked(Screen.width / 2) - 125, unchecked(Screen.height / 2) - 100, 250f, 200f), "Notice:\n\nYou are hosting this game.\nIf you stop hosting, all the players\nin this game will be disconnected.\n\nIf you really want to, press \"Confirm Stop\".\n Otherwise, click this button to cancel\nthe stop and continue hosting!"))
+                            killServer = true;
+                            //Game.Settings.simplified = true;
+                        }
+                    }
+                }
+                else
+                {
+                    if (GUI.Button(
+                        new Rect(10, 10, wdth, hght),
+                        (Game.Settings.simplified ?
+                            "<<" :
+                            "<< Confirm Stop")))
+                    {
+                        netKillMode = 1;
+                        Network.Disconnect();
+                        unregisterHost();
+                    }
+                    if (GUI.Button(
+                        new Rect(
+                            Screen.width / 2 - 125,
+                            Screen.height / 2 - 100,
+                            250,
+                            200),
+                        "Notice:\n\nYou are hosting this game.\nIf you stop hosting, all the players\nin this game will be disconnected.\n\nIf you really want to, press \"Confirm Stop\".\n Otherwise, click this button to cancel\nthe stop and continue hosting!"))
+                    {
+                        killServer = false;
+                        Game.Settings.simplified = false;
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (GUI.Button(
+                new Rect(10, 10, wdth, hght),
+                (Game.Settings.simplified ?
+                    "<<" :
+                    "<  Exit Game")))
+            {
+                netKillMode = 1;
+                Network.Disconnect();
+            }
+        }
+
+        //Hide GUI Button
+        if (GUI.Button(
+            new Rect(
+                Screen.width - 50,
+                Screen.height - 50,
+                40,
+                40),
+            (!Settings.simplified ? ">>" : "<<")))
+        {
+            Settings.simplified = !Settings.simplified;
+        }
+        if (Settings.enteredfullscreen && GUI.Button(
+            new Rect(
+                Screen.width / 2 - 125,
+                Screen.height / 2 - 100,
+                250,
+                200),
+            "Welcome to fullscreen mode!\n\nIf you hear a chime noise while holding\nkeyboard buttons; press \"Esc\",\nthen click your mouse, then press \"0\".\n\n{Click this box to play}"))
+        {
+            Settings.enteredfullscreen = false;
+        }
+
+        //Player related stuff beyond this point
+        if (!Player || Settings.simplified) return;
+
+        //Hud text
+        if (PlayerVeh.vehId == 3)
+        {
+            GUI.Button(
+                new Rect(
+                    (Screen.width / 2) - 200,
+                    Screen.height - 63,
+                    400,
+                    20),
+                "{Hold Q for no throttle & E for full throttle}",
+                hudTextStyle);
+        }
+        if (Messaging.chatting)
+        {
+            GUI.Button(
+                new Rect(
+                    (Screen.width / 2) - 200,
+                    Screen.height - 50,
+                    400,
+                    20),
+                "{Keyboard Shortcuts Locked ~ Press \"Tab\" to unlock}",
+                hudTextStyle);
+        }
+        else if (Screen.lockCursor)
+        {
+            GUI.Button(
+                new Rect(
+                    (Screen.width / 2) - 200,
+                    Screen.height - 50,
+                    400,
+                    20),
+                "{Cursor Locked ~ " +
+                    (Input.GetButton("Fire2") ?
+                        "Release \"Alt\" to unlock" :
+                        (Input.GetButton("Snipe") ?
+                            "Release \"Shift\" to unlock" :
+                            "Press \"2\" to unlock")) +
+                    "}",
+                hudTextStyle);
+        }
+        else if (Settings.camMode == 3 || Settings.camMode == 4)
+        {
+            GUI.Button(
+                new Rect(
+                    (Screen.width / 2) - 200,
+                    Screen.height - 50,
+                    400,
+                    20),
+                "{Use the UIOJKL keys to adjust camera position}",
+                hudTextStyle);
+        }
+
+        if (Event.current.type != EventType.Layout)
+        { 
+            
+            //Vehicle Switching
+            if (!GUIPanels[4].active)
+            {
+                if (
+                    Vector3.Distance(
+                        Player.transform.position,
+                        World.baseTF.transform.position) < 20 &&
+                    Settings.resetTime > -1)
+                {
+                    GUIPanels[4].openTime = Time.time;
+                    GUIPanels[4].open = true;
+                    GUIPanels[4].active = true;
+                }
+            }
+            else
+            {
+                if (
+                    Vector3.Distance(
+                        Player.transform.position,
+                        World.baseTF.transform.position) >= 20 &&
+                    Settings.resetTime > -1)
+                {
+                    GUIPanels[4].active = false;
+                }
+            }
+
+            //Settings Advisor
+            if (!GUIPanels[5].active)
+            {
+                if (
+                    Settings.showHints &&
+                    (fps < 20 && Settings.renderLevel > 1 ||
+                        fps > 55 && Settings.renderLevel < 5))
+                {
+                    GUIPanels[5].openTime = Time.time;
+                    GUIPanels[5].open = true;
+                    GUIPanels[5].active = true;
+                }
+            }
+            else
+            {
+                if (
+                    !Settings.showHints ||
+                    !((fps < 20 && Settings.renderLevel > 1) ||
+                        (fps > 55 && Settings.renderLevel < 5)) &&
+                    Time.time > GUIPanels[5].openTime + 3)
+                {
+                    GUIPanels[5].active = false;
+                }
+            }
+
+        }
+
+        //Build SidePanels
+        int liquidPanels = 0;
+        int solidPanels = 0;
+        int buttonHeight = 25;
+        int panelSpacing = 5;
+        int areaHeight = Screen.height - 60;
+        int areaOffset = panelSpacing * 2;
+        int areaOffsetDes = areaOffset;
+
+        //Calc SidePanel Heights
+        for (int i = 0; i < GUIPanels.Length; i++)
+        {
+            if (!GUIPanels[i].active) continue;
+            if (GUIPanels[i].open)
+            {
+                liquidPanels++;
+            }
+            else
+            {
+                solidPanels++;
+            }
+        }
+
+        //Area to fill
+        for (int i = 0; i < GUIPanels.Length; i++)
+        { 
+            if(
+                !GUIPanels[i].active &&
+                GUIPanels[i].curHeight <= buttonHeight)
+            {
+                continue;
+            }
+            if (GUIPanels[i].open && GUIPanels[i].active)
+            {
+                GUIPanels[i].desHeight =
+                    (areaHeight - ((solidPanels + liquidPanels) *
+                        panelSpacing +
+                        solidPanels *
+                        buttonHeight)) / liquidPanels;
+                if (
+                    GUIPanels[i].maxHeight > 0 &&
+                    GUIPanels[i].desHeight > GUIPanels[i].maxHeight)
+                {
+                    GUIPanels[i].desHeight = GUIPanels[i].maxHeight;
+                }
+                else if (
+                    GUIPanels[i].minHeight > 0 &&
+                    GUIPanels[i].desHeight < GUIPanels[i].minHeight)
+                {
+                    GUIPanels[i].desHeight = GUIPanels[i].minHeight;
+                }
+            }
+            else
+            {
+                GUIPanels[i].desHeight = buttonHeight;
+            }
+            if (
+                GUIPanels[i].curHeight > GUIPanels[i].desHeight - 1 &&
+                GUIPanels[i].curHeight < GUIPanels[i].desHeight + 1)
+            {
+                GUIPanels[i].curHeight = GUIPanels[i].desHeight;
+            }
+            else
+            {
+                GUIPanels[i].curHeight = Mathf.Lerp(
+                    GUIPanels[i].curHeight,
+                    GUIPanels[i].desHeight,
+                    Time.deltaTime * 3);
+            }
+
+            //We are a button
+            if (GUIPanels[i].curHeight < buttonHeight * 1.5)
+            {
+                String txt = GUIPanels[i].name;
+                if (i == 1)
+                {
+                    txt +=
+                        " (" +
+                        fps.ToString("f0") +
+                        " FPS)";
+                }
+                else if (
+                    i == 3 &&
+                    isHost &&
+                    unauthPlayers.Count > 0)
+                {
+                    txt =
+                        "* " +
+                        txt +
+                        " (" +
+                        unauthPlayers.Count +
+                        ") *";
+                }
+                if (
+                    Event.current.type != EventType.Layout &&
+                    GUI.Button(
+                        new Rect(
+                            Screen.width - 180,
+                            areaOffset,
+                            170,
+                            GUIPanels[i].curHeight),
+                        txt))
+                {
+                    GUIPanels[i].open = !GUIPanels[i].open;
+                    GUIPanels[i].openTime = Time.time;
+                    GUI.FocusWindow(20 + i);
+                }
+            }
+
+            //We are a panel
+            else
+            {
+                GUI.Window(
+                    20 + i,
+                    new Rect(
+                        Screen.width - 180,
+                        areaOffset,
+                        170,
+                        GUIPanels[i].curHeight),
+                    GUIPanel,
+                    GUIPanels[i].name + ":",
+                    (GUIPanels[i].important ?
+                        "boldWindow" :
+                        "Window"));
+            }
+
+            areaOffset += (int)GUIPanels[i].curHeight + panelSpacing;
+            areaOffsetDes += (int)GUIPanels[i].desHeight + panelSpacing;
+        }
+
+        //Close oldest panel if we are flowing out of the area
+        if (Event.current.type != EventType.Layout)
+        {
+            if (areaOffsetDes > areaHeight + panelSpacing * 4)
+            {
+                closePanel += Time.deltaTime;
+                if (closePanel > 1.5)
+                {
+                    int oldestI = -1;
+                    for (int i = 0; i < GUIPanels.Length; i++)
+                    {
+                        if (
+                            GUIPanels[i].open &&
+                            GUIPanels[i].openTime > 0 &&
+                            GUIPanels[i].openTime < Time.time - 0.5 &&
+                            (oldestI == -1 ||
+                                GUIPanels[i].openTime < GUIPanels[oldestI].openTime))
                         {
-							killServer = false;
-							bool flag = false;
-						}
-					}
-				}
-			}
-			else if (GUI.Button(new Rect(10f, 10f, num3, num2), (!Settings.simplified) ? "<  Exit Game" : "<<"))
-            {
-				netKillMode = 1;
-				Network.Disconnect();
-			}
-			if (GUI.Button(new Rect(Screen.width - 50, Screen.height - 50, 40f, 40f), Settings.simplified ? "<<" : ">>"))
-            {
-				Settings.simplified = !Settings.simplified;
-			}
-			if (Settings.enteredfullscreen && GUI.Button(new Rect(unchecked(Screen.width / 2) - 125, unchecked(Screen.height / 2) - 100, 250f, 200f), "Welcome to fullscreen mode!\n\nIf you hear a chime noise while holding\nkeyboard buttons; press \"Esc\",\nthen click your mouse, then press \"0\".\n\n{Click this box to play}"))
-            {
-				Settings.enteredfullscreen = false;
-			}
-			if (!Player || Settings.simplified)
-            {
-				return;
-			}
-			if (PlayerVeh.vehId == 3)
-            {
-				GUI.Button(new Rect((float)Screen.width * 0.5f - 200f, Screen.height - 63, 400f, 20f), "{Hold Q for no throttle & E for full throttle}", hudTextStyle);
-			}
-			if (Messaging.chatting)
-            {
-				GUI.Button(new Rect((float)Screen.width * 0.5f - 200f, Screen.height - 50, 400f, 20f), "{Keyboard Shortcuts Locked ~ Press \"Tab\" to unlock}", hudTextStyle);
-			}
-			else if (Screen.lockCursor)
-            {
-				GUI.Button(new Rect((float)Screen.width * 0.5f - 200f, Screen.height - 50, 400f, 20f), "{Cursor Locked ~ " + (Input.GetButton("Fire2") ? "Release \"Alt\" to unlock" : ((!Input.GetButton("Snipe")) ? "Press \"2\" to unlock" : "Release \"Shift\" to unlock")) + "}", hudTextStyle);
-			}
-			else if (Settings.camMode == 3 || Settings.camMode == 4)
-            {
-				GUI.Button(new Rect((float)Screen.width * 0.5f - 200f, Screen.height - 50, 400f, 20f), "{Use the UIOJKL keys to adjust camera position}", hudTextStyle);
-			}
-			if (Event.current.type != EventType.layout)
-            {
-				if (!GUIPanels[4].active)
-                {
-					if (Vector3.Distance(Player.transform.position, World.baseTF.transform.position) < 20f && Settings.resetTime > -1f)
-                    {
-						GUIPanels[4].openTime = Time.time;
-						GUIPanels[4].open = true;
-						GUIPanels[4].active = true;
-					}
-				}
-				else if (!(Vector3.Distance(Player.transform.position, World.baseTF.transform.position) < 20f) || !(Settings.resetTime > -1f))
-                {
-					GUIPanels[4].active = false;
-				}
-				if (!GUIPanels[5].active)
-                {
-					if (Settings.showHints && ((fps < 20f && Settings.renderLevel > 1) || (fps > 55f && Settings.renderLevel < 5)))
-                    {
-						GUIPanels[5].openTime = Time.time;
-						GUIPanels[5].open = true;
-						GUIPanels[5].active = true;
-					}
-				}
-				else if (!Settings.showHints || ((!(fps < 20f) || Settings.renderLevel <= 1) && (!(fps > 55f) || Settings.renderLevel >= 5) && Time.time > GUIPanels[5].openTime + 3f))
-                {
-					GUIPanels[5].active = false;
-				}
-			}
-			int num4 = 0;
-			int num5 = 0;
-			int num6 = 25;
-			int num7 = 5;
-			int num8 = Screen.height - 60;
-			int num9 = num7 * 2;
-			int num10 = num9;
-			for (int i = 0; i < Extensions.get_length((System.Array)GUIPanels); i++)
-            {
-				GUIPanel[] gUIPanels = GUIPanels;
-				if (gUIPanels[RuntimeServices.NormalizeArrayIndex(gUIPanels, i)].active)
-                {
-					GUIPanel[] gUIPanels2 = GUIPanels;
-					if (gUIPanels2[RuntimeServices.NormalizeArrayIndex(gUIPanels2, i)].open)
-                    {
-						num4++;
-					}
-					else
-                    {
-						num5++;
-					}
-				}
-			}
-			for (int i = 0; i < Extensions.get_length((System.Array)GUIPanels); i++)
-            {
-				GUIPanel[] gUIPanels3 = GUIPanels;
-				if (!gUIPanels3[RuntimeServices.NormalizeArrayIndex(gUIPanels3, i)].active)
-                {
-					GUIPanel[] gUIPanels4 = GUIPanels;
-					if (!(gUIPanels4[RuntimeServices.NormalizeArrayIndex(gUIPanels4, i)].curHeight > (float)num6))
-                    {
-						continue;
-					}
-				}
-				GUIPanel[] gUIPanels5 = GUIPanels;
-				unchecked
-                {
-					if (gUIPanels5[RuntimeServices.NormalizeArrayIndex(gUIPanels5, i)].open)
-                    {
-						GUIPanel[] gUIPanels6 = GUIPanels;
-						if (gUIPanels6[RuntimeServices.NormalizeArrayIndex(gUIPanels6, i)].active)
-                        {
-							GUIPanel[] gUIPanels7 = GUIPanels;
-							gUIPanels7[RuntimeServices.NormalizeArrayIndex(gUIPanels7, i)].desHeight = checked(num8 - ((num5 + num4) * num7 + num5 * num6)) / num4;
-							GUIPanel[] gUIPanels8 = GUIPanels;
-							if (gUIPanels8[RuntimeServices.NormalizeArrayIndex(gUIPanels8, i)].maxHeight > 0)
-                            {
-								GUIPanel[] gUIPanels9 = GUIPanels;
-								float desHeight = gUIPanels9[RuntimeServices.NormalizeArrayIndex(gUIPanels9, i)].desHeight;
-								GUIPanel[] gUIPanels10 = GUIPanels;
-								if (desHeight > (float)gUIPanels10[RuntimeServices.NormalizeArrayIndex(gUIPanels10, i)].maxHeight)
-                                {
-									GUIPanel[] gUIPanels11 = GUIPanels;
-									GUIPanel obj = gUIPanels11[RuntimeServices.NormalizeArrayIndex(gUIPanels11, i)];
-									GUIPanel[] gUIPanels12 = GUIPanels;
-									obj.desHeight = gUIPanels12[RuntimeServices.NormalizeArrayIndex(gUIPanels12, i)].maxHeight;
-									goto IL_09d6;
-								}
-							}
-							GUIPanel[] gUIPanels13 = GUIPanels;
-							if (gUIPanels13[RuntimeServices.NormalizeArrayIndex(gUIPanels13, i)].minHeight > 0)
-                            {
-								GUIPanel[] gUIPanels14 = GUIPanels;
-								float desHeight2 = gUIPanels14[RuntimeServices.NormalizeArrayIndex(gUIPanels14, i)].desHeight;
-								GUIPanel[] gUIPanels15 = GUIPanels;
-								if (desHeight2 < (float)gUIPanels15[RuntimeServices.NormalizeArrayIndex(gUIPanels15, i)].minHeight)
-                                {
-									GUIPanel[] gUIPanels16 = GUIPanels;
-									GUIPanel obj2 = gUIPanels16[RuntimeServices.NormalizeArrayIndex(gUIPanels16, i)];
-									GUIPanel[] gUIPanels17 = GUIPanels;
-									obj2.desHeight = gUIPanels17[RuntimeServices.NormalizeArrayIndex(gUIPanels17, i)].minHeight;
-								}
-							}
-							goto IL_09d6;
-						}
-					}
-					GUIPanel[] gUIPanels18 = GUIPanels;
-					gUIPanels18[RuntimeServices.NormalizeArrayIndex(gUIPanels18, i)].desHeight = num6;
-					goto IL_09d6;
-				}
-				IL_09d6:
-				GUIPanel[] gUIPanels19 = GUIPanels;
-				float curHeight = gUIPanels19[RuntimeServices.NormalizeArrayIndex(gUIPanels19, i)].curHeight;
-				GUIPanel[] gUIPanels20 = GUIPanels;
-				if (curHeight > gUIPanels20[RuntimeServices.NormalizeArrayIndex(gUIPanels20, i)].desHeight - 1f)
-                {
-					GUIPanel[] gUIPanels21 = GUIPanels;
-					float curHeight2 = gUIPanels21[RuntimeServices.NormalizeArrayIndex(gUIPanels21, i)].curHeight;
-					GUIPanel[] gUIPanels22 = GUIPanels;
-					if (curHeight2 < gUIPanels22[RuntimeServices.NormalizeArrayIndex(gUIPanels22, i)].desHeight + 1f)
-                    {
-						GUIPanel[] gUIPanels23 = GUIPanels;
-						GUIPanel obj3 = gUIPanels23[RuntimeServices.NormalizeArrayIndex(gUIPanels23, i)];
-						GUIPanel[] gUIPanels24 = GUIPanels;
-						obj3.curHeight = gUIPanels24[RuntimeServices.NormalizeArrayIndex(gUIPanels24, i)].desHeight;
-						goto IL_0ab0;
-					}
-				}
-				GUIPanel[] gUIPanels25 = GUIPanels;
-				GUIPanel obj4 = gUIPanels25[RuntimeServices.NormalizeArrayIndex(gUIPanels25, i)];
-				GUIPanel[] gUIPanels26 = GUIPanels;
-				float curHeight3 = gUIPanels26[RuntimeServices.NormalizeArrayIndex(gUIPanels26, i)].curHeight;
-				GUIPanel[] gUIPanels27 = GUIPanels;
-				obj4.curHeight = Mathf.Lerp(curHeight3, gUIPanels27[RuntimeServices.NormalizeArrayIndex(gUIPanels27, i)].desHeight, Time.deltaTime * 3f);
-				goto IL_0ab0;
-				IL_0ab0:
-				GUIPanel[] gUIPanels28 = GUIPanels;
-				if (gUIPanels28[RuntimeServices.NormalizeArrayIndex(gUIPanels28, i)].curHeight < (float)num6 * 1.5f)
-                {
-					GUIPanel[] gUIPanels29 = GUIPanels;
-					string text = gUIPanels29[RuntimeServices.NormalizeArrayIndex(gUIPanels29, i)].name;
-					switch (i)
-                    {
-					case 1:
-						text += " (" + fps.ToString("f0") + " FPS)";
-						break;
-					case 3:
-						if (isHost && unauthPlayers.Count > 0)
-                        {
-							text = "* " + text + " (" + unauthPlayers.Count + ") *";
-						}
-						break;
-					}
-					if (Event.current.type != EventType.layout)
-                    {
-						float left = Screen.width - 180;
-						float top = num9;
-						float width = 170f;
-						GUIPanel[] gUIPanels30 = GUIPanels;
-						if (GUI.Button(new Rect(left, top, width, gUIPanels30[RuntimeServices.NormalizeArrayIndex(gUIPanels30, i)].curHeight), text))
-                        {
-							GUIPanel[] gUIPanels31 = GUIPanels;
-							GUIPanel obj5 = gUIPanels31[RuntimeServices.NormalizeArrayIndex(gUIPanels31, i)];
-							GUIPanel[] gUIPanels32 = GUIPanels;
-							obj5.open = !gUIPanels32[RuntimeServices.NormalizeArrayIndex(gUIPanels32, i)].open;
-							GUIPanel[] gUIPanels33 = GUIPanels;
-							gUIPanels33[RuntimeServices.NormalizeArrayIndex(gUIPanels33, i)].openTime = Time.time;
-							GUI.FocusWindow(20 + i);
-						}
-					}
-				}
-				else
-                {
-					int id = 20 + i;
-					float left2 = Screen.width - 180;
-					float top2 = num9;
-					float width2 = 170f;
-					GUIPanel[] gUIPanels34 = GUIPanels;
-					Rect position2 = new Rect(left2, top2, width2, gUIPanels34[RuntimeServices.NormalizeArrayIndex(gUIPanels34, i)].curHeight);
-					GUI.WindowFunction func = GUIPanel;
-					GUIPanel[] gUIPanels35 = GUIPanels;
-					string text2 = gUIPanels35[RuntimeServices.NormalizeArrayIndex(gUIPanels35, i)].name + ":";
-					GUIPanel[] gUIPanels36 = GUIPanels;
-					GUI.Window(id, position2, func, text2, (!gUIPanels36[RuntimeServices.NormalizeArrayIndex(gUIPanels36, i)].important) ? "Window" : "boldWindow");
-				}
-				float num11 = num9;
-				GUIPanel[] gUIPanels37 = GUIPanels;
-				num9 = (int)(num11 + (gUIPanels37[RuntimeServices.NormalizeArrayIndex(gUIPanels37, i)].curHeight + (float)num7));
-				float num12 = num10;
-				GUIPanel[] gUIPanels38 = GUIPanels;
-				num10 = (int)(num12 + (gUIPanels38[RuntimeServices.NormalizeArrayIndex(gUIPanels38, i)].desHeight + (float)num7));
-			}
-			if (Event.current.type == EventType.layout)
-            {
-				return;
-			}
-			if (num10 > num8 + num7 * 4)
-            {
-				closePanel += Time.deltaTime;
-				if (!(closePanel > 1.5f))
-                {
-					return;
-				}
-				int num13 = -1;
-				for (int i = 0; i < Extensions.get_length((System.Array)GUIPanels); i++)
-                {
-					GUIPanel[] gUIPanels39 = GUIPanels;
-					if (!gUIPanels39[RuntimeServices.NormalizeArrayIndex(gUIPanels39, i)].open)
-                    {
-						continue;
-					}
-					GUIPanel[] gUIPanels40 = GUIPanels;
-					if (!(gUIPanels40[RuntimeServices.NormalizeArrayIndex(gUIPanels40, i)].openTime > 0f))
-                    {
-						continue;
-					}
-					GUIPanel[] gUIPanels41 = GUIPanels;
-					if (!(gUIPanels41[RuntimeServices.NormalizeArrayIndex(gUIPanels41, i)].openTime < Time.time - 0.5f))
-                    {
-						continue;
-					}
-					if (num13 != -1)
-                    {
-						GUIPanel[] gUIPanels42 = GUIPanels;
-						float openTime = gUIPanels42[RuntimeServices.NormalizeArrayIndex(gUIPanels42, i)].openTime;
-						GUIPanel[] gUIPanels43 = GUIPanels;
-						if (!(openTime < gUIPanels43[RuntimeServices.NormalizeArrayIndex(gUIPanels43, num13)].openTime))
-                        {
-							continue;
-						}
-					}
-					num13 = i;
-				}
-				if (num13 != -1)
-                {
-					GUIPanel[] gUIPanels44 = GUIPanels;
-					gUIPanels44[RuntimeServices.NormalizeArrayIndex(gUIPanels44, num13)].open = false;
-				}
-			}
-			else
-            {
-				closePanel = 0f;
-			}
-			return;
-		}
-		IL_009c:
-		GUI.Label(position, image);
-		goto IL_00a1;
+                            oldestI = i;
+                        }
+                    }
+                    if (oldestI != -1) GUIPanels[oldestI].open = false;
+                }
+            }
+            else closePanel = 0;
+        }
 	}
 
 	public void GUIPanel(int id)
