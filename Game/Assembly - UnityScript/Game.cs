@@ -9,6 +9,21 @@ using UnityEngine;
 using UnityScript.Lang;
 
 [Serializable]
+public class GUIPanel
+{
+    public string name;
+    public bool active = true;
+    public bool open;
+    public bool important;
+    public int minHeight = 300;
+    public int maxHeight;
+    public float curHeight;
+    public float desHeight;
+    public Vector2 scrollPos;
+    public float openTime;
+}
+
+[Serializable]
 public class unauthPlayer
 {
     public NetworkPlayer p;
@@ -26,177 +41,93 @@ public class unauthPlayer
 public class Game : MonoBehaviour
 {
 	public GUISkin GameSkin;
-
 	public static GUISkin Skin;
-
 	public GUIStyle hudTextStyle;
-
 	public GUIPanel[] GUIPanels;
-
 	private float closePanel;
-
 	public GameObject[] GameVehicles;
-
 	public GameWorldDesc[] GameWorlds;
-
-	private WhirldIn whirldIn;
-
+	private WhirldIn whirldIn = new WhirldIn();
 	[NonSerialized]
-	public bool WorldIsCustom;
-
+	public bool WorldIsCustom = false;
 	[NonSerialized]
-	public GameWorldDesc WorldDesc;
-
+	public GameWorldDesc WorldDesc = new GameWorldDesc();
 	public GameObject WorldEntryEffect;
-
 	public GameObject objectVehicleObj;
-
 	public static GameObject objectVehicle;
-
 	public GameObject objectMarkerObj;
-
 	public static GameObject objectMarker;
-
 	public GameObject objectMarkerQuarryObj;
-
 	public static GameObject objectMarkerQuarry;
-
 	public GameObject objectMarkerMeObj;
-
 	public static GameObject objectMarkerMe;
-
 	public GameObject objectRocketObj;
-
 	public static GameObject objectRocket;
-
 	public GameObject objectRocketSnipeObj;
-
 	public static GameObject objectRocketSnipe;
 
-	public bool isHost;
-
-	public bool isRegistered;
+	public bool isHost = false;
+	public bool isRegistered = false;
 
 	public Texture2D cursor;
-
 	public Texture2D cursorLook;
-
 	public Vector2 cursorOffset;
-
 	[NonSerialized]
-	public float kpDur;
-
+	public float kpDur = 0.1f;
 	[NonSerialized]
 	public float kpTime;
 
-	private int hostPanelTab;
-
-	private int windowVehicleHeight;
-
+	private int hostPanelTab = 0;
+	private int windowVehicleHeight = 0;
 	private Vector2 scrollPosition;
-
-	private bool killServer;
-
-	private int netKillMode;
-
+	private bool killServer = false;
+	private int netKillMode = 0;
 	private int GameVehicleID;
-
 	[NonSerialized]
 	public float quarryDist;
-
 	[NonSerialized]
-	public int botsInGame;
-
+	public int botsInGame = 0;
 	public static float GUIAlpha = 0f;
-
-	private int GuiAnimate;
-
+	private int GuiAnimate = -1;
 	public static GameObject Player;
-
 	public static Vehicle PlayerVeh;
-
 	public static Vehicle QuarryVeh;
-
 	public static CameraVehicle CameraVehicle;
-
 	public static Messaging Messaging;
-
 	public static Settings Settings;
-
 	public static Game Controller;
-
-	public bool worldLoaded;
-
-	public bool loadingWorld;
-
+    //[NonSerialized]
+	public bool worldLoaded = false;
+    //[NonSerialized]
+	public bool loadingWorld = true;
 	[NonSerialized]
 	public float worldLoadTime;
-
 	[NonSerialized]
-	public bool hostRegistered;
-
+	public bool hostRegistered = false;
 	[NonSerialized]
-	public string serverName;
-
+	public string serverName = "";
 	[NonSerialized]
-	public string serverPassword;
-
+	public string serverPassword = "";
 	private float authTime;
-
-	private float authUpdateTime;
-
+	private float authUpdateTime = 2f;
 	[NonSerialized]
-	public bool serverHidden;
-
+	public bool serverHidden = false;
 	[NonSerialized]
-	public Hashtable authenticatedPlayers;
-
-	private UnityScript.Lang.Array authenticatingPlayers;
-
+	public Hashtable authenticatedPlayers = new Hashtable();
+	private ArrayList authenticatingPlayers = new ArrayList();
 	[NonSerialized]
 	public static Hashtable Players;
-
-	public List<unauthPlayer> unauthPlayers;
-
-	public Color vehicleIsItColor;
-
+	public List<unauthPlayer> unauthPlayers = new List<unauthPlayer>();
+	
+    public Color vehicleIsItColor;
 	public Color vehicleIsItAccent;
 
-	private float fpsTime;
-
-	private int fpsFrames;
-
-	private int heavyTickRate;
-
+    //FPS Counter
+    private float fpsTime;  // FPS accumulated over the interval
+    private int fpsFrames;  // Frames drawn over the interval
+	private int heavyTickRate = 2;
 	[HideInInspector]
 	public float fps;
-
-	public Game()
-    {
-		whirldIn = new WhirldIn();
-		WorldIsCustom = false;
-		WorldDesc = new GameWorldDesc();
-		isHost = false;
-		isRegistered = false;
-		kpDur = 0.1f;
-		hostPanelTab = 0;
-		windowVehicleHeight = 0;
-		killServer = false;
-		netKillMode = 0;
-		botsInGame = 0;
-		GuiAnimate = -1;
-		worldLoaded = false;
-		loadingWorld = true;
-		hostRegistered = false;
-		serverName = string.Empty;
-		serverPassword = string.Empty;
-		authUpdateTime = 2f;
-		serverHidden = false;
-		authenticatedPlayers = new Hashtable();
-		authenticatingPlayers = new UnityScript.Lang.Array();
-		unauthPlayers = new List<unauthPlayer>();
-		heavyTickRate = 2;
-	}
 
 	[HideInInspector]
 	public void Start()

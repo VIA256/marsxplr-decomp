@@ -68,7 +68,6 @@
     <Compile Include="Game.cs" />
     <Compile Include="GameData.cs" />
     <Compile Include="GameWorldDesc.cs" />
-    <Compile Include="GUIPanel.cs" />
     <Compile Include="Hovercraft.cs" />
     <Compile Include="HoverThrustClustOfDust.cs" />
     <Compile Include="HoverThrustMoonOrBust.cs" />
