@@ -28,14 +28,14 @@ public class TankTrack : MonoBehaviour
 		myTransform = transform;
 		vehicle = (Tank)transform.parent
             .transform.parent
-            .gameObject.GetComponent(typeof(Tank));
+            .gameObject.GetComponent<Tank>();
 		joint.connectedBody = vehicle.vehicle.rigidbody;
 		strtPos = transform.localPosition;
 	}
 
 	public void OnEnable()
 	{
-        if ((bool)joint.connectedBody) return;
+        if (!(bool)joint.connectedBody) return;
 		rigidbody.isKinematic = true;
 		transform.localRotation = Quaternion.identity;
 		transform.localPosition = strtPos;
