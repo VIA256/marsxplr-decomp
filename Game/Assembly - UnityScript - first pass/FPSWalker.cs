@@ -5,44 +5,37 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class FPSWalker : MonoBehaviour
 {
-	public float speed;
+	public float speed = 6.0f;
+	public float jumpSpeed = 8.0f;
+	public float gravity = 20.0f;
 
-	public float jumpSpeed;
-
-	public float gravity;
-
-	private Vector3 moveDirection;
-
-	private bool grounded;
-
-	public FPSWalker()
-	{
-		speed = 6f;
-		jumpSpeed = 8f;
-		gravity = 20f;
-		moveDirection = Vector3.zero;
-		grounded = false;
-	}
+	private Vector3 moveDirection = Vector3.zero;
+	private bool grounded = false;
 
 	public void FixedUpdate()
 	{
 		if (grounded)
 		{
-			moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
+            //We are grounded, so recalculate movedirection directly from axes
+			moveDirection = new Vector3(
+                Input.GetAxis("Horizontal"),
+                0f,
+                Input.GetAxis("Vertical"));
 			moveDirection = transform.TransformDirection(moveDirection);
 			moveDirection *= speed;
+
 			if (Input.GetButton("Jump"))
 			{
 				moveDirection.y = jumpSpeed;
 			}
 		}
-		moveDirection.y -= gravity * Time.deltaTime;
-		CharacterController characterController = (CharacterController)GetComponent(typeof(CharacterController));
-		CollisionFlags collisionFlags = characterController.Move(moveDirection * Time.deltaTime);
-		grounded = checked((int)(collisionFlags & CollisionFlags.Below)) != 0;
-	}
 
-	public void Main()
-	{
+        // Apply gravity
+		moveDirection.y -= gravity * Time.deltaTime;
+
+        // Move the controller
+		CharacterController characterController = (CharacterController)GetComponent(typeof(CharacterController));
+		CollisionFlags flags = characterController.Move(moveDirection * Time.deltaTime);
+        grounded = (flags & CollisionFlags.CollidedBelow) != 0;
 	}
 }

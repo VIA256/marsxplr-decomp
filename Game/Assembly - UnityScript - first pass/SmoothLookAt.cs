@@ -6,16 +6,8 @@ using UnityEngine;
 public class SmoothLookAt : MonoBehaviour
 {
 	public Transform target;
-
-	public float damping;
-
-	public bool smooth;
-
-	public SmoothLookAt()
-	{
-		damping = 6f;
-		smooth = true;
-	}
+	public float damping = 6.0f;
+	public bool smooth = true;
 
 	public void LateUpdate()
 	{
@@ -23,11 +15,16 @@ public class SmoothLookAt : MonoBehaviour
 		{
 			if (smooth)
 			{
-				Quaternion to = Quaternion.LookRotation(target.position - transform.position);
-				transform.rotation = Quaternion.Slerp(transform.rotation, to, Time.deltaTime * damping);
+                // Look at and dampen the rotation
+				Quaternion rotation = Quaternion.LookRotation(target.position - transform.position);
+				transform.rotation = Quaternion.Slerp(
+                    transform.rotation,
+                    rotation,
+                    Time.deltaTime * damping);
 			}
 			else
 			{
+                // Just lookat
 				transform.LookAt(target);
 			}
 		}
@@ -35,13 +32,7 @@ public class SmoothLookAt : MonoBehaviour
 
 	public void Start()
 	{
-		if ((bool)rigidbody)
-		{
-			rigidbody.freezeRotation = true;
-		}
-	}
-
-	public void Main()
-	{
+        // Make the rigid body not change rotation
+		if ((bool)rigidbody) rigidbody.freezeRotation = true;
 	}
 }

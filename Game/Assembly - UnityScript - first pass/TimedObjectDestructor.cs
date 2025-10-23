@@ -4,15 +4,8 @@ using UnityEngine;
 [Serializable]
 public class TimedObjectDestructor : MonoBehaviour
 {
-	public float timeOut;
-
-	public bool detachChildren;
-
-	public TimedObjectDestructor()
-	{
-		timeOut = 1f;
-		detachChildren = false;
-	}
+	public float timeOut = 1.0f;
+	public bool detachChildren = false;
 
 	public void Awake()
 	{
@@ -25,10 +18,6 @@ public class TimedObjectDestructor : MonoBehaviour
 		{
 			transform.DetachChildren();
 		}
-		UnityEngine.Object.DestroyObject(gameObject);
-	}
-
-	public void Main()
-	{
+		DestroyObject(gameObject);
 	}
 }
