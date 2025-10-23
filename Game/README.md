@@ -75,16 +75,6 @@
 </details>
 <hr>
 <details closed>
-<summary><h2>UnityScript.Lang</h2></summary>
-<h3>About</h3>
-<ul>
-  <li>UnityScript scripting language library</li>
-  <li>used by Assembly - UnityScript</li>
-  <li>decomipled with ilspy</li>
-</ul>
-</details>
-<hr>
-<details closed>
 <summary><h2>UnityDomainLoad</h2></summary>
 <h3>About</h3>
 <ul>
