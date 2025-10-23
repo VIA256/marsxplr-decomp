@@ -1,5 +1,4 @@
 using System;
-using Boo.Lang;
 using CompilerGenerated;
 
 namespace System.Runtime.CompilerServices
@@ -11,7 +10,7 @@ namespace System.Runtime.CompilerServices
 
 public static class CompilerGeneratedExtensions
 {
-	[Extension]
+	//[Extension]
 	public static IAsyncResult BeginInvoke(
 		this adaptableMethod self,
 		AsyncCallback callback
@@ -20,7 +19,7 @@ public static class CompilerGeneratedExtensions
 		return self.BeginInvoke(callback, null);
 	}
 
-	[Extension]
+	//[Extension]
 	public static IAsyncResult BeginInvoke(
 		this adaptableMethod self
 	)

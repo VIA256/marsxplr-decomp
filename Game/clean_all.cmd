@@ -22,7 +22,5 @@ msbuild /t:Clean %flags% "UnityEngine\UnityEngine.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild /t:Clean %flags% "Boo.Lang\Boo.Lang.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
-msbuild /t:Clean %flags% "UnityScript.Lang\UnityScript.Lang.csproj"
-if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild /t:Clean %flags% "UnityDomainLoad\UnityDomainLoad.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%

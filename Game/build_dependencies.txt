@@ -12,16 +12,11 @@ Ionic.Zlib:
 
 TerrainControllerData:
 
-UnityScript.Lang:
-	Boo.Lang
-
 Assembly - UnityScript:
 	Assembly - CSharp - first pass
-	Boo.Lang
 	Ionic.Zlib
 	TerrainControllerData
 	UnityEngine
-	UnityScript.Lang
 
 Assembly - CSharp:
 	Assembly CSharp - first pass

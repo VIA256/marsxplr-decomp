@@ -91,7 +91,7 @@ public class Buggy : MonoBehaviour
     {
 		vehicle = veh;
 
-		UnityScript.Lang.Array materialAccents = new UnityScript.Lang.Array();
+		List<Material> materialAccents = new List<Material>();
 
 		//Init Wing Tinting
 		materialAccents.Add(wing0.renderer.material);
@@ -161,7 +161,7 @@ public class Buggy : MonoBehaviour
             i++;
         }
 
-		vehicle.materialAccent = (Material[])materialAccents.ToBuiltin(typeof(Material));
+		vehicle.materialAccent = (Material[])materialAccents.ToArray();
 	}
 
 	public void Update()
