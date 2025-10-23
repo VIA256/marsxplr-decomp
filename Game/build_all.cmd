@@ -12,8 +12,6 @@ msbuild %flags% "UnityEngine\UnityEngine.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild %flags% "Assembly - CSharp - first pass\Assembly---CSharp---first-pass.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
-msbuild %flags% "Ionic.Zlib\Ionic.Zlib.csproj"
-if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild %flags% "TerrainControllerData\TerrainControllerData.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild %flags% "Assembly - UnityScript\Assembly---UnityScript.csproj"
@@ -49,8 +47,6 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 copy "Assembly - UnityScript\bin\58cc2f0ae478d40e7a89c7ba576c3586.dll" "marsxplr_build\Mars Explorer_Data\Assembly - UnityScript.dll"
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy "Assembly - UnityScript - first pass\bin\50e2df949ee0745d0a011b02942f43d5.dll" "marsxplr_build\Mars Explorer_Data\Assembly - UnityScript - first pass.dll"
-if %errorlevel% neq 0 exit /b %errorlevel%
-copy "Ionic.Zlib\bin\Ionic.Zlib.dll" "marsxplr_build\Mars Explorer_Data\Ionic.Zlib.dll"
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy "TerrainControllerData\bin\MonoDevelop DLLs.dll" "marsxplr_build\Mars Explorer_Data\TerrainControllerData.dll"
 if %errorlevel% neq 0 exit /b %errorlevel%

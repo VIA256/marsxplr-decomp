@@ -14,8 +14,6 @@ msbuild /t:Clean %flags% "Assembly - UnityScript\Assembly---UnityScript.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild /t:Clean %flags% "Assembly - UnityScript - first pass\Assembly---UnityScript---first-pass.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
-msbuild /t:Clean %flags% "Ionic.Zlib\Ionic.Zlib.csproj"
-if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild /t:Clean %flags% "TerrainControllerData\TerrainControllerData.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild /t:Clean %flags% "UnityEngine\UnityEngine.csproj"

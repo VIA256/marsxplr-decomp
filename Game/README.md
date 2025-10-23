@@ -38,15 +38,6 @@
 </details>
 <hr>
 <details closed>
-<summary><h2>Ionic.Zlib</h2></summary>
-<h3>About</h3>
-<ul>
-  <li>Ionic.Zlib 1.8.4.24</li>
-  <li>decomipled with ilspy</li>
-</ul>
-</details>
-<hr>
-<details closed>
 <summary><h2>TerrainControllerData</h2></summary>
 <h3>About</h3>
 <ul>

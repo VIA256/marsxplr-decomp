@@ -8,13 +8,10 @@ UnityEngine:
 Assembly - CSharp - first pass:
 	UnityEngine
 
-Ionic.Zlib:
-
 TerrainControllerData:
 
 Assembly - UnityScript:
 	Assembly - CSharp - first pass
-	Ionic.Zlib
 	TerrainControllerData
 	UnityEngine
 
