@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
-using Boo.Lang;
 
 namespace UnityEngine
 {
@@ -67,7 +66,6 @@ namespace UnityEngine
 			get;
 		}
 
-		[DuckTyped]
 		[Obsolete("Please use guiTexture instead")]
 		public extern GUIElement guiElement
 		{
@@ -81,7 +79,6 @@ namespace UnityEngine
 			get;
 		}
 
-		[DuckTyped]
 		public extern Collider collider
 		{
 			[MethodImpl(MethodImplOptions.InternalCall)]
@@ -189,10 +186,8 @@ namespace UnityEngine
 		public static extern GameObject CreatePrimitive(PrimitiveType type);
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		[DuckTyped]
 		public extern Component GetComponent(Type type);
 
-		[DuckTyped]
 		public Component GetComponent(string type)
 		{
 			return GetComponentByName(type);
@@ -201,7 +196,6 @@ namespace UnityEngine
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		private extern Component GetComponentByName(string type);
 
-		[DuckTyped]
 		public Component GetComponentInChildren(Type type)
 		{
 			if (active)
@@ -228,7 +222,6 @@ namespace UnityEngine
 		}
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		[DuckTyped]
 		public extern Component[] GetComponents(Type type);
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
@@ -251,7 +244,6 @@ namespace UnityEngine
 			}
 		}
 
-		[DuckTyped]
 		public Component[] GetComponentsInChildren(Type type)
 		{
 			bool includeInactive = false;
@@ -352,10 +344,8 @@ namespace UnityEngine
 		}
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		[DuckTyped]
 		public extern Component AddComponent(string className);
 
-		[DuckTyped]
 		public Component AddComponent(Type componentType)
 		{
 			return AddComponent(componentType.ToString());

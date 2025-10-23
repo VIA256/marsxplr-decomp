@@ -6,8 +6,6 @@ echo ----------------
 echo   BUILDING ALL
 echo ----------------
 
-msbuild %flags% "Boo.Lang\Boo.Lang.csproj"
-if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild %flags% "UnityEngine\UnityEngine.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild %flags% "Assembly - CSharp - first pass\Assembly---CSharp---first-pass.csproj"
@@ -46,11 +44,7 @@ copy "Assembly - UnityScript\bin\58cc2f0ae478d40e7a89c7ba576c3586.dll" "marsxplr
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy "Assembly - UnityScript - first pass\bin\50e2df949ee0745d0a011b02942f43d5.dll" "marsxplr_build\Mars Explorer_Data\Assembly - UnityScript - first pass.dll"
 if %errorlevel% neq 0 exit /b %errorlevel%
-copy "TerrainControllerData\bin\MonoDevelop DLLs.dll" "marsxplr_build\Mars Explorer_Data\TerrainControllerData.dll"
-if %errorlevel% neq 0 exit /b %errorlevel%
 copy "UnityEngine\bin\UnityEngine.dll" "marsxplr_build\Mars Explorer_Data\lib\UnityEngine.dll"
-if %errorlevel% neq 0 exit /b %errorlevel%
-copy "Boo.Lang\bin\Boo.Lang.dll" "marsxplr_build\Mars Explorer_Data\lib\Boo.Lang.dll"
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy "UnityDomainLoad\bin\UnityDomainLoad.exe" "marsxplr_build\Mars Explorer_Data\lib\UnityDomainLoad.exe"
 if %errorlevel% neq 0 exit /b %errorlevel%

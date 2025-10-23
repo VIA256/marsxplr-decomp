@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
-using Boo.Lang;
 
 namespace UnityEngine
 {
@@ -32,7 +31,6 @@ namespace UnityEngine
 			}
 		}
 
-		[DuckTyped]
 		public Collider collider
 		{
 			get
@@ -49,7 +47,6 @@ namespace UnityEngine
 			}
 		}
 
-		[DuckTyped]
 		public GameObject gameObject
 		{
 			get
@@ -83,7 +80,6 @@ namespace UnityEngine
 		}
 
 		[Obsolete("Please use Collision.rigidbody, Collision.transform or Collision.collider instead")]
-		[DuckTyped]
 		public Component other
 		{
 			get

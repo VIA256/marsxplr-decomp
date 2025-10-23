@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.CompilerServices;
-using Boo.Lang;
 
 namespace UnityEngine
 {
@@ -66,7 +65,6 @@ namespace UnityEngine
 			get;
 		}
 
-		[DuckTyped]
 		[Obsolete("Please use guiTexture instead")]
 		public extern GUIElement guiElement
 		{
@@ -80,7 +78,6 @@ namespace UnityEngine
 			get;
 		}
 
-		[DuckTyped]
 		public extern Collider collider
 		{
 			[MethodImpl(MethodImplOptions.InternalCall)]
@@ -148,22 +145,18 @@ namespace UnityEngine
 		}
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		[DuckTyped]
 		public extern Component GetComponent(Type type);
 
-		[DuckTyped]
 		public Component GetComponent(string type)
 		{
 			return gameObject.GetComponent(type);
 		}
 
-		[DuckTyped]
 		public Component GetComponentInChildren(Type t)
 		{
 			return gameObject.GetComponentInChildren(t);
 		}
 
-		[DuckTyped]
 		public Component[] GetComponentsInChildren(Type t)
 		{
 			bool includeInactive = false;
@@ -176,7 +169,6 @@ namespace UnityEngine
 		}
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		[DuckTyped]
 		public extern Component[] GetComponents(Type type);
 
 		[MethodImpl(MethodImplOptions.InternalCall)]

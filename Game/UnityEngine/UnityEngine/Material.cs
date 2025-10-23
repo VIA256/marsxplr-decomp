@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.CompilerServices;
-using Boo.Lang;
 
 namespace UnityEngine
 {
@@ -26,7 +25,6 @@ namespace UnityEngine
 			}
 		}
 
-		[DuckTyped]
 		public Texture mainTexture
 		{
 			get

@@ -47,16 +47,6 @@
 </details>
 <hr>
 <details closed>
-<summary><h2>Boo.Lang</h2></summary>
-<h3>About</h3>
-<ul>
-  <li>Boo programming language library</li>
-  <li>part of old unity's functionality</li>
-  <li>decomipled with ilspy</li>
-</ul>
-</details>
-<hr>
-<details closed>
 <summary><h2>UnityDomainLoad</h2></summary>
 <h3>About</h3>
 <ul>

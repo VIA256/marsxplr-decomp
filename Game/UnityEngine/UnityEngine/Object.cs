@@ -1,7 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Boo.Lang;
 
 namespace UnityEngine
 {
@@ -50,13 +49,11 @@ namespace UnityEngine
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		private static extern Object Internal_InstantiateSingle(Object data, Vector3 pos, Quaternion rot);
 
-		[DuckTyped]
 		public static Object Instantiate(Object original, Vector3 position, Quaternion rotation)
 		{
 			return Internal_InstantiateSingle(original, position, rotation);
 		}
 
-		[DuckTyped]
 		public static Object Instantiate(Object original)
 		{
 			return Internal_CloneSingle(original);
@@ -81,10 +78,8 @@ namespace UnityEngine
 		}
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		[DuckTyped]
 		public static extern Object[] FindObjectsOfType(Type type);
 
-		[DuckTyped]
 		public static Object FindObjectOfType(Type type)
 		{
 			Object[] array = FindObjectsOfType(type);

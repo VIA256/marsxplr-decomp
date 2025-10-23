@@ -1,5 +1,3 @@
-using Boo.Lang;
-
 namespace UnityEngine
 {
 	public class ControllerColliderHit
@@ -26,7 +24,6 @@ namespace UnityEngine
 			}
 		}
 
-		[DuckTyped]
 		public Collider collider
 		{
 			get

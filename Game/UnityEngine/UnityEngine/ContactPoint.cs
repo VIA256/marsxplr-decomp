@@ -1,5 +1,3 @@
-using Boo.Lang;
-
 namespace UnityEngine
 {
 	public struct ContactPoint
@@ -28,7 +26,6 @@ namespace UnityEngine
 			}
 		}
 
-		[DuckTyped]
 		public Collider thisCollider
 		{
 			get
@@ -37,7 +34,6 @@ namespace UnityEngine
 			}
 		}
 
-		[DuckTyped]
 		public Collider otherCollider
 		{
 			get

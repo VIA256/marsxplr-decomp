@@ -1,5 +1,4 @@
 using System.Runtime.CompilerServices;
-using Boo.Lang;
 
 namespace UnityEngine
 {
@@ -233,7 +232,6 @@ namespace UnityEngine
 		}
 
 		[MethodImpl(MethodImplOptions.InternalCall)]
-		[DuckTyped]
 		public static extern Object Instantiate(Object prefab, Vector3 position, Quaternion rotation, int group);
 
 		[MethodImpl(MethodImplOptions.InternalCall)]

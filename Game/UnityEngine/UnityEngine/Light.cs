@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.CompilerServices;
-using Boo.Lang;
 
 namespace UnityEngine
 {
@@ -86,7 +85,6 @@ namespace UnityEngine
 			set;
 		}
 
-		[DuckTyped]
 		public extern Texture cookie
 		{
 			[MethodImpl(MethodImplOptions.InternalCall)]

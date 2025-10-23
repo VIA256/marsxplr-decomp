@@ -1,9 +1,6 @@
 ------------LISTING/DERIVED BUILD ORDER------------------
 
-Boo.Lang:
-
 UnityEngine:
-	Boo.Lang
 
 Assembly - CSharp - first pass:
 	UnityEngine
@@ -17,7 +14,6 @@ Assembly - CSharp:
 	UnityEngine
 
 Assembly - UnityScript - first pass:
-	Boo.Lang
 	UnityEngine
 
 UnityDomainLoad:
