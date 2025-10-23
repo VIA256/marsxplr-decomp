@@ -8,11 +8,8 @@ UnityEngine:
 Assembly - CSharp - first pass:
 	UnityEngine
 
-TerrainControllerData:
-
 Assembly - UnityScript:
 	Assembly - CSharp - first pass
-	TerrainControllerData
 	UnityEngine
 
 Assembly - CSharp:

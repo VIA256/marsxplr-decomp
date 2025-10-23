@@ -12,8 +12,6 @@ msbuild %flags% "UnityEngine\UnityEngine.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild %flags% "Assembly - CSharp - first pass\Assembly---CSharp---first-pass.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
-msbuild %flags% "TerrainControllerData\TerrainControllerData.csproj"
-if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild %flags% "Assembly - UnityScript\Assembly---UnityScript.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild %flags% "Assembly - CSharp\Assembly---CSharp.csproj"

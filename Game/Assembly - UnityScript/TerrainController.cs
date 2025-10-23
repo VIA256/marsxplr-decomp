@@ -3,6 +3,13 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+public class TerrainControllerData
+{
+    public float[, ,] alphaMap;
+
+    public float[,] heightMap;
+}
+
 [Serializable]
 public class TerrainController : MonoBehaviour
 {

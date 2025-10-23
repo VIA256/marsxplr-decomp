@@ -38,15 +38,6 @@
 </details>
 <hr>
 <details closed>
-<summary><h2>TerrainControllerData</h2></summary>
-<h3>About</h3>
-<ul>
-  <li>dll made by aub for the sole purpose of making terrain calculations less annoying or something</li>
-  <li>decomipled with ilspy</li>
-</ul>
-</details>
-<hr>
-<details closed>
 <summary><h2>UnityEngine</h2></summary>
 <h3>About</h3>
 <ul>
