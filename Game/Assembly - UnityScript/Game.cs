@@ -1629,17 +1629,27 @@ public class Game : MonoBehaviour
 
 	public void setVeh(int setVehicleTo)
     {
-		Messaging messaging = Messaging;
-		string lhs = Player.name + " switched to a ";
-		GameObject[] gameVehicles = GameVehicles;
-		messaging.broadcast(lhs + gameVehicles[RuntimeServices.NormalizeArrayIndex(gameVehicles, setVehicleTo)].name);
-		GameVehicleID = setVehicleTo;
+        Messaging.broadcast(
+            Player.name +
+            " switched to a " +
+            GameVehicles[setVehicleTo].name);
+        GameVehicleID = setVehicleTo;
 		int isIt = PlayerVeh.isIt;
 		int score = PlayerVeh.score;
-		int num = (PlayerVeh.specialInput ? 1 : 0);
-		string text = Player.name;
+		int specialInput = (PlayerVeh.specialInput ? 1 : 0);
+		string name = Player.name;
 		Network.Destroy(Player.rigidbody.networkView.viewID);
-		networkView.RPC("iV", RPCMode.All, Network.AllocateViewID(), Settings.networkMode, GameVehicleID, text, 0, isIt, score, num);
+		networkView.RPC(
+            "iV",
+            RPCMode.All,
+            Network.AllocateViewID(),
+            Settings.networkMode,
+            GameVehicleID,
+            name,
+            0,
+            isIt,
+            score,
+            specialInput);
 	}
 
 	[RPC]
