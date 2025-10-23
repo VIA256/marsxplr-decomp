@@ -1653,23 +1653,15 @@ public class Game : MonoBehaviour
 	}
 
 	[RPC]
-	public void eSI()
+	public void eSI() //Ensure Someone is It
     {
-		if (!Player)
+		if (!Player) return;
+		GameObject[] gos = null;
+		Vehicle Veh = null;
+        foreach (DictionaryEntry plrE in Players)
         {
-			return;
-		}
-		GameObject[] array = null;
-		Vehicle vehicle = null;
-		IEnumerator enumerator = UnityRuntimeServices.GetEnumerator(Players);
-		while (enumerator.MoveNext())
-        {
-			DictionaryEntry dictionaryEntry = (DictionaryEntry)enumerator.Current;
-			if (RuntimeServices.EqualityOperator(RuntimeServices.GetProperty(dictionaryEntry.Value, "isIt"), 1))
-            {
-				return;
-			}
-		}
+            if (((Vehicle)plrE.Value).isIt == 1) return;
+        }
 		Player.networkView.RPC("sQ", RPCMode.All, 3);
 	}
 
@@ -1681,7 +1673,10 @@ public class Game : MonoBehaviour
 	[RPC]
 	public void mE(Vector3 position)
     {
-		UnityEngine.Object.Instantiate(WorldEntryEffect, position, new Quaternion(0f, 0f, 0f, 1f));
+		Instantiate(
+            WorldEntryEffect,
+            position,
+            new Quaternion(0f, 0f, 0f, 1f));
 	}
 
 	public IEnumerator registerHost()
