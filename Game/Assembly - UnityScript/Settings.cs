@@ -77,7 +77,7 @@ public class Settings : MonoBehaviour
 	public float worldViewDist = 5000f;
 	public float lavaFog = 0.005f;
 	public float lavaAlt = -300.00f;
-	public int laserSpeed = 180;
+	public float laserSpeed = 180.00f;
 	public float laserGrav = 0f;
 	public float laserRico = 0f;
 	public bool laserLocking;
@@ -128,9 +128,9 @@ public class Settings : MonoBehaviour
 	public bool jetAllowed = true;
 	public float jetHDrag = 0.01f;
 	public float jetDrag = 0.001f;
-	public int jetSteer = 20;
+	public float jetSteer = 20;
 	public float jetLift = 0.5f;
-	public int jetStall = 20;
+	public float jetStall = 20;
 
 	public int networkMode = 0;
 	public int networkPhysics = 0;

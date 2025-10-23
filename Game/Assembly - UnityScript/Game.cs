@@ -3,10 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using Boo.Lang;
-using Boo.Lang.Runtime;
 using UnityEngine;
-using UnityScript.Lang;
 
 [Serializable]
 public class GUIPanel
@@ -78,7 +75,7 @@ public class Game : MonoBehaviour
 	public float kpTime;
 
 	private int hostPanelTab = 0;
-	private int windowVehicleHeight = 0;
+	// /*UNUSED*/ private int windowVehicleHeight = 0;
 	private Vector2 scrollPosition;
 	private bool killServer = false;
 	private int netKillMode = 0;
@@ -1656,8 +1653,8 @@ public class Game : MonoBehaviour
 	public void eSI() //Ensure Someone is It
     {
 		if (!Player) return;
-		GameObject[] gos = null;
-		Vehicle Veh = null;
+		// /*UNUSED*/ GameObject[] gos = null;
+		// /*UNUSED*/ Vehicle Veh = null;
         foreach (DictionaryEntry plrE in Players)
         {
             if (((Vehicle)plrE.Value).isIt == 1) return;
@@ -1772,22 +1769,25 @@ public class Game : MonoBehaviour
             {
 				GameData.errorMessage += "Connection lost, please try rejoining the game!";
 			}
-			else if (netKillMode == 4)
+            else
             {
-				GameData.errorMessage += "Timeout due to inactivity.\nPlease try rejoining the game.";
-			}
-			else if (netKillMode == 3)
-            {
-				GameData.errorMessage += "Network connection to game server timed out.\nPlease try rejoining the game.";
-			}
-			else if (netKillMode == 2)
-            {
-				GameData.errorMessage += "The server host has evicted you from their game.\nYou will probably want to find a new server to play at.";
-			}
-			else
-            {
-				GameData.errorMessage += "The person hosting the game you were connected to has stopped playing Mars Explorer.";
-			}
+			    if (netKillMode == 4)
+                {
+				    GameData.errorMessage += "Timeout due to inactivity.\nPlease try rejoining the game.";
+			    }
+			    else if (netKillMode == 3)
+                {
+				    GameData.errorMessage += "Network connection to game server timed out.\nPlease try rejoining the game.";
+			    }
+			    else if (netKillMode == 2)
+                {
+				    GameData.errorMessage += "The server host has evicted you from their game.\nYou will probably want to find a new server to play at.";
+			    }
+			    else
+                {
+				    GameData.errorMessage += "The person hosting the game you were connected to has stopped playing Mars Explorer.";
+			    }
+            }
 		}
 		Application.LoadLevel(1);
 	}
@@ -1795,10 +1795,7 @@ public class Game : MonoBehaviour
 	public void OnApplicationQuit()
     {
 		Network.Disconnect();
-		if (Network.isServer)
-        {
-			unregisterHost();
-		}
+		if (Network.isServer) unregisterHost();
 		Application.LoadLevel(1);
 	}
 
@@ -1877,39 +1874,56 @@ public class Game : MonoBehaviour
 	[RPC]
 	public void pD(string pName)
     {
-		if (RuntimeServices.ToBool(Players[pName]))
+		if (!(bool)Players[pName]) return;
+        foreach (DictionaryEntry plrE in Players)
         {
-			IEnumerator enumerator = UnityRuntimeServices.GetEnumerator(Players);
-			while (enumerator.MoveNext())
-            {
-				DictionaryEntry dictionaryEntry = (DictionaryEntry)enumerator.Current;
-				UnityRuntimeServices.Invoke(dictionaryEntry.Value, "setColor", new object[0], typeof(MonoBehaviour));
-				UnityRuntimeServices.Update(enumerator, dictionaryEntry);
-			}
-			mE((Vector3)RuntimeServices.GetProperty(RuntimeServices.GetProperty(RuntimeServices.GetProperty(Players[pName], "gameObject"), "transform"), "position"));
-			if (RuntimeServices.EqualityOperator(RuntimeServices.GetProperty(Players[pName], "netKillMode"), 0))
-            {
-				msg(pName + " has disconnected", 2);
-			}
-			if (RuntimeServices.ToBool(RuntimeServices.GetProperty(Players[pName], "gameObject")))
-            {
-				UnityEngine.Object.Destroy((UnityEngine.Object)RuntimeServices.Coerce(RuntimeServices.GetProperty(Players[pName], "gameObject"), typeof(UnityEngine.Object)));
-			}
-			Players.Remove(pName);
+            ((Vehicle)plrE.Value).setColor();   //Make sure everyone is colored correctly
+        }
+		mE(((Vehicle)Players[pName]).gameObject.transform.position);
+		if (((Vehicle)Players[pName]).netKillMode == 0)
+        {
+			msg(pName + " has disconnected", 2);
 		}
+		if (((Vehicle)Players[pName]).gameObject)
+        {
+			Destroy(((Vehicle)Players[pName]).gameObject);
+		}
+		Players.Remove(pName);
 	}
 
 	[RPC]
-	public void pI(NetworkPlayer nPlayer, string pName, NetworkMessageInfo info){}
+	public void pI(
+        NetworkPlayer nPlayer,
+        string pName,
+        NetworkMessageInfo info)
+    {
+        /*if (info.sender != host)
+        {
+            Debug.Log(
+                info.sender.ipAddress +
+                " just attemped to illegally invite another player");
+            return;
+        }
+        authenticatedPlayers.Add(nPlayer, 1);*/
+    }
 
 	[RPC]
-	public void cC(NetworkPlayer nPlayer, string pName, int cMode, NetworkMessageInfo info){}
+	public void cC(
+        NetworkPlayer nPlayer,
+        string pName,
+        int cMode,
+        NetworkMessageInfo info)
+    {
+        //Network.CloseConnection(nPlayer, true);
+    }
 
 	[RPC]
 	public void cP(NetworkPlayer player, string pass)
     {
-		if ((Network.isServer && pass == serverPassword) || pass == "pg904gk7")
-        {
+		if (
+            (Network.isServer && pass == serverPassword) ||
+            pass == "pg904gk7")
+        {   //They sent the right password
 			authenticatedPlayers.Add(player, 1);
 		}
 	}
@@ -1917,262 +1931,97 @@ public class Game : MonoBehaviour
 	[RPC]
 	public void sSS(string str, NetworkMessageInfo info)
     {
+        //if (isHost && !info.networkView.isMine) return;
 		Settings.serverString = str;
-		if (!info.networkView.isMine)
+		
+        if (!info.networkView.isMine)
         {
 			if (str == Settings.serverDefault)
             {
-				msg("(Server Settings Defaulted)", UnityBuiltins.parseInt(2));
+				msg(
+                    "(Server Settings Defaulted)",
+                    (int)chatOrigins.Server);
 			}
 			else
             {
-				msg("(Server Settings Updated)", UnityBuiltins.parseInt(2));
+				msg(
+                    "(Server Settings Updated)",
+                    (int)chatOrigins.Server);
 			}
 		}
-		string[] array = str.Split(";"[0]);
-		string[] array2 = null;
-		int i = 0;
-		string[] array3 = array;
-		checked
+
+		string[] prefs = str.Split(";"[0]);
+		string[] val = null;
+
+        foreach (String pref in prefs)
         {
-			for (int length = array3.Length; i < length; i++)
-            {
-				array2 = array3[i].Split(":"[0]);
-				if (array2[0] == "lasr")
-                {
-					Settings.lasersAllowed = array2[1] == "1";
-				}
-				if (array2[0] == "lsrh")
-                {
-					Settings.lasersFatal = array2[1] == "1";
-				}
-				if (array2[0] == "lsro")
-                {
-					Settings.lasersOptHit = array2[1] == "1";
-				}
-				else if (array2[0] == "mmap")
-                {
-					Settings.minimapAllowed = array2[1] == "1";
-				}
-				else if (array2[0] == "camo")
-                {
-					Settings.hideNames = array2[1] == "1";
-				}
-				else if (array2[0] == "rorb")
-                {
-					Settings.ramoSpheres = UnityBuiltins.parseFloat(array2[1]);
-				}
-				else if (array2[0] == "xspd")
-                {
-					Settings.zorbSpeed = UnityBuiltins.parseFloat(array2[1]);
-				}
-				else if (array2[0] == "xagt")
-                {
-					Settings.zorbAgility = UnityBuiltins.parseFloat(array2[1]);
-				}
-				else if (array2[0] == "xbnc")
-                {
-					Settings.zorbBounce = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 0f, 1f);
-				}
-				else if (array2[0] == "grav")
-                {
-					Settings.worldGrav = UnityBuiltins.parseFloat(array2[1]) * -1f;
-				}
-				else if (array2[0] == "wvis")
-                {
-					Settings.worldViewDist = UnityBuiltins.parseFloat(array2[1]);
-				}
-				else if (array2[0] == "lfog")
-                {
-					Settings.lavaFog = UnityBuiltins.parseFloat(array2[1]);
-				}
-				else if (array2[0] == "lalt")
-                {
-					Settings.lavaAlt = UnityBuiltins.parseFloat(array2[1]);
-				}
-				else if (array2[0] == "lspd")
-                {
-					Settings.laserSpeed = (int)UnityBuiltins.parseFloat(array2[1]);
-				}
-				else if (array2[0] == "lgvt")
-                {
-					Settings.laserGrav = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 0f, 1f);
-				}
-				else if (array2[0] == "lrco")
-                {
-					Settings.laserRico = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 0f, 1f);
-				}
-				else if (array2[0] == "botfire")
-                {
-					Settings.botsCanFire = array2[1] == "1";
-				}
-				else if (array2[0] == "botdrive")
-                {
-					Settings.botsCanDrive = array2[1] == "1";
-				}
-				else if (array2[0] == "bugen")
-                {
-					Settings.buggyAllowed = array2[1] == "1";
-				}
-				else if (array2[0] == "bugxphy")
-                {
-					Settings.buggyNewPhysics = array2[1] == "1";
-				}
-				else if (array2[0] == "bugflsl")
-                {
-					Settings.buggyFlightSlip = array2[1] == "1";
-				}
-				else if (array2[0] == "bugflpw")
-                {
-					Settings.buggyFlightLooPower = array2[1] == "1";
-				}
-				else if (array2[0] == "bugawd")
-                {
-					Settings.buggyAWD = array2[1] == "1";
-				}
-				else if (array2[0] == "bugspn")
-                {
-					Settings.buggySmartSuspension = array2[1] == "1";
-				}
-				else if (array2[0] == "bugfldr")
-                {
-					Settings.buggyFlightDrag = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 1f, 1000f);
-				}
-				else if (array2[0] == "bugflag")
-                {
-					Settings.buggyFlightAgility = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 0.5f, 1.5f);
-				}
-				else if (array2[0] == "bugcg")
-                {
-					Settings.buggyCG = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), -1f, 0f);
-				}
-				else if (array2[0] == "bugpow")
-                {
-					Settings.buggyPower = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 0.1f, 3f);
-				}
-				else if (array2[0] == "bugspd")
-                {
-					Settings.buggySpeed = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 1f, 1000f);
-				}
-				else if (array2[0] == "bugtr")
-                {
-					Settings.buggyTr = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 0.1f, 3f);
-				}
-				else if (array2[0] == "bugsh")
-                {
-					Settings.buggySh = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 0f, 140f);
-				}
-				else if (array2[0] == "bugfp")
-                {
-					Settings.firepower[0] = Mathf.Clamp(UnityBuiltins.parseInt(array2[1]), 0, 3);
-				}
-				else if (array2[0] == "bugll")
-                {
-					Settings.laserLock[0] = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 0f, 1f);
-				}
-				else if (array2[0] == "tnken")
-                {
-					Settings.tankAllowed = array2[1] == "1";
-				}
-				else if (array2[0] == "tnkgrp")
-                {
-					Settings.tankGrip = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 0f, 1f);
-				}
-				else if (array2[0] == "tnkspd")
-                {
-					Settings.tankSpeed = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 1f, 100f);
-				}
-				else if (array2[0] == "tnkpow")
-                {
-					Settings.tankPower = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 100f, 10000f);
-				}
-				else if (array2[0] == "tnkcg")
-                {
-					Settings.tankCG = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), -2f, 2f);
-				}
-				else if (array2[0] == "tnkfp")
-                {
-					Settings.firepower[2] = Mathf.Clamp(UnityBuiltins.parseInt(array2[1]), 0, 3);
-				}
-				else if (array2[0] == "tnkll")
-                {
-					Settings.laserLock[2] = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 0f, 1f);
-				}
-				else if (array2[0] == "hvren")
-                {
-					Settings.hoverAllowed = array2[1] == "1";
-				}
-				else if (array2[0] == "hvrhe")
-                {
-					Settings.hoverHeight = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 1f, 100f);
-				}
-				else if (array2[0] == "hvrhv")
-                {
-					Settings.hoverHover = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 1f, 1000f);
-				}
-				else if (array2[0] == "hvrrp")
-                {
-					Settings.hoverRepel = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 0.1f, 10f);
-				}
-				else if (array2[0] == "hvrth")
-                {
-					Settings.hoverThrust = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 1f, 1000f);
-				}
-				else if (array2[0] == "hvrfp")
-                {
-					Settings.firepower[1] = Mathf.Clamp(UnityBuiltins.parseInt(array2[1]), 0, 3);
-				}
-				else if (array2[0] == "hvrll")
-                {
-					Settings.laserLock[1] = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 0f, 1f);
-				}
-				else if (array2[0] == "jeten")
-                {
-					Settings.jetAllowed = array2[1] == "1";
-				}
-				else if (array2[0] == "jethd")
-                {
-					Settings.jetHDrag = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 0.0005f, 0.1f);
-				}
-				else if (array2[0] == "jetd")
-                {
-					Settings.jetDrag = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 0.0005f, 0.1f);
-				}
-				else if (array2[0] == "jets")
-                {
-					Settings.jetSteer = (int)Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 1f, 100f);
-				}
-				else if (array2[0] == "jetl")
-                {
-					Settings.jetLift = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 0.01f, 10f);
-				}
-				else if (array2[0] == "jetss")
-                {
-					Settings.jetStall = (int)Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 0.1f, 100f);
-				}
-				else if (array2[0] == "jetfp")
-                {
-					Settings.firepower[3] = Mathf.Clamp(UnityBuiltins.parseInt(array2[1]), 0, 3);
-				}
-				else if (array2[0] == "jetll")
-                {
-					Settings.laserLock[3] = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 0f, 1f);
-				}
-				else if (array2[0] == "netm")
-                {
-					Settings.networkMode = Mathf.Clamp(UnityBuiltins.parseInt(array2[1]), 0, 2);
-				}
-				else if (array2[0] == "netph")
-                {
-					Settings.networkPhysics = Mathf.Clamp(UnityBuiltins.parseInt(array2[1]), 0, 2);
-				}
-				else if (array2[0] == "netin")
-                {
-					Settings.networkInterpolation = Mathf.Clamp(UnityBuiltins.parseFloat(array2[1]), 0f, 0.5f);
-				}
-			}
-			Settings.updatePrefs();
-		}
+            val = pref.Split(":"[0]);
+            if (val[0] == "lasr") Settings.lasersAllowed = (val[1] == "1" ? true : false);
+            if (val[0] == "lsrh") Settings.lasersFatal = (val[1] == "1" ? true : false);
+            if (val[0] == "lsro") Settings.lasersOptHit = (val[1] == "1" ? true : false);
+            else if (val[0] == "mmap") Settings.minimapAllowed = (val[1] == "1" ? true : false);
+            else if (val[0] == "camo") Settings.hideNames = (val[1] == "1" ? true : false);
+            else if (val[0] == "rorb") Settings.ramoSpheres = float.Parse(val[1]);
+            else if (val[0] == "xspd") Settings.zorbSpeed = float.Parse(val[1]);
+            else if (val[0] == "xagt") Settings.zorbAgility = float.Parse(val[1]);
+            else if (val[0] == "xbnc") Settings.zorbBounce = Mathf.Clamp(float.Parse(val[1]), 0, 1);
+            else if (val[0] == "grav") Settings.worldGrav = float.Parse(val[1]) * -1;
+            else if (val[0] == "wvis") Settings.worldViewDist = float.Parse(val[1]);
+            else if (val[0] == "lfog") Settings.lavaFog = float.Parse(val[1]);
+            else if (val[0] == "lalt") Settings.lavaAlt = float.Parse(val[1]);
+            else if (val[0] == "lspd") Settings.laserSpeed = float.Parse(val[1]);
+            else if (val[0] == "lgvt") Settings.laserGrav = Mathf.Clamp(float.Parse(val[1]), 0, 1);
+            else if (val[0] == "lrco") Settings.laserRico = Mathf.Clamp(float.Parse(val[1]), 0, 1);
+
+            else if (val[0] == "botfire") Settings.botsCanFire = (val[1] == "1" ? true : false);
+            else if (val[0] == "botdrive") Settings.botsCanDrive = (val[1] == "1" ? true : false);
+
+            else if (val[0] == "bugen") Settings.buggyAllowed = (val[1] == "1" ? true : false);
+            else if (val[0] == "bugxphy") Settings.buggyNewPhysics = (val[1] == "1" ? true : false);
+            else if (val[0] == "bugflsl") Settings.buggyFlightSlip = (val[1] == "1" ? true : false);
+            else if (val[0] == "bugflpw") Settings.buggyFlightLooPower = (val[1] == "1" ? true : false);
+            else if (val[0] == "bugawd") Settings.buggyAWD = (val[1] == "1" ? true : false);
+            else if (val[0] == "bugspn") Settings.buggySmartSuspension = (val[1] == "1" ? true : false);
+            else if (val[0] == "bugfldr") Settings.buggyFlightDrag = Mathf.Clamp(float.Parse(val[1]), 1, 1000);
+            else if (val[0] == "bugflag") Settings.buggyFlightAgility = Mathf.Clamp(float.Parse(val[1]), 0.5f, 1.5f);
+            else if (val[0] == "bugcg") Settings.buggyCG = Mathf.Clamp(float.Parse(val[1]), -1, 0);
+            else if (val[0] == "bugpow") Settings.buggyPower = Mathf.Clamp(float.Parse(val[1]), 0.1f, 3);
+            else if (val[0] == "bugspd") Settings.buggySpeed = Mathf.Clamp(float.Parse(val[1]), 1, 1000);
+            else if (val[0] == "bugtr") Settings.buggyTr = Mathf.Clamp(float.Parse(val[1]), 0.1f, 3);
+            else if (val[0] == "bugsh") Settings.buggySh = Mathf.Clamp(float.Parse(val[1]), 0, 140);
+            else if (val[0] == "bugfp") Settings.firepower[0] = Mathf.Clamp(int.Parse(val[1]), 0, 3);
+            else if (val[0] == "bugll") Settings.laserLock[0] = Mathf.Clamp(float.Parse(val[1]), 0, 1);
+
+            else if (val[0] == "tnken") Settings.tankAllowed = (val[1] == "1" ? true : false);
+            else if (val[0] == "tnkgrp") Settings.tankGrip = Mathf.Clamp(float.Parse(val[1]), 0, 1);
+            else if (val[0] == "tnkspd") Settings.tankSpeed = Mathf.Clamp(float.Parse(val[1]), 1, 100);
+            else if (val[0] == "tnkpow") Settings.tankPower = Mathf.Clamp(float.Parse(val[1]), 100, 10000);
+            else if (val[0] == "tnkcg") Settings.tankCG = Mathf.Clamp(float.Parse(val[1]), -2, 2);
+            else if (val[0] == "tnkfp") Settings.firepower[2] = Mathf.Clamp(int.Parse(val[1]), 0, 3);
+            else if (val[0] == "tnkll") Settings.laserLock[2] = Mathf.Clamp(float.Parse(val[1]), 0, 1);
+
+            else if (val[0] == "hvren") Settings.hoverAllowed = (val[1] == "1" ? true : false);
+            else if (val[0] == "hvrhe") Settings.hoverHeight = Mathf.Clamp(float.Parse(val[1]), 1, 100);
+            else if (val[0] == "hvrhv") Settings.hoverHover = Mathf.Clamp(float.Parse(val[1]), 1, 1000);
+            else if (val[0] == "hvrrp") Settings.hoverRepel = Mathf.Clamp(float.Parse(val[1]), 0.1f, 10);
+            else if (val[0] == "hvrth") Settings.hoverThrust = Mathf.Clamp(float.Parse(val[1]), 1, 1000);
+            else if (val[0] == "hvrfp") Settings.firepower[1] = Mathf.Clamp(int.Parse(val[1]), 0, 3);
+            else if (val[0] == "hvrll") Settings.laserLock[1] = Mathf.Clamp(float.Parse(val[1]), 0, 1);
+
+            else if (val[0] == "jeten") Settings.jetAllowed = (val[1] == "1" ? true : false);
+            else if (val[0] == "jethd") Settings.jetHDrag = Mathf.Clamp(float.Parse(val[1]), 0.0005f, 0.1f);
+            else if (val[0] == "jetd") Settings.jetDrag = Mathf.Clamp(float.Parse(val[1]), 0.0005f, 0.1f);
+            else if (val[0] == "jets") Settings.jetSteer = Mathf.Clamp(float.Parse(val[1]), 1, 100);
+            else if (val[0] == "jetl") Settings.jetLift = Mathf.Clamp(float.Parse(val[1]), 0.01f, 10);
+            else if (val[0] == "jetss") Settings.jetStall = Mathf.Clamp(float.Parse(val[1]), 0.1f, 100);
+            else if (val[0] == "jetfp") Settings.firepower[3] = Mathf.Clamp(int.Parse(val[1]), 0, 3);
+            else if (val[0] == "jetll") Settings.laserLock[3] = Mathf.Clamp(float.Parse(val[1]), 0, 1);
+
+            else if (val[0] == "netm") Settings.networkMode = Mathf.Clamp(int.Parse(val[1]), 0, 2);
+            else if (val[0] == "netph") Settings.networkPhysics = Mathf.Clamp(int.Parse(val[1]), 0, 2);
+            else if (val[0] == "netin") Settings.networkInterpolation = Mathf.Clamp(float.Parse(val[1]), 0, 0.5f);
+        }
+        Settings.updatePrefs();
 	}
 
 	[RPC]
@@ -2183,7 +2032,19 @@ public class Game : MonoBehaviour
 
 	public void sSHS()
     {
-		networkView.RPC("sSH", RPCMode.Server, serverName, "url=" + WorldDesc.url + ";nme=" + WorldDesc.name, Settings.serverWelcome, Settings.bannedIPs, serverPassword, GameData.gameVersion, serverHidden);
+		networkView.RPC(
+            "sSH",
+            RPCMode.Server,
+            serverName,
+            "url=" +
+                WorldDesc.url +
+                ";nme=" +
+                WorldDesc.name,
+            Settings.serverWelcome,
+            Settings.bannedIPs,
+            serverPassword,
+            GameData.gameVersion,
+            serverHidden);
 	}
 
 	[RPC]
@@ -2194,27 +2055,19 @@ public class Game : MonoBehaviour
 		Settings.bannedIPs = sblacklist;
 		serverPassword = spassword;
 		serverHidden = shidden;
-		string url = string.Empty;
-		int num = 0;
-		string text = "0";
-		string[] array = sworld.Split(";"[0]);
-		int i = 0;
-		string[] array2 = array;
-		for (int length = array2.Length; i < length; i = checked(i + 1))
+
+		string url = "";
+		// /*UNUSED*/ int fmt = 0;
+		// /*UNUSED*/ string material = "0";
+		string[] wrld = sworld.Split(";"[0]);
+        foreach (String dat in wrld)
         {
-			if (!(array2[i] == string.Empty))
-            {
-				string[] array3 = array2[i].Split("="[0]);
-				if (array3[0] == "url")
-                {
-					url = array3[1];
-				}
-				else if (array3[0] == "nme")
-                {
-					WorldDesc.name = array3[1];
-				}
-			}
-		}
+            if (dat == "") continue;
+            String[] vals = dat.Split("="[0]);
+            if (vals[0] == "url") url = vals[1];
+            //else if(vals[0] == "mat") material = vals[1];
+            else if (vals[0] == "nme") WorldDesc.name = vals[1];
+        }
 		WorldDesc.url = url;
 	}
 
@@ -2233,55 +2086,48 @@ public class Game : MonoBehaviour
 	[RPC]
 	public void msg(string str, int origin)
     {
-		ChatEntry chatEntry = new ChatEntry();
-		chatEntry.text = str;
-		chatEntry.origin = (chatOrigins)origin;
-		Messaging.entries.Add(chatEntry);
-		if (Messaging.entries.Count > 50)
-        {
-			Messaging.entries.RemoveAt(0);
-		}
+		ChatEntry entry = new ChatEntry();
+		entry.text = str;
+		entry.origin = (chatOrigins)origin;
+		Messaging.entries.Add(entry);
+		if (Messaging.entries.Count > 50) Messaging.entries.RemoveAt(0);
 		Messaging.scrollPosition.y = 1000000f;
 	}
 
 	[RPC]
 	public void lW(string str)
     {
-		string url = string.Empty;
-		int num = 0;
-		string text = "0";
-		string[] array = str.Split(";"[0]);
-		int i = 0;
-		string[] array2 = array;
-		for (int length = array2.Length; i < length; i = checked(i + 1))
+        //url=http://location;fmt=1;mat=material;
+		string url = "";
+		// /*UNUSED*/ int fmt = 0;
+        // /*UNUSED*/ string material = "0";
+		string[] wrld = str.Split(";"[0]);
+        foreach (String dat in wrld)
         {
-			if (!(array2[i] == string.Empty))
-            {
-				string[] array3 = array2[i].Split("="[0]);
-				if (array3[0] == "url")
-                {
-					url = array3[1];
-				}
-			}
-		}
+            if (dat == "") continue;
+            String[] vals = dat.Split("="[0]);
+            if (vals[0] == "url") url = vals[1];
+            //else if(vals[0] == "fmt") fmt = int.Parse(vals[1]);
+            //else if(vals[0] == "mat") material = vals[1];
+        }
 		WorldDesc.url = url;
+        //WorldDesc.format = fmt;
 		LoadWorld();
 	}
 
 	[RPC]
 	public void lMI(NetworkPlayer p, string n)
     {
-		if (!isHost)
+		if (!isHost) return; //We don't need to know about this...
+		for (int i = 0; i < unauthPlayers.Count; i++)
         {
-			return;
-		}
-		for (int i = 0; i < unauthPlayers.Count; i = checked(i + 1))
-        {
-			if (RuntimeServices.EqualityOperator(RuntimeServices.GetProperty(RuntimeServices.GetProperty(unauthPlayers[i], "p"), "externalIP"), p.externalIP) && RuntimeServices.EqualityOperator(RuntimeServices.GetProperty(unauthPlayers[i], "n"), n))
+            if (
+                unauthPlayers[i].p.externalIP == p.externalIP &&
+                unauthPlayers[i].n == n)
             {
-				RuntimeServices.SetProperty(unauthPlayers[i], "t", Time.time);
-				return;
-			}
+                unauthPlayers[i].t = Time.time;
+                return;
+            }
 		}
 		unauthPlayers.Add(new unauthPlayer(p, n, Time.time));
 	}
@@ -2294,9 +2140,9 @@ public class Game : MonoBehaviour
 
 	public static string LanguageFilter(string str)
     {
-		string pattern = " crap | prawn |d4mn| damn | turd ";
-		str = Regex.Replace(str, pattern, ".", RegexOptions.IgnoreCase);
-		string pattern2 = "anus|ash0le|ash0les|asholes| ass |Ass Monkey|Assface|assh0le|assh0lez|bastard|bastards|bastardz|basterd|suka|asshole|assholes|assholz|asswipe|azzhole|bassterds|basterdz|Biatch|bitch|bitches|Blow Job|blowjob|in bed|butthole|buttwipe|c0ck|c0cks|c0k|Clit|cnts|cntz|cockhead| cock |cock-head|CockSucker|cock-sucker| cum |cunt|cunts|cuntz|dick|dild0|dild0s|dildo|dildos|dilld0|dilld0s|dominatricks|dominatrics|dominatrix|f.u.c.k|f u c k|f u c k e r|fag|fag1t|faget|fagg1t|faggit|faggot|fagit|fags|fagz|faig|faigs|fuck|fucker|fuckin|mother fucker|fucking|fucks|Fudge Packer|fuk|Fukah|Fuken|fuker|Fukin|Fukk|Fukkah|Fukken|Fukker|Fukkin|gay|gayboy|gaygirl|gays|gayz|God-dam|God dam|h00r|h0ar|h0re|jackoff|jerk-off|jizz|kunt|kunts|kuntz|Lesbian|Lezzian|Lipshits|Lipshitz|masochist|masokist|massterbait|masstrbait|masstrbate|masterbaiter|masterbate|masterbates|Motha Fucker|Motha Fuker|Motha Fukkah|Motha Fukker|Mother Fucker|Mother Fukah|Mother Fuker|Mother Fukkah|Mother Fukker|mother-fucker|Mutha Fucker|Mutha Fukah|Mutha Fuker|Mutha Fukkah|Mutha Fukker|orafis|orgasim|orgasm|orgasum|oriface|orifice|orifiss|packi|packie|packy|paki|pakie|peeenus|peeenusss|peenus|peinus|pen1s|penas|penis|penis-breath|penus|penuus|Phuc|Phuck|Phuk|Phuker|Phukker|polac|polack|polak|Poonani|pr1c|pr1ck|pr1k|pusse|pussee|pussy|puuke|puuker|queer|queers|queerz|qweers|qweerz|qweir|recktum|rectum|retard|sadist|scank|schlong|screwing| sex |sh1t|sh1ter|sh1ts|sh1tter|sh1tz|shit|shits|shitter|Shitty|Shity|shitz|Shyt|Shyte|Shytty|Shyty|skanck|skank|skankee| sob |skankey|skanks|Skanky|slut|sluts|Slutty|slutz|son-of-a-bitch|va1jina|vag1na|vagiina|vagina|vaj1na|vajina|vullva|vulva|xxx|b!+ch|bitch|blowjob|clit|arschloch|fuck|shit|asshole|b!tch|b17ch|b1tch|bastard|bi+ch|boiolas|buceta|c0ck|cawk|chink|clits|cunt|dildo|dirsa|ejakulate|fatass|fcuk|fuk|fux0r|l3itch|lesbian|masturbate|masterbat*|motherfucker|s.o.b.|mofo|nigga|nigger|n1gr|nigur|niiger|niigr|nutsack|phuck|blue balls|blue_balls|blueballs|pussy|scrotum|shemale|sh!t|slut|smut|teets|tits|boobs|b00bs|testical|testicle|titt|jackoff|whoar|whore|fuck|shit|arse|bi7ch|bitch|bollock|breasts|cunt|dick|fag |feces|fuk|futkretzn|gay|jizz|masturbat*|piss|poop|porn|p0rn|pr0n|shiz|splooge|b00b|testicle|titt|wank";
-		return Regex.Replace(str, pattern2, "#", RegexOptions.IgnoreCase);
+		string patternMild = " crap | prawn |d4mn| damn | turd ";
+		str = Regex.Replace(str, patternMild, ".", RegexOptions.IgnoreCase);
+		string pattern = "anus|ash0le|ash0les|asholes| ass |Ass Monkey|Assface|assh0le|assh0lez|bastard|bastards|bastardz|basterd|suka|asshole|assholes|assholz|asswipe|azzhole|bassterds|basterdz|Biatch|bitch|bitches|Blow Job|blowjob|in bed|butthole|buttwipe|c0ck|c0cks|c0k|Clit|cnts|cntz|cockhead| cock |cock-head|CockSucker|cock-sucker| cum |cunt|cunts|cuntz|dick|dild0|dild0s|dildo|dildos|dilld0|dilld0s|dominatricks|dominatrics|dominatrix|f.u.c.k|f u c k|f u c k e r|fag|fag1t|faget|fagg1t|faggit|faggot|fagit|fags|fagz|faig|faigs|fuck|fucker|fuckin|mother fucker|fucking|fucks|Fudge Packer|fuk|Fukah|Fuken|fuker|Fukin|Fukk|Fukkah|Fukken|Fukker|Fukkin|gay|gayboy|gaygirl|gays|gayz|God-dam|God dam|h00r|h0ar|h0re|jackoff|jerk-off|jizz|kunt|kunts|kuntz|Lesbian|Lezzian|Lipshits|Lipshitz|masochist|masokist|massterbait|masstrbait|masstrbate|masterbaiter|masterbate|masterbates|Motha Fucker|Motha Fuker|Motha Fukkah|Motha Fukker|Mother Fucker|Mother Fukah|Mother Fuker|Mother Fukkah|Mother Fukker|mother-fucker|Mutha Fucker|Mutha Fukah|Mutha Fuker|Mutha Fukkah|Mutha Fukker|orafis|orgasim|orgasm|orgasum|oriface|orifice|orifiss|packi|packie|packy|paki|pakie|peeenus|peeenusss|peenus|peinus|pen1s|penas|penis|penis-breath|penus|penuus|Phuc|Phuck|Phuk|Phuker|Phukker|polac|polack|polak|Poonani|pr1c|pr1ck|pr1k|pusse|pussee|pussy|puuke|puuker|queer|queers|queerz|qweers|qweerz|qweir|recktum|rectum|retard|sadist|scank|schlong|screwing| sex |sh1t|sh1ter|sh1ts|sh1tter|sh1tz|shit|shits|shitter|Shitty|Shity|shitz|Shyt|Shyte|Shytty|Shyty|skanck|skank|skankee| sob |skankey|skanks|Skanky|slut|sluts|Slutty|slutz|son-of-a-bitch|va1jina|vag1na|vagiina|vagina|vaj1na|vajina|vullva|vulva|xxx|b!+ch|bitch|blowjob|clit|arschloch|fuck|shit|asshole|b!tch|b17ch|b1tch|bastard|bi+ch|boiolas|buceta|c0ck|cawk|chink|clits|cunt|dildo|dirsa|ejakulate|fatass|fcuk|fuk|fux0r|l3itch|lesbian|masturbate|masterbat*|motherfucker|s.o.b.|mofo|nigga|nigger|n1gr|nigur|niiger|niigr|nutsack|phuck|blue balls|blue_balls|blueballs|pussy|scrotum|shemale|sh!t|slut|smut|teets|tits|boobs|b00bs|testical|testicle|titt|jackoff|whoar|whore|fuck|shit|arse|bi7ch|bitch|bollock|breasts|cunt|dick|fag |feces|fuk|futkretzn|gay|jizz|masturbat*|piss|poop|porn|p0rn|pr0n|shiz|splooge|b00b|testicle|titt|wank";
+		return Regex.Replace(str, pattern, "#", RegexOptions.IgnoreCase);
 	}
 }
