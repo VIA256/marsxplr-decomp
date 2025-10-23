@@ -1168,344 +1168,416 @@ public class Game : MonoBehaviour
         StartCoroutine_Auto(registerHost());
 	}
 
-	public void WindowServerSetup(int id)
+    public void WindowServerSetup(int id)
     {
-		if (!isHost && WorldDesc.url == string.Empty)
+        if (!isHost && WorldDesc.url == "")
         {
-			GUILayout.FlexibleSpace();
-			GUILayout.FlexibleSpace();
-			GUILayout.FlexibleSpace();
-			GUILayout.Label("This Game is Password Protected:");
-			GUILayout.FlexibleSpace();
-			GUILayout.BeginHorizontal();
-			GUILayout.Space(40f);
-			GUILayout.Label("Password:", GUILayout.Width(80f));
-			serverPassword = GUILayout.PasswordField(serverPassword, "*"[0]);
-			GUILayout.Space(40f);
-			GUILayout.EndHorizontal();
-			if (authTime > 1f && authTime < Time.time - 3f)
+            GUILayout.FlexibleSpace();
+            GUILayout.FlexibleSpace();
+            GUILayout.FlexibleSpace();
+            GUILayout.Label("This Game is Password Protected:");
+            GUILayout.FlexibleSpace();
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(40f);
+            GUILayout.Label("Password:", GUILayout.Width(80f));
+            serverPassword = GUILayout.PasswordField(serverPassword, "*"[0]);
+            GUILayout.Space(40f);
+            GUILayout.EndHorizontal();
+            if (authTime > 1 && authTime < Time.time - 3)
             {
-				GUILayout.FlexibleSpace();
-				GUILayout.Label("Authentication Failed - please try a different password");
-			}
-			GUILayout.FlexibleSpace();
-			GUILayout.Label("(The host can invite you directly into their game if they desire)");
-			GUILayout.FlexibleSpace();
-			GUILayout.BeginHorizontal();
-			GUILayout.Space(40f);
-			if (GUILayout.Button((!(authTime > 1f) || !(authTime > Time.time - 3f)) ? ">> Authenticate" : "Authenticating...", GUILayout.Height(40f)))
+                GUILayout.FlexibleSpace();
+                GUILayout.Label("Authentication Failed - please try a different password");
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.Label("(The host can invite you directly into their game if they desire)");
+            GUILayout.FlexibleSpace();
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(40f);
+            if (GUILayout.Button(
+                (authTime > 1 && authTime > Time.time - 3 ?
+                    "Authenticating..." :
+                    ">> Authenticate"),
+                GUILayout.Height(40)))
             {
-				authTime = Time.time;
-				networkView.RPC("cP", RPCMode.All, Network.player, serverPassword);
-			}
-			GUILayout.Space(40f);
-			GUILayout.EndHorizontal();
-			GUILayout.Space(5f);
-			GUILayout.BeginHorizontal();
-			GUILayout.FlexibleSpace();
-			if (GUILayout.Button("<< Cancel", GUILayout.Height(25f), GUILayout.Width(150f)))
+                authTime = Time.time;
+                networkView.RPC(
+                    "cP",
+                    RPCMode.All,
+                    Network.player,
+                    serverPassword);
+            }
+            GUILayout.Space(40f);
+            GUILayout.EndHorizontal();
+            GUILayout.Space(5);
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button(
+                "<< Cancel",
+                GUILayout.Height(25f),
+                GUILayout.Width(150f)))
             {
-				netKillMode = 1;
-				Network.Disconnect();
-			}
-			GUILayout.FlexibleSpace();
-			GUILayout.EndHorizontal();
-			return;
-		}
-		if (whirldIn.status == WhirldInStatus.Success || worldLoaded)
+                netKillMode = 1;
+                Network.Disconnect();
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+        }
+        else if (
+            whirldIn.status == WhirldInStatus.Success ||
+            worldLoaded == true)
         {
-			if (whirldIn.status == WhirldInStatus.Success && !worldLoaded)
+            if (whirldIn.status == WhirldInStatus.Success && !worldLoaded)
             {
-				worldLoaded = true;
-				Settings.simplified = false;
-				scrollPosition = Vector2.zero;
-				if (whirldIn.info != string.Empty)
+                worldLoaded = true;
+                Settings.simplified = false;
+                scrollPosition = Vector2.zero;
+                if (whirldIn.info != "") msg(whirldIn.info, (int)chatOrigins.Server);
+            }
+
+            GUILayout.Label("\n\n\nWorld Loaded Successfully...\n\n\n");
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(40f);
+            GUILayout.Button("<< Cancel", GUILayout.Height(40f));
+            GUILayout.Space(40f);
+            GUILayout.EndHorizontal();
+            GUILayout.Space(40f);
+        }
+        else if (whirldIn.status != WhirldInStatus.Idle)
+        {
+            if (whirldIn.status == WhirldInStatus.Working)
+            {
+                string threadList = "";
+                foreach(DictionaryEntry thread in whirldIn.threads)
                 {
-					msg(whirldIn.info, UnityBuiltins.parseInt(2));
-				}
-			}
-			GUILayout.Label("\n\n\nWorld Loaded Successfully...\n\n\n");
-			GUILayout.BeginHorizontal();
-			GUILayout.Space(40f);
-			GUILayout.Button("<< Cancel", GUILayout.Height(40f));
-			GUILayout.Space(40f);
-			GUILayout.EndHorizontal();
-			GUILayout.Space(40f);
-			return;
-		}
-		if (whirldIn.status != WhirldInStatus.Idle)
-        {
-			if (whirldIn.status == WhirldInStatus.Working)
-            {
-				string text = string.Empty;
-				IEnumerator enumerator = UnityRuntimeServices.GetEnumerator(whirldIn.threads);
-				while (enumerator.MoveNext())
-                {
-					DictionaryEntry dictionaryEntry = (DictionaryEntry)enumerator.Current;
-					if (!RuntimeServices.EqualityOperator(dictionaryEntry.Value, string.Empty))
+                    if (!thread.Value.Equals(""))
                     {
-						text = (string)RuntimeServices.Coerce(RuntimeServices.InvokeBinaryOperator("op_Addition", text, RuntimeServices.InvokeBinaryOperator("op_Addition", RuntimeServices.InvokeBinaryOperator("op_Addition", "\n", dictionaryEntry.Key), ": ")), typeof(string));
-						UnityRuntimeServices.Update(enumerator, dictionaryEntry);
-						try
+                        threadList +=
+                            "\n" +
+                            thread.Key +
+                            ": ";
+                        try
                         {
-							float num = RuntimeServices.UnboxSingle(dictionaryEntry.Value);
-							UnityRuntimeServices.Update(enumerator, dictionaryEntry);
-							text += Mathf.RoundToInt(RuntimeServices.UnboxSingle(RuntimeServices.InvokeBinaryOperator("op_Multiply", dictionaryEntry.Value, 100))) + "%";
-							UnityRuntimeServices.Update(enumerator, dictionaryEntry);
-						}
-						catch (Exception)
+                            float boo = Convert.ToSingle(thread.Value);
+                            threadList +=
+                                Mathf.RoundToInt(
+                                    Convert.ToSingle(thread.Value) *
+                                    100) +
+                                "%";
+                        }
+                        catch (Exception)
                         {
-							text = (string)RuntimeServices.Coerce(RuntimeServices.InvokeBinaryOperator("op_Addition", text, dictionaryEntry.Value), typeof(string));
-							UnityRuntimeServices.Update(enumerator, dictionaryEntry);
-						}
-					}
-				}
-				scrollPosition = GUILayout.BeginScrollView(scrollPosition);
-				GUILayout.Label("Loading World:\n\n" + ((!(whirldIn.statusTxt == string.Empty)) ? (string.Empty + whirldIn.statusTxt + "...") : "Initializing Whirld Library...") + ((!(whirldIn.progress > 0f) || !(whirldIn.progress < 1f)) ? string.Empty : (" (" + whirldIn.progress * 100f + "%)")) + "\n" + text);
-				GUILayout.EndScrollView();
-			}
-			else
+                            threadList += thread.Value;
+                        }
+                    }
+                }
+                scrollPosition = GUILayout.BeginScrollView(scrollPosition);
+                GUILayout.Label(
+                    "Loading World:\n\n" +
+                    (whirldIn.statusTxt == "" ?
+                        "Initializing Whirld Library..." :
+                        "" + whirldIn.statusTxt + "...") +
+                    (whirldIn.progress > 0 && whirldIn.progress < 1 ?
+                        " (" + whirldIn.progress * 100 + "%)" :
+                        "") +
+                    "\n" +
+                    threadList
+                );
+                GUILayout.EndScrollView();
+            }
+            else    //Getting ready to host a game
             {
-				GUILayout.Label("World Loading Error:\n" + whirldIn.status);
-			}
-			GUILayout.BeginHorizontal();
-			GUILayout.Space(40f);
-			if (GUILayout.Button((whirldIn.status != WhirldInStatus.Working) ? "<< Retry" : "<< Cancel", GUILayout.Height(40f)))
+                GUILayout.Label("World Loading Error:\n" + whirldIn.status);
+            }
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(40f);
+            if (GUILayout.Button(
+                (whirldIn.status == WhirldInStatus.Working ?
+                    "<< Cancel" :
+                    "<< Retry"),
+                GUILayout.Height(40f)))
             {
-				whirldIn.Cleanup();
-				whirldIn = null;
-				whirldIn = new WhirldIn();
-			}
-			GUILayout.Space(40f);
-			GUILayout.EndHorizontal();
-			GUILayout.Space(40f);
-			return;
-		}
-		if (!isHost)
+                whirldIn.Cleanup();
+                whirldIn = null;
+                whirldIn = new WhirldIn();
+            }
+            GUILayout.Space(40f);
+            GUILayout.EndHorizontal();
+            GUILayout.Space(40f);
+        }
+        else if (!isHost)
         {
-			GUILayout.Space(150f);
-			GUILayout.Label("Initializing connection with game server...");
-			netKillMode = 1;
-			Network.Disconnect();
-			return;
-		}
-		if (serverName == string.Empty && GUI.GetNameOfFocusedControl() != "serverName")
+            GUILayout.Space(150f);
+            GUILayout.Label("Initializing connection with game server...");
+            netKillMode = 1;
+            Network.Disconnect();
+        }
+        else    //Getting ready to host a game
         {
-			serverName = GameData.userName + "'s Game";
-		}
-		if (WorldDesc.name == string.Empty && GUI.GetNameOfFocusedControl() != "worldName")
-        {
-			WorldDesc.name = "Custom World";
-		}
-		GUILayout.Space(40f);
-		string[] array = (string[])new UnityScript.Lang.Array("Select a World", "Use Custom World", "Server Settings").ToBuiltin(typeof(string));
-		hostPanelTab = GUILayout.SelectionGrid(hostPanelTab, array, Extensions.get_length((System.Array)array), GUILayout.Height(30f));
-		GUILayout.Space(20f);
-		checked
-        {
-			if (hostPanelTab == 0)
+            if (
+                serverName == "" &&
+                GUI.GetNameOfFocusedControl() != "serverName")
             {
-				GUILayout.Label("Have fun hosting your game!\n Customize your game's settings in the panels enumerated above,\nand specify a world to explore from the list below:");
-				GUILayout.Space(20f);
-				GUILayout.BeginHorizontal();
-				GUILayout.Space(115f);
-				scrollPosition = GUILayout.BeginScrollView(scrollPosition);
-				if (WorldIsCustom && !GUILayout.Toggle(true, "Using Custom World") && false)
+                serverName = GameData.userName + "'s Game";
+            }
+            if (
+                WorldDesc.name == "" &&
+                GUI.GetNameOfFocusedControl() != "worldName")
+            {
+                WorldDesc.name = "Custom World";
+            }
+
+            GUILayout.Space(40f);
+            String[] tabs = {
+                            "Select a World",
+                            "Use Custom World",
+                            "Server Settings"};
+            hostPanelTab = GUILayout.SelectionGrid(
+                hostPanelTab,
+                tabs,
+                tabs.Length,
+                GUILayout.Height(30f));
+
+            //Selecting a ready to go world
+            if (hostPanelTab == 0)
+            {
+                GUILayout.Label("Have fun hosting your game!\n Customize your game's settings in the panels enumerated above,\nand specify a world to explore from the list below:");
+                GUILayout.Space(20f);
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(115f);
+                scrollPosition = GUILayout.BeginScrollView(scrollPosition);
+                /*if (
+                    WorldIsCustom &&
+                    !GUILayout.Toggle(true, "Using Custom World"))
                 {
-					WorldIsCustom = false;
-				}
-				GUILayout.BeginHorizontal();
-				int num2 = 0;
-				int i = 0;
-				GameWorldDesc[] gameWorlds = GameData.gameWorlds;
-				for (int length = gameWorlds.Length; i < length; i++)
+                    WorldIsCustom = false;
+                }*/
+                GUILayout.BeginHorizontal();
+                int i = 0;
+                foreach (GameWorldDesc Gworld in GameData.gameWorlds)
                 {
-					if (gameWorlds[i].featured)
+                    if (!Gworld.featured) continue;
+                    if (
+                        !WorldIsCustom &&
+                        WorldDesc != null &&
+                        WorldDesc.name == Gworld.name)
                     {
-						if (!WorldIsCustom && WorldDesc != null && WorldDesc.name == gameWorlds[i].name)
-                        {
-							GUILayout.Toggle(true, gameWorlds[i].name, GUILayout.Width(170f), GUILayout.Height(22f));
-						}
-						else if (GUILayout.Toggle(false, gameWorlds[i].name, GUILayout.Width(170f), GUILayout.Height(22f)))
-                        {
-							WorldIsCustom = false;
-							WorldDesc.name = gameWorlds[i].name;
-							WorldDesc.url = gameWorlds[i].url;
-						}
-						num2++;
-						if (unchecked(num2 % 2) == 0)
-                        {
-							GUILayout.EndHorizontal();
-							GUILayout.BeginHorizontal();
-						}
-					}
-				}
-				GUILayout.EndHorizontal();
-				GUILayout.Space(20f);
-				GUILayout.FlexibleSpace();
-				GUILayout.BeginHorizontal();
-				num2 = 0;
-				int j = 0;
-				GameWorldDesc[] gameWorlds2 = GameData.gameWorlds;
-				for (int length2 = gameWorlds2.Length; j < length2; j++)
-                {
-					if (!gameWorlds2[j].featured)
+                        GUILayout.Toggle(
+                            true,
+                            Gworld.name,
+                            GUILayout.Width(170f),
+                            GUILayout.Height(22f));
+                    }
+                    else if (GUILayout.Toggle(
+                        false,
+                        Gworld.name,
+                        GUILayout.Width(170f),
+                        GUILayout.Height(22f)))
                     {
-						if (!WorldIsCustom && WorldDesc != null && WorldDesc.name == gameWorlds2[j].name)
-                        {
-							GUILayout.Toggle(true, gameWorlds2[j].name, GUILayout.Width(170f));
-						}
-						else if (GUILayout.Toggle(false, gameWorlds2[j].name, GUILayout.Width(170f)))
-                        {
-							WorldIsCustom = false;
-							WorldDesc.name = gameWorlds2[j].name;
-							WorldDesc.url = gameWorlds2[j].url;
-						}
-						num2++;
-						if (unchecked(num2 % 2) == 0)
-                        {
-							GUILayout.EndHorizontal();
-							GUILayout.BeginHorizontal();
-						}
-					}
-				}
-				GUILayout.EndHorizontal();
-				GUILayout.EndScrollView();
-				GUILayout.EndHorizontal();
-			}
-			else if (hostPanelTab == 1)
+                        WorldIsCustom = false;
+                        WorldDesc.name = Gworld.name;
+                        WorldDesc.url = Gworld.url;
+                    }
+                    i++;
+                    if (i % 2 == 0)
+                    {
+                        GUILayout.EndHorizontal();
+                        GUILayout.BeginHorizontal();
+                    }
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.Space(20f);
+                GUILayout.FlexibleSpace();
+                GUILayout.BeginHorizontal();
+                i = 0;
+                foreach (GameWorldDesc Gworld in GameData.gameWorlds)
+                {
+                    if (Gworld.featured) continue;
+                    if (
+                        !WorldIsCustom &&
+                        WorldDesc != null &&
+                        WorldDesc.name == Gworld.name)
+                    {
+                        GUILayout.Toggle(
+                            true,
+                            Gworld.name,
+                            GUILayout.Width(170f));
+                    }
+                    else if(GUILayout.Toggle(
+                        false,
+                        Gworld.name,
+                        GUILayout.Width(170f)))
+                    {
+                        WorldIsCustom = false;
+                        WorldDesc.name = Gworld.name;
+                        WorldDesc.url = Gworld.url;
+                    }
+                    i++;
+                    if(i % 2 == 0)
+                    {
+                        GUILayout.EndHorizontal();
+                        GUILayout.BeginHorizontal();
+                    }
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.EndScrollView();
+                GUILayout.EndHorizontal();
+            }
+
+            //Using a custom world
+            else if(hostPanelTab == 1)
             {
-				GUILayout.Space(20f);
-				if (WorldIsCustom)
+                GUILayout.Space(20f);
+                if (WorldIsCustom)
                 {
-					GUILayout.BeginHorizontal();
-					GUILayout.Space(150f);
-					WorldIsCustom = GUILayout.Toggle(WorldIsCustom, "Use Custom World");
-					GUILayout.Space(150f);
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					GUILayout.Space(70f);
-					scrollPosition = GUILayout.BeginScrollView(scrollPosition);
-					GUILayout.Space(10f);
-					GUILayout.BeginHorizontal();
-					GUILayout.Label("World Name:", GUILayout.Width(80f));
-					GUI.SetNextControlName("worldName");
-					WorldDesc.name = GUILayout.TextField(WorldDesc.name);
-					GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-					GUI.SetNextControlName("worldUrl");
-					GUILayout.Label("World Url:", GUILayout.Width(80f));
-					string url = WorldDesc.url;
-					WorldDesc.url = GUILayout.TextField(WorldDesc.url);
-					if (WorldDesc.url != url)
-                    {
-						WorldDesc.name = "Custom World";
-					}
-					GUILayout.EndHorizontal();
-					GUILayout.EndScrollView();
-					GUILayout.Space(70f);
-					GUILayout.EndHorizontal();
-				}
-				else
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(150f);
+                    WorldIsCustom = GUILayout.Toggle(
+                        WorldIsCustom,
+                        "Use Custom World");
+                    GUILayout.Space(150f);
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(70f);
+                    scrollPosition = GUILayout.BeginScrollView(scrollPosition);
+                    GUILayout.Space(10f);
+                    //if(WorldDesc.url == "") WorldDesc.url = "http://";
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("World Name:", GUILayout.Width(80f));
+                    GUI.SetNextControlName("worldName");
+                    WorldDesc.name = GUILayout.TextField(WorldDesc.name);
+                    GUILayout.EndHorizontal();
+                    GUILayout.BeginHorizontal();
+                    GUI.SetNextControlName("worldUrl");
+                    GUILayout.Label("World Url:", GUILayout.Width(80f));
+                    String tmp = WorldDesc.url;
+                    WorldDesc.url = GUILayout.TextField(WorldDesc.url);
+                    if (WorldDesc.url != tmp) WorldDesc.name = "Custom World";
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.EndScrollView();
+                    GUILayout.Space(70f);
+                    GUILayout.EndHorizontal();
+                }
+                else
                 {
-					GUILayout.BeginHorizontal();
-					GUILayout.Space(150f);
-					scrollPosition = GUILayout.BeginScrollView(scrollPosition);
-					WorldIsCustom = GUILayout.Toggle(WorldIsCustom, "Use Custom World");
-					GUILayout.EndScrollView();
-					GUILayout.Space(150f);
-					GUILayout.EndHorizontal();
-					GUILayout.Space(20f);
-					GUILayout.Label("Mars Explorer incorporates the Unity Whirld system -\nan open source framework which enables you to design your own game worlds,\nand play them inside Mars Exporer!\n\nIf you have a custom world, enable \"Use Custom World\" above to use it in your game.");
-				}
-				GUILayout.Space(40f);
-				GUILayout.BeginHorizontal();
-				GUILayout.Space(150f);
-				if (GUILayout.Button(">> Learn About the Whirld System"))
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(150f);
+                    scrollPosition = GUILayout.BeginScrollView(scrollPosition);
+                    WorldIsCustom = GUILayout.Toggle(WorldIsCustom, "Use Custom World");
+                    GUILayout.EndScrollView();
+                    GUILayout.Space(150f);
+                    GUILayout.EndHorizontal();
+                    GUILayout.Space(20f);
+                    GUILayout.Label("Mars Explorer incorporates the Unity Whirld system -\nan open source framework which enables you to design your own game worlds,\nand play them inside Mars Exporer!\n\nIf you have a custom world, enable \"Use Custom World\" above to use it in your game.");
+                }
+
+                GUILayout.Space(40f);
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(150f);
+                if(GUILayout.Button(">> Learn About the Whirld System"))
                 {
                     Lobby.OpenURL("http://web.archive.org/web/20120519040400/http://www.unifycommunity.com/wiki/index.php?title=Whirld");
-				}
-				GUILayout.Space(150f);
-				GUILayout.EndHorizontal();
-			}
-			else
+                }
+                GUILayout.Space(150f);
+                GUILayout.EndHorizontal();
+            }
+
+            //Specifying Server Settings
+            else
             {
-				GUILayout.BeginHorizontal();
-				GUILayout.Space(150f);
-				scrollPosition = GUILayout.BeginScrollView(scrollPosition);
-				GUILayout.Space(10f);
-				GUILayout.Label("Your Game's Name:");
-				GUI.SetNextControlName("serverName");
-				serverName = GUILayout.TextField(serverName, 45);
-				GUILayout.Space(20f);
-				serverHidden = GUILayout.Toggle(serverHidden, "Hide This Game From List");
-				if (!serverHidden)
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(150f);
+                scrollPosition = GUILayout.BeginScrollView(scrollPosition);
+
+                GUILayout.Space(10f);
+
+                GUILayout.Label("Your Game's Name:");
+                GUI.SetNextControlName("serverName");
+                serverName = GUILayout.TextField(serverName, 45);
+
+                GUILayout.Space(20f);
+
+                serverHidden = GUILayout.Toggle(
+                    serverHidden,
+                    "Hide This Game From List");
+                if(!serverHidden)
                 {
-					bool flag = GUILayout.Toggle(!(serverPassword == string.Empty), "Password Protect This Game");
-					if (flag)
+                    bool usePass = GUILayout.Toggle(
+                        serverPassword != "",
+                        "Password Protect This Game");
+                    if(usePass)
                     {
-						serverPassword = ((!(serverPassword == string.Empty)) ? serverPassword : "1");
-						GUILayout.BeginHorizontal();
-						GUILayout.Label("Password:", GUILayout.Width(80f));
-						serverPassword = GUILayout.TextField((!(serverPassword == "1")) ? serverPassword : string.Empty, 45);
-						if (flag && serverPassword == string.Empty)
+                        serverPassword = (serverPassword == "" ? "1" : serverPassword);
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label("Password:",GUILayout.Width(80f));
+                        serverPassword = GUILayout.TextField(
+                            (serverPassword == "1" ? "" : serverPassword),
+                            45);
+                        if(usePass && serverPassword == "") serverPassword = "1";
+                        GUILayout.EndHorizontal();
+                        //GUILayout.Label("(Your game will be visible in the list, but friends will need this password to join your game)");
+                    }
+                    else serverPassword = "";
+                }
+                else
+                {
+                    GUILayout.Label("(Your game will not be shown in the server list. Friends will need to \"Direct Connect\" to your IP Address)");
+                    serverPassword = "";
+                }
+
+                GUILayout.EndScrollView();
+                GUILayout.Space(150f);
+                GUILayout.EndHorizontal();
+            }
+
+            GUILayout.FlexibleSpace();
+
+            if(WorldDesc.url != "" && WorldDesc.url != "http://")
+            {
+                if(GUILayout.Button(
+                    ">> Begin Hosting Game! <<",
+                    GUILayout.Height(40f)))
+                {
+                    serverName = LanguageFilter(serverName);
+                    if(serverPassword == "1")
+                    {
+                        serverPassword = "";
+                        while(serverPassword.Length < 5)
                         {
-							serverPassword = "1";
-						}
-						GUILayout.EndHorizontal();
-					}
-					else
-                    {
-						serverPassword = string.Empty;
-					}
-				}
-				else
+                            serverPassword += UnityEngine.Random.Range(0, 9);
+                        }
+                    }
+                    LoadWorld();
+                }
+                GUILayout.Space(5f);
+                GUILayout.BeginHorizontal();
+                GUILayout.FlexibleSpace();
+                if(GUILayout.Button(
+                    "<< Cancel",
+                    GUILayout.Height(25f),
+                    GUILayout.Width(150f)))
                 {
-					GUILayout.Label("(Your game will not be shown in the server list. Friends will need to \"Direct Connect\" to your IP Address)");
-					serverPassword = string.Empty;
-				}
-				GUILayout.EndScrollView();
-				GUILayout.Space(150f);
-				GUILayout.EndHorizontal();
-			}
-			GUILayout.FlexibleSpace();
-			if (WorldDesc.url != string.Empty && WorldDesc.url != "http://")
+                    netKillMode = 1;
+                    Network.Disconnect();
+                }
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+            }
+            else
             {
-				if (GUILayout.Button(">> Begin Hosting Game! <<", GUILayout.Height(40f)))
+                if(GUILayout.Button(
+                    "<< Cancel Hosting Game",
+                    GUILayout.Height(40f)))
                 {
-					serverName = LanguageFilter(serverName);
-					if (serverPassword == "1")
-                    {
-						serverPassword = string.Empty;
-						while (Extensions.get_length(serverPassword) < 5)
-                        {
-							serverPassword += UnityEngine.Random.Range(0, 9);
-						}
-					}
-					LoadWorld();
-				}
-				GUILayout.Space(5f);
-				GUILayout.BeginHorizontal();
-				GUILayout.FlexibleSpace();
-				if (GUILayout.Button("<< Cancel", GUILayout.Height(25f), GUILayout.Width(150f)))
-                {
-					netKillMode = 1;
-					Network.Disconnect();
-				}
-				GUILayout.FlexibleSpace();
-				GUILayout.EndHorizontal();
-			}
-			else
-            {
-				if (GUILayout.Button("<< Cancel Hosting Game", GUILayout.Height(40f)))
-				{
-					netKillMode = 1;
-					Network.Disconnect();
-				}
-				GUILayout.Space(32f);
-			}
-		}
-	}
+                    netKillMode = 1;
+                    Network.Disconnect();
+                }
+                GUILayout.Space(32f);
+            }
+        }
+    }
 
 	public IEnumerator addBot()
     {
