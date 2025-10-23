@@ -11,15 +11,6 @@
 </details>
 <hr>
 <details closed>
-<summary><h2>Assembly - UnityScript - first pass</h2></summary>
-<h3>About</h3>
-<ul>
-  <li>some of the games compiled unityscripts</li>
-  <li>used ILSpy to decompile</li>
-</ul>
-</details>
-<hr>
-<details closed>
 <summary><h2>Assembly - CSharp</h2></summary>
 <h3>About</h3>
 <ul>
