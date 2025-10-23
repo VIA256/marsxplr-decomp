@@ -14,8 +14,6 @@ msbuild %flags% "Assembly - UnityScript\Assembly---UnityScript.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild %flags% "Assembly - CSharp\Assembly---CSharp.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
-msbuild %flags% "Assembly - UnityScript - first pass\Assembly---UnityScript---first-pass.csproj"
-if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild %flags% "UnityDomainLoad\UnityDomainLoad.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
 
@@ -41,8 +39,6 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 copy "Assembly - CSharp - first pass\bin\26998b3a9cbf54825a27e5f2d3cc4df1.dll" "marsxplr_build\Mars Explorer_Data\Assembly - CSharp - first pass.dll"
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy "Assembly - UnityScript\bin\58cc2f0ae478d40e7a89c7ba576c3586.dll" "marsxplr_build\Mars Explorer_Data\Assembly - UnityScript.dll"
-if %errorlevel% neq 0 exit /b %errorlevel%
-copy "Assembly - UnityScript - first pass\bin\50e2df949ee0745d0a011b02942f43d5.dll" "marsxplr_build\Mars Explorer_Data\Assembly - UnityScript - first pass.dll"
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy "UnityEngine\bin\UnityEngine.dll" "marsxplr_build\Mars Explorer_Data\lib\UnityEngine.dll"
 if %errorlevel% neq 0 exit /b %errorlevel%

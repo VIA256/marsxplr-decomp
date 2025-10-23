@@ -13,7 +13,4 @@ Assembly - CSharp:
 	Assembly CSharp - first pass
 	UnityEngine
 
-Assembly - UnityScript - first pass:
-	UnityEngine
-
 UnityDomainLoad:

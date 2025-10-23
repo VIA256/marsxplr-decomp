@@ -12,8 +12,6 @@ msbuild /t:Clean %flags% "Assembly - CSharp - first pass\Assembly---CSharp---fir
 if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild /t:Clean %flags% "Assembly - UnityScript\Assembly---UnityScript.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
-msbuild /t:Clean %flags% "Assembly - UnityScript - first pass\Assembly---UnityScript---first-pass.csproj"
-if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild /t:Clean %flags% "UnityEngine\UnityEngine.csproj"
 if %errorlevel% neq 0 exit /b %errorlevel%
 msbuild /t:Clean %flags% "UnityDomainLoad\UnityDomainLoad.csproj"
