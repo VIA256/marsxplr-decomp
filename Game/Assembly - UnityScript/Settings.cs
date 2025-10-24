@@ -71,6 +71,7 @@ public class Settings : MonoBehaviour
 	public float camDist = 0;
 	public bool flightCam = false;
 	public bool gyroCam = false;
+    public bool quarryCam = false;
 
 	public float worldGrav = -9.81f;
 	public float worldFog = 0.001f;
@@ -154,19 +155,17 @@ public class Settings : MonoBehaviour
 		renderViewCap = PlayerPrefs.GetFloat("viewCap", 1000f);
 		Application.targetFrameRate = (int)PlayerPrefs.GetFloat("targetFrameRate", 100f);
 		renderAutoAdjust = false;
-		showHints = ((PlayerPrefs.GetInt("showHints", 1) != 0) ? true : false);
+		showHints = PlayerPrefs.GetInt("showHints", 1) != 0;
 		useMusic = PlayerPrefs.GetInt("useMusic", 1);
-		useSfx = ((PlayerPrefs.GetInt("useSfx", 1) != 0) ? true : false);
+		useSfx = PlayerPrefs.GetInt("useSfx", 1) != 0;
 		useHypersound = PlayerPrefs.GetInt("useHypersound", 0);
-		useMinimap = ((PlayerPrefs.GetInt("useMinimap", 1) != 0) ? true : false);
-		bool flag = ((PlayerPrefs.GetInt("superCam", 1) != 0) ? true : false);
-		flightCam = ((PlayerPrefs.GetInt("flightCam", 1) != 0) ? true : false);
-		gyroCam = ((PlayerPrefs.GetInt("gyroCam", 0) != 0) ? true : false);
+		useMinimap = PlayerPrefs.GetInt("useMinimap", 1) != 0;
 		camMode = PlayerPrefs.GetInt("cam", 1);
 		camChase = PlayerPrefs.GetInt("camChase", 1);
 		camDist = PlayerPrefs.GetFloat("camDist", 0.01f);
-		flightCam = ((PlayerPrefs.GetInt("flightCam", 0) != 0) ? true : false);
-		gyroCam = ((PlayerPrefs.GetInt("gyroCam", 0) != 0) ? true : false);
+		flightCam = PlayerPrefs.GetInt("flightCam", 0) != 0;
+		gyroCam = PlayerPrefs.GetInt("gyroCam", 0) != 0;
+        quarryCam = PlayerPrefs.GetInt("quarryCam", 0) != 0;
 	}
 
 	public void showDialogGame()
@@ -485,6 +484,12 @@ public class Settings : MonoBehaviour
 			flightCam = !flightCam;
 			PlayerPrefs.SetInt("flightCam", flightCam ? 1 : 0);
 		}
+
+        if (GUILayout.Toggle(quarryCam, "QuarryCam Enabled") != quarryCam)
+        {
+            quarryCam = !quarryCam;
+            PlayerPrefs.SetInt("quarryCam", quarryCam ? 1 : 0);
+        }
 
 		float cg;
 		if (camMode == 0)
