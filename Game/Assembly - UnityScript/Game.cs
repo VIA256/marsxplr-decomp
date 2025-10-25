@@ -1343,12 +1343,12 @@ public class Game : MonoBehaviour
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(115f);
                 scrollPosition = GUILayout.BeginScrollView(scrollPosition);
-                /*if (
+                if (
                     WorldIsCustom &&
                     !GUILayout.Toggle(true, "Using Custom World"))
                 {
                     WorldIsCustom = false;
-                }*/
+                }
                 GUILayout.BeginHorizontal();
                 int i = 0;
                 foreach (GameWorldDesc Gworld in GameData.gameWorlds)
