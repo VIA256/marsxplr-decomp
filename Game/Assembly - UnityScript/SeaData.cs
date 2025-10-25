@@ -45,7 +45,7 @@ public class SeaData : MonoBehaviour
         }
         SeaMode = (SeaModes)Enum.Parse(
             typeof(SeaModes),
-            (String)whirldObject.parameters["Mode"],
+            whirldObject.parameters["Mode"].ToString(),
             true);
 	}
 
