@@ -17,21 +17,21 @@ public class JumpPoint : MonoBehaviour
         {
             return;
         }
-        if ((bool)whirldObject.parameters["JumpTime"])
+        if (whirldObject.parameters["JumpTime"] != null)
         {
-            time = (int)whirldObject.parameters["JumpTime"];
+            time = (int)float.Parse((String)whirldObject.parameters["JumpTime"]);
         }
-        if ((bool)whirldObject.parameters["JumpRandMin"])
+        if (whirldObject.parameters["JumpRandMin"] != null)
         {
-            randMin = (int)whirldObject.parameters["JumpRandMin"];
+            randMin = (int)float.Parse((String)whirldObject.parameters["JumpRandMin"]);
         }
-        if ((bool)whirldObject.parameters["JumpRandMax"])
+        if (whirldObject.parameters["JumpRandMax"] != null)
         {
-            randMax = (int)whirldObject.parameters["JumpRandMax"];
+            randMax = (int)float.Parse((String)whirldObject.parameters["JumpRandMax"]);
         }
-        if ((bool)whirldObject.parameters["JumpVelocity"])
+        if (whirldObject.parameters["JumpVelocity"] != null)
         {
-            velocity = (int)whirldObject.parameters["JumpVelocity"];
+            velocity = (int)float.Parse((String)whirldObject.parameters["JumpVelocity"]);
         }
     }
 
@@ -58,6 +58,12 @@ public class JumpPoint : MonoBehaviour
                 transform.up * velocity,
                 ForceMode.VelocityChange);
         }
+        /*other.attachedRigidbody.AddExplosionForce(
+            UnityEngine.Random.Range(randMin, randMax),
+            transform.position,
+            0f,
+            2f,
+            ForceMode.VelocityChange);*/
     }
 }
 
