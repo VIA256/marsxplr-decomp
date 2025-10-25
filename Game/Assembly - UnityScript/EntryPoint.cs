@@ -8,9 +8,9 @@ public class EntryPoint : MonoBehaviour
 {
     public IEnumerator Start() 
     {
-        yield return new WaitForSeconds(15.0f);
+        yield return new WaitForSeconds(15f);
 
-        ParticleEmitter pe = (ParticleEmitter)GetComponent(typeof(ParticleEmitter));
+        ParticleEmitter pe = this.GetComponent<ParticleEmitter>();
         pe.emit = true;
     }
 }
