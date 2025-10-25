@@ -39,4 +39,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(ProjectDir)bin\UnityEngine.dll" "$(SolutionDir)marsxplr_build\Mars Explorer_Data\lib\UnityEngine.dll"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

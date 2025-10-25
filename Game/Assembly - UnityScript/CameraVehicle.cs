@@ -23,6 +23,8 @@ public class CameraVehicle : MonoBehaviour
 	public GlowEffect glowEffect;
 	public ColorCorrectionEffect colorEffect;
 	public float worldTime;
+    public GameObject camTarget;
+    public Vehicle camTargetVeh;
 
 	public CameraVehicle()
     {
@@ -56,6 +58,18 @@ public class CameraVehicle : MonoBehaviour
 			return;
 		}
 
+        //QuarryCam
+        camTarget = Game.Player;
+        camTargetVeh = Game.PlayerVeh;
+        if (
+            Game.Settings.quarryCam &&
+            (bool)Game.QuarryVeh &&
+            (bool)Game.QuarryVeh.ridePos)
+        {
+            camTarget = Game.QuarryVeh.gameObject;
+            camTargetVeh = Game.QuarryVeh;
+        }
+
 		//Blur
 		if (mb.enabled)
         {
@@ -70,7 +84,7 @@ public class CameraVehicle : MonoBehaviour
 		if (Game.Settings.useHypersound == 1)
         {
 			Game.Settings.gameMusic.pitch = Mathf.Clamp(
-				-0.5f + Game.Player.rigidbody.velocity.magnitude / 15f,
+				-0.5f + camTarget.rigidbody.velocity.magnitude / 15f,
 				0.8f,
 				1.5f
 			);
@@ -133,10 +147,10 @@ public class CameraVehicle : MonoBehaviour
 		arrow.rotation = Quaternion.Lerp(
 			arrow.rotation, 
 			Quaternion.LookRotation(
-				((Game.PlayerVeh.isIt != 0 || !Game.QuarryVeh) ?
+				((camTargetVeh.isIt != 0 || !Game.QuarryVeh) ?
 					World.baseTF :
 					Game.QuarryVeh.gameObject.transform
-				).position - Game.Player.transform.position
+				).position - camTarget.transform.position
 			),
 			Time.deltaTime * 15f
 		);
@@ -192,7 +206,7 @@ public class CameraVehicle : MonoBehaviour
 		}
 
 		//Constants
-		float camDist = (float)Game.PlayerVeh.camOffset + Game.Settings.camDist;
+		float camDist = (float)camTargetVeh.camOffset + Game.Settings.camDist;
 
 		//World Entry Effect
 		if (worldTime < 7f)
@@ -200,11 +214,11 @@ public class CameraVehicle : MonoBehaviour
 			worldTime = Time.time - Game.Controller.worldLoadTime;
 			transform.position = Vector3.Lerp(
 				transform.position,
-				Game.Player.transform.position,
+				camTarget.transform.position,
 				Time.deltaTime * 1f
 			);
 			wr = Quaternion.LookRotation(
-				Game.Player.transform.position - transform.position,
+				camTarget.transform.position - transform.position,
 				Vector3.up
 			);
 			if (worldTime > 1f)
@@ -224,7 +238,7 @@ public class CameraVehicle : MonoBehaviour
 			(Input.GetButton("Snipe") && !Game.Messaging.chatting)
 		)
         {
-			transform.position = Game.PlayerVeh.ridePos.position;
+			transform.position = camTargetVeh.ridePos.position;
 			
 			if (Input.GetButtonDown("Fire2") || Input.GetKeyDown(KeyCode.Alpha1))
             {
@@ -234,7 +248,7 @@ public class CameraVehicle : MonoBehaviour
                 {
 					gyroTation = Quaternion.Euler(
 						0f,
-						Game.PlayerVeh.ridePos.rotation.eulerAngles.y,
+						camTargetVeh.ridePos.rotation.eulerAngles.y,
 						0f
 					);
 				}
@@ -246,7 +260,7 @@ public class CameraVehicle : MonoBehaviour
 			}
 			else
             {
-				transform.rotation = Game.PlayerVeh.ridePos.rotation;
+				transform.rotation = camTargetVeh.ridePos.rotation;
 			}
 			
 			rotationX += Input.GetAxis("Mouse X") * (Input.GetButton("Snipe") ? 0.5f : 2f);
@@ -291,9 +305,9 @@ public class CameraVehicle : MonoBehaviour
             {
 				transform.position = Vector3.Lerp(
 					transform.position,
-					Game.Player.transform.position - Vector3.Normalize(
-						Game.Player.transform.position - transform.position
-					) * camDist + Vector3.one * (Game.PlayerVeh.camSmooth ?
+					camTarget.transform.position - Vector3.Normalize(
+						camTarget.transform.position - transform.position
+					) * camDist + Vector3.one * (camTargetVeh.camSmooth ?
 						0f :
 						Mathf.Lerp(0f, 15f, camDist / 30f)
 					),
@@ -302,9 +316,9 @@ public class CameraVehicle : MonoBehaviour
 				transform.rotation = Quaternion.Slerp(
 					transform.rotation,
 					Quaternion.LookRotation(
-						Game.Player.transform.position - transform.position,
+						camTarget.transform.position - transform.position,
 						(Game.Settings.flightCam ?
-							Game.Player.transform.up :
+							camTarget.transform.up :
 							Vector3.up
 						)
 					),
@@ -329,15 +343,15 @@ public class CameraVehicle : MonoBehaviour
 			else if (Game.Settings.camChase == 1)
             {
 				if (
-					(bool)Game.Player.transform.gameObject.rigidbody &&
-					Game.Player.transform.gameObject.rigidbody.velocity.sqrMagnitude > 0.1f &&
-					Game.Player.transform.gameObject.rigidbody.velocity.normalized.y < 0.8f &&
-					Game.Player.transform.gameObject.rigidbody.velocity.normalized.y > -0.8f
+					(bool)camTarget.transform.gameObject.rigidbody &&
+					camTarget.transform.gameObject.rigidbody.velocity.sqrMagnitude > 0.1f &&
+					camTarget.transform.gameObject.rigidbody.velocity.normalized.y < 0.8f &&
+					camTarget.transform.gameObject.rigidbody.velocity.normalized.y > -0.8f
 				)
                 {
 					lastDir = Vector3.Lerp(
 						lastDir,
-						Game.Player.transform.gameObject.rigidbody.velocity.normalized,
+						camTarget.transform.gameObject.rigidbody.velocity.normalized,
 						0.1f
 					);
 				}
@@ -350,12 +364,12 @@ public class CameraVehicle : MonoBehaviour
 					);
 				}
 				Vector3 newPos = (
-					Game.Player.transform.position + 
+					camTarget.transform.position + 
 					lastDir * -(camDist) + 
 					Vector3.up * (camDist / 3f)
 				);
 				Vector3 tpos = transform.position;
-				float y = tpos.y + (Game.Player.transform.position.y - lastY) * Time.deltaTime;
+				float y = tpos.y + (camTarget.transform.position.y - lastY) * Time.deltaTime;
 				tpos.y = y;
 				transform.position = tpos;
 				transform.position = Vector3.Lerp(
@@ -363,13 +377,13 @@ public class CameraVehicle : MonoBehaviour
 					newPos,
 					Time.deltaTime * 4f
 				);
-				lastY = Game.Player.transform.position.y;
+				lastY = camTarget.transform.position.y;
 				transform.rotation = Quaternion.Slerp(
 					transform.rotation,
 					Quaternion.LookRotation(
-						Game.Player.transform.position - transform.position,
+						camTarget.transform.position - transform.position,
 						(Game.Settings.flightCam ?
-							Game.Player.transform.up :
+							camTarget.transform.up :
 							Vector3.up
 						)
 					),
@@ -395,13 +409,13 @@ public class CameraVehicle : MonoBehaviour
 			//Arcade
 			else if (
 				Game.Settings.camChase == 2 &&
-				Game.Player.transform.rigidbody.velocity.magnitude > 0f
+				camTarget.transform.rigidbody.velocity.magnitude > 0f
 			)
             {
 				float heightDamping = 3f;
 				float rotationDamping = 3f;
 				float wantedRotationAngle = Quaternion.LookRotation(
-					Game.Player.transform.rigidbody.velocity
+					camTarget.transform.rigidbody.velocity
 				).eulerAngles.y;
 				wantedRotationAngle += Mathf.Lerp(
 					30f,
@@ -409,7 +423,7 @@ public class CameraVehicle : MonoBehaviour
 					camDist / 30f
 				) * Input.GetAxis("Horizontal");
 				float wantedHeight = (
-					Game.Player.transform.position.y +
+					camTarget.transform.position.y +
 					Mathf.Lerp(0.1f, 15f, camDist / 30f) +
 					heightBoost
 				);
@@ -432,7 +446,7 @@ public class CameraVehicle : MonoBehaviour
 					currentRotationAngle,
 					0f
 				);
-				Vector3 pos = Game.Player.transform.position;
+				Vector3 pos = camTarget.transform.position;
 				pos.y += targetHeight; //Look ABOVE the target
 				transform.position = pos;
 				transform.position -= currentRotation * Vector3.forward * camDist;
@@ -455,7 +469,7 @@ public class CameraVehicle : MonoBehaviour
                 { //We are under terrain
 					Physics.Linecast( //Determine how far forward we need to go to be out of it
 						transform.position,
-						Game.Player.transform.position + Vector3.up * currentHeight,
+						camTarget.transform.position + Vector3.up * currentHeight,
 						out hit,
 						1 << 8
 					);
@@ -476,11 +490,11 @@ public class CameraVehicle : MonoBehaviour
         {
 			transform.position = Vector3.Lerp(
 				transform.position,
-				Game.Player.transform.position + Vector3.up * 40f,
+				camTarget.transform.position + Vector3.up * 40f,
 				Time.deltaTime * 0.3f
 			);
 			wr = Quaternion.LookRotation(
-				Game.Player.transform.position - transform.position,
+				camTarget.transform.position - transform.position,
 				Vector3.up
 			);
 			transform.rotation = Quaternion.Slerp(
@@ -495,7 +509,7 @@ public class CameraVehicle : MonoBehaviour
         {
 			transform.rotation = Quaternion.Slerp(
 				transform.rotation,
-				Quaternion.LookRotation(Game.Player.transform.position - transform.position),
+				Quaternion.LookRotation(camTarget.transform.position - transform.position),
 				Time.deltaTime * 1.5f
 			);
 			transform.Translate(new Vector3(
