@@ -39,3 +39,8 @@ UnityDomainLoad/obj/
 UnityDomainLoad/bin/
 UnityDomainLoad/.vs/
 UnityDomainLoad/UnityDomainLoad.suo
+MarsXPLR.suo
+MarsXPLR.ncb
+PreBuild/Debug
+PreBuild/Release
+PreBuild/PreBuild.vcproj.*

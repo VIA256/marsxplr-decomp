@@ -63,4 +63,7 @@
     <Compile Include="WaterSimple.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(ProjectDir)bin\26998b3a9cbf54825a27e5f2d3cc4df1.dll" "$(SolutionDir)marsxplr_build\Mars Explorer_Data\Assembly - CSharp - first pass.dll"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <ProjectGuid>{9446C081-D322-4861-B4E4-DD57727ABD6D}</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,13 +31,15 @@
   </PropertyGroup>
   <PropertyGroup>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-	<OutputPath>bin</OutputPath>
-	<AppendTargetFrameworkToOutputPath>False</AppendTargetFrameworkToOutputPath>
+    <OutputPath>bin</OutputPath>
+    <AppendTargetFrameworkToOutputPath>False</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
-  
   <ItemGroup>
     <Compile Include="UnityEngine\UnityDomainLoad.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(ProjectDir)bin\UnityDomainLoad.exe" "$(SolutionDir)marsxplr_build\Mars Explorer_Data\lib\UnityDomainLoad.exe"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

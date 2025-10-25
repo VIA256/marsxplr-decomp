@@ -100,4 +100,7 @@
     <Compile Include="World.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(ProjectDir)bin\58cc2f0ae478d40e7a89c7ba576c3586.dll" "$(SolutionDir)marsxplr_build\Mars Explorer_Data\Assembly - UnityScript.dll"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
