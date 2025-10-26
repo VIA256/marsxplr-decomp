@@ -308,20 +308,28 @@ public class Vehicle : MonoBehaviour
 		GUI.depth = -1;
 		if (networkView.isMine && !isBot)
 		{
+            Rigidbody targetRigidbody = myRigidbody;
+            if (
+                Game.Settings.quarryCam &&
+                (bool)Game.QuarryVeh &&
+                (bool)Game.QuarryVeh.myRigidbody)
+            {
+                targetRigidbody = Game.QuarryVeh.myRigidbody;
+            }
 			GUI.Button(
                 new Rect(
                     (float)Screen.width * 0.5f - 75f,
                     (float)Screen.height - 30f,
                     150f,
                     20f),
-                (myRigidbody.velocity.magnitude < 0.05f ?
-                    Mathf.RoundToInt(myRigidbody.velocity.magnitude * 2.23f) +
-                        " MPH" :
-                    "Static") +
+                (targetRigidbody.velocity.magnitude < 0.05f ?
+                    "Static" :
+                    Mathf.RoundToInt(targetRigidbody.velocity.magnitude * 2.23f) +
+                        " MPH") +
                     "     " +
-                    Mathf.RoundToInt(myRigidbody.transform.position.y) +
+                    Mathf.RoundToInt(targetRigidbody.transform.position.y) +
                     " ALT" +
-                    ((isIt != 0) ?
+                    ((isIt != 0 || Game.Settings.quarryCam) ?
                         "" :
                         ("     " +
                             Mathf.RoundToInt(Game.Controller.quarryDist) +
@@ -330,59 +338,64 @@ public class Vehicle : MonoBehaviour
 		}
 		GUI.depth = 5;
 		Vector3 pos = Camera.main.WorldToScreenPoint(transform.position);
-		if (
-            (!networkView.isMine || isBot &&
-                Game.Settings.hideNames &&
-                (Vector3.Distance(
-                    new Vector3(pos.x, pos.y, 0f),
-                    Input.mousePosition) >= 40f ||
-                Physics.Linecast(
+        bool mainTag = networkView.isMine && !isBot;
+        if(Game.Settings.quarryCam && (bool)Game.QuarryVeh)
+        {
+            mainTag = (this == Game.QuarryVeh);
+        }
+        if (
+            mainTag ||
+            !Game.Settings.hideNames ||
+            (
+                Vector3.Distance(
+                    new Vector3(pos.x, pos.y, 0),
+                    Input.mousePosition) < 40 &&
+                !Physics.Linecast(
                     transform.position,
-                    Camera.main.transform.position,
-                    1 << 8))) ||
-            (pos.z <= 0f) &&
-            (!networkView.isMine || isBot))
-		{
-			return;
-		}
-		if (pos.z < 0f)
-		{
-			pos.z = 0f;
-		}
-		float sizeX = Mathf.Max(
-            50f,
-            Mathf.Min(150f, (float)Screen.width * 0.16f) -
-                pos.z / 1.5f);
-		float sizeY = Mathf.Max(
-            20f,
-            Mathf.Min(50f, (float)Screen.width * 0.044f) -
-                pos.z * 0.2f);
-		if (
-            (pos.z <= 1f || pos.y < sizeY * 1.9f) &&
-            networkView.isMine && !isBot)
-		{
-			if (pos.z <= 1f)
-			{
-				pos.x = Screen.width / 2;
-			}
-			pos.y = sizeY + 100f;
-		}
-		GUI.Button(
-            new Rect(
-                pos.x - sizeX * 0.5f,
-                (float)Screen.height - pos.y + sizeY * 1f,
-                sizeX,
-                sizeY),
-            name +
-                "\n" +
-                shortName +
-                " " +
-                score +
-                netCode,
-            "player_nametag" +
-                ((isIt == 0) ?
-                    "" :
-                    "_it"));
+                    Camera.main.transform.position, 1 << 8)))
+        {
+            if (pos.z > 0 || mainTag)
+            {
+                if (pos.z < 0f)
+                {
+                    pos.z = 0f;
+                }
+                float sizeX = Mathf.Max(
+                    50f,
+                    Mathf.Min(150f, (float)Screen.width * 0.16f) -
+                        pos.z / 1.5f);
+                float sizeY = Mathf.Max(
+                    20f,
+                    Mathf.Min(50f, (float)Screen.width * 0.044f) -
+                        pos.z * 0.2f);
+                if (
+                    (pos.z <= 1f || pos.y < sizeY * 1.9f) &&
+                        mainTag)
+                {
+                    if (pos.z <= 1f)
+                    {
+                        pos.x = Screen.width / 2;
+                    }
+                    pos.y = sizeY + 100f;
+                }
+                GUI.Button(
+                    new Rect(
+                        pos.x - sizeX * 0.5f,
+                        (float)Screen.height - pos.y + sizeY * 1f,
+                        sizeX,
+                        sizeY),
+                    name +
+                        "\n" +
+                        shortName +
+                        " " +
+                        score +
+                        netCode,
+                    "player_nametag" +
+                        ((isIt == 0) ?
+                            "" :
+                            "_it"));
+            }
+        }
 	}
 
     public IEnumerator OnPrefsUpdated()
