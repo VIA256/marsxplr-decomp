@@ -1,0 +1,19 @@
+import os
+
+top = '.'
+out = 'marsxplr_build'
+
+def options(ctx):
+	ctx.add_option('--mono_home',
+		action='store',
+		default='',
+		help='path where a mono install contains bin, lib, and include directories')
+
+def configure(ctx):
+	ctx.env.MONO_HOME = ctx.options.mono_home
+	ctx.find_program('mcs',
+		var='MCS',
+		path_list=[os.path.join(ctx.env.MONO_HOME, 'bin')])
+
+def build(bld):
+	bld(rule='\"${MCS}\" --version')

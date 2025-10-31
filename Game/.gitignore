@@ -44,3 +44,5 @@ MarsXPLR.ncb
 PreBuild/Debug
 PreBuild/Release
 PreBuild/PreBuild.vcproj.*
+waf*/
+.lock-waf*
