@@ -1,7 +1,11 @@
 import os
+import shutil
+
+APPNAME = 'MarsXPLR'
+VERSION = '4.0.1'
 
 top = '.'
-out = 'marsxplr_build'
+out = 'wafbuild'
 
 def options(ctx):
 	ctx.add_option('--mono_home',
@@ -16,4 +20,11 @@ def configure(ctx):
 		path_list=[os.path.join(ctx.env.MONO_HOME, 'bin')])
 
 def build(bld):
-	bld(rule='\"${MCS}\" --version')
+	bld.env.MBUILD = os.path.join(bld.top_dir, 'marsxplr_build')
+
+	if bld.cmd == 'clean':
+		if os.path.exists(bld.env.MBUILD):
+			shutil.rmtree(bld.env.MBUILD)
+		return	
+
+	bld.recurse('UnityDomainLoad')
