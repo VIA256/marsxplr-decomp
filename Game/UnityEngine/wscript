@@ -1,4 +1,4 @@
-## UnityDomainLoad
+## UnityEngine
 
 import os
 
@@ -6,16 +6,17 @@ def build(bld):
 	level = bld.path.abspath()
 	SOURCES = \
 		os.path.join(level, 'Properties', 'AssemblyInfo.cs') + ' ' + \
-		os.path.join(level, 'UnityEngine', 'UnityDomainLoad.cs')
+		os.path.join(level, 'UnityEngine', '*.cs')
 
 	outdir = os.path.join(bld.env.MBUILD, 'Mars Explorer_Data', 'lib')
 	if not os.path.exists(outdir):
 		os.makedirs(outdir)
-	out = os.path.join(outdir, 'UnityDomainLoad.exe')
+	out = os.path.join(outdir, 'UnityEngine.dll')
 	
 	bld(rule='\"${MCS}\" ' +
 		SOURCES +
 		' -out:\"' + out +
 		'\" -sdk:' + bld.env.MONOSDK +
 		' -langversion:' + bld.env.MONOLANGVERSION +
-		' -target:exe')
+		' -target:library'
+		' -unsafe')

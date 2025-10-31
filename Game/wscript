@@ -1,3 +1,5 @@
+## MarsXPLR top level
+
 import os
 import shutil
 
@@ -21,10 +23,13 @@ def configure(ctx):
 
 def build(bld):
 	bld.env.MBUILD = os.path.join(bld.top_dir, 'marsxplr_build')
+	bld.env.MONOSDK = '2'
+	bld.env.MONOLANGVERSION = '3'
 
 	if bld.cmd == 'clean':
 		if os.path.exists(bld.env.MBUILD):
 			shutil.rmtree(bld.env.MBUILD)
 		return	
 
+	bld.recurse('UnityEngine')
 	bld.recurse('UnityDomainLoad')
