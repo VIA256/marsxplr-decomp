@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly---UnityScript", "A
 		{23B280BD-8095-4FA3-B894-B77354BEF075} = {23B280BD-8095-4FA3-B894-B77354BEF075}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly---CSharp---first-pass", "Assembly - CSHarp - first pass\Assembly---CSharp---first-pass.csproj", "{93A8D6B3-DD52-4C21-A101-AF360DAFC096}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly---CSharp---first-pass", "Assembly_-_CSharp_-_first pass\Assembly---CSharp---first-pass.csproj", "{93A8D6B3-DD52-4C21-A101-AF360DAFC096}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C67F4835-3976-49D0-AA05-3487C9FD57A2} = {C67F4835-3976-49D0-AA05-3487C9FD57A2}
 		{546DAF9B-0B6A-4800-922B-2F95A86DE45E} = {546DAF9B-0B6A-4800-922B-2F95A86DE45E}

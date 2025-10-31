@@ -31,5 +31,9 @@ def build(bld):
 			shutil.rmtree(bld.env.MBUILD)
 		return	
 
-	bld.recurse('UnityEngine')
 	bld.recurse('UnityDomainLoad')
+	bld.recurse('UnityEngine')
+
+	bld.add_group()
+
+	bld.recurse('Assembly_-_CSHarp_-_first_pass')

@@ -12,6 +12,8 @@ def build(bld):
 	if not os.path.exists(outdir):
 		os.makedirs(outdir)
 	out = os.path.join(outdir, 'UnityEngine.dll')
+
+	bld.env.REF_UnityEngine = out
 	
 	bld(rule='\"${MCS}\" ' +
 		SOURCES +
