@@ -37,3 +37,7 @@ def build(bld):
 	bld.add_group()
 
 	bld.recurse('Assembly_-_CSHarp_-_first_pass')
+
+	bld.add_group()
+
+	bld.recurse('Assembly_-_CSharp')

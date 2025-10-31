@@ -1,4 +1,4 @@
-## Assembly - CSharp - first pass
+## Assembly - CSharp
 
 import os
 import shutil
@@ -6,7 +6,7 @@ import shutil
 def post(bld):
 	global outdir
 	global out
-	newout = os.path.join(outdir, 'Assembly - CSharp - first pass.dll')
+	newout = os.path.join(outdir, 'Assembly - CSharp.dll')
 	shutil.move(out, newout)
 
 def build(bld):
@@ -22,14 +22,13 @@ def build(bld):
 	if not os.path.exists(outdir):
 		os.makedirs(outdir)
 	global out
-	out = os.path.join(outdir, '26998b3a9cbf54825a27e5f2d3cc4df1.dll')
-
-	bld.env.REF_AsmCSfp = out
-
+	out = os.path.join(outdir, 'e36192721fc364533a8edf2aefd3b72c.dll')
+	
 	bld(rule='\"${MCS}\" ' +
 		SOURCES +
 		' -out:\"' + out +
 		'\" -sdk:' + bld.env.MONOSDK +
 		' -langversion:' + bld.env.MONOLANGVERSION +
 		' -target:library'
-		' -reference:\"' + bld.env.REF_UnityEngine + '\"')
+		' -reference:\"' +
+			bld.env.REF_UnityEngine + '\",\"' + 					bld.env.REF_AsmCSfp + '\"')
