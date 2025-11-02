@@ -1,5 +1,6 @@
-# Mars Explorer Decompilation Project
+# Mars Explorer Decompilation Project (archive)
 ## About
+THIS REPOSITORY HAS MOVED TO [gitea.moe](https://gitea.moe/VIA256/marsxplr-decomp)<br>
 My amatuer attempt at decompiling Mars Explorer so that it can be improved to run on newer machines and other platforms (as well as ease of modding to support new 3rd party multiplayer and whirlds)
 <hr>
 <h1>building</h1>
