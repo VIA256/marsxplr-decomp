@@ -1,6 +1,0 @@
-- slideshow abt unity 5.x internals
-    https://www.slideshare.net/slideshow/unity-internals-memory-and-performance/35909332
-- unity pro for ppc machine. perhaps get this running on an old machine or vm and try ripping scenes/assets from it
-    https://www.macintoshrepository.org/15255-unity-pro
-- info on godot engine architecture:
-    https://docs.godotengine.org/en/4.4/contributing/development/core_and_modules/index.html

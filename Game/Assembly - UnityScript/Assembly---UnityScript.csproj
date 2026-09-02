@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputType>library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Assembly - UnityScript</RootNamespace>
+    <AssemblyName>58cc2f0ae478d40e7a89c7ba576c3586</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <ProjectGuid>{084E81A6-3376-4976-B642-4C6443C97C36}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <OutputPath>bin</OutputPath>
+    <AppendTargetFrameworkToOutputPath>False</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\UnityEngine\bin\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="26998b3a9cbf54825a27e5f2d3cc4df1">
+      <HintPath>..\Assembly - CSharp - first pass\bin\26998b3a9cbf54825a27e5f2d3cc4df1.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseSimple.cs" />
+    <Compile Include="Buggy.cs" />
+    <Compile Include="CameraVehicle.cs" />
+    <Compile Include="ColliderAtach.cs" />
+    <Compile Include="CompilerGeneratedExtensions.cs" />
+    <Compile Include="CompilerGenerated\GUIAdaptor.cs" />
+    <Compile Include="CustomCursor.cs" />
+    <Compile Include="EntryPoint.cs" />
+    <Compile Include="FloorController.cs" />
+    <Compile Include="Game.cs" />
+    <Compile Include="GameData.cs" />
+    <Compile Include="GameWorldDesc.cs" />
+    <Compile Include="Hovercraft.cs" />
+    <Compile Include="HoverThrustClustOfDust.cs" />
+    <Compile Include="HoverThrustMoonOrBust.cs" />
+    <Compile Include="Init.cs" />
+    <Compile Include="Jet.cs" />
+    <Compile Include="JetThruster.cs" />
+    <Compile Include="JumpPoint.cs" />
+    <Compile Include="Lobby.cs" />
+    <Compile Include="LobbyDecor.cs" />
+    <Compile Include="LobbyStarfield.cs" />
+    <Compile Include="MeshSerializer.cs" />
+    <Compile Include="Messaging.cs" />
+    <Compile Include="MiniMap.cs" />
+    <Compile Include="MonoBehaviourScript.cs" />
+    <Compile Include="PrefabHere.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RamoSphere.cs" />
+    <Compile Include="Rocket.cs" />
+    <Compile Include="SeaData.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Skidmarks.cs" />
+    <Compile Include="SoundEffect.cs" />
+    <Compile Include="Tank.cs" />
+    <Compile Include="TankMe.cs" />
+    <Compile Include="TankTrack.cs" />
+    <Compile Include="TankTrackSimple.cs" />
+    <Compile Include="TerrainController.cs" />
+    <Compile Include="ThrustCone.cs" />
+    <Compile Include="Vehicle.cs" />
+    <Compile Include="VehicleBot.cs" />
+    <Compile Include="VehicleData.cs" />
+    <Compile Include="VehicleLocal.cs" />
+    <Compile Include="VehicleMe.cs" />
+    <Compile Include="VehicleNet.cs" />
+    <Compile Include="VehicleTrigger.cs" />
+    <Compile Include="WaterLightmapFog.cs" />
+    <Compile Include="WhirldData.cs" />
+    <Compile Include="WhirldIn.cs" />
+    <Compile Include="WhirldLibrary.cs" />
+    <Compile Include="WhirldLOD.cs" />
+    <Compile Include="WhirldObject.cs" />
+    <Compile Include="World.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(ProjectDir)bin\58cc2f0ae478d40e7a89c7ba576c3586.dll" "$(SolutionDir)marsxplr_build\Mars Explorer_Data\Assembly - UnityScript.dll"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

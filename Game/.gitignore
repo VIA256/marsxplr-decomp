@@ -1,0 +1,48 @@
+Assembly - UnityScript/obj/
+Assembly - UnityScript/bin/
+Assembly - UnityScript/.vs/
+Assembly - UnityScript/Assembly---UnityScript.suo
+Assembly - CSharp - first pass/obj/
+Assembly - CSharp - first pass/bin/
+Assembly - CSharp - first pass/.vs/
+Assembly - CSharp - first pass/Assembly---CSharp---first-pass.suo
+Assembly - CSharp/obj/
+Assembly - CSharp/bin/
+Assembly - CSharp/.vs/
+Assembly - CSharp/Assembly---CSharp.suo
+Assembly - UnityScript - first pass/obj/
+Assembly - UnityScript - first pass/bin/
+Assembly - UnityScript - first pass/.vs/
+Assembly - UnityScript - first pass/Assembly---UnityScript---first-pass.suo
+Ionic.Zlib/obj/
+Ionic.Zlib/bin/
+Ionic.Zlib/.vs/
+Ionic.Zlib/Ionic.Zlib.suo
+TerrainControllerData/obj/
+TerrainControllerData/bin/
+TerrainControllerData/.vs/
+TerrainControllerData/TerrainControllerData.suo
+marsxplr_build/
+UnityEngine/obj/
+UnityEngine/bin/
+UnityEngine/.vs/
+UnityEngine/UnityEngine.suo
+Boo.Lang/obj/
+Boo.Lang/bin/
+Boo.Lang/.vs/
+Boo.Lang/Boo.Lang.suo
+UnityScript.Lang/obj/
+UnityScript.Lang/bin/
+UnityScript.Lang/.vs/
+UnityScript.Lang/UnityScript.Lang.suo
+UnityDomainLoad/obj/
+UnityDomainLoad/bin/
+UnityDomainLoad/.vs/
+UnityDomainLoad/UnityDomainLoad.suo
+MarsXPLR.suo
+MarsXPLR.ncb
+PreBuild/Debug
+PreBuild/Release
+PreBuild/PreBuild.vcproj.*
+waf*/
+.lock-waf*

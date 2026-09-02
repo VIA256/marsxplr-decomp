@@ -1,0 +1,34 @@
+## Assembly - CSharp
+
+import os
+import shutil
+
+def post(bld):
+	global outdir
+	global out
+	newout = os.path.join(outdir, 'Assembly - CSharp.dll')
+	shutil.move(out, newout)
+
+def build(bld):
+	bld.add_post_fun(post)
+
+	level = bld.path.abspath()
+	SOURCES = \
+		os.path.join(level, 'Properties', 'AssemblyInfo.cs') + ' ' + \
+		os.path.join(level, '*.cs')
+	
+	global outdir
+	outdir = os.path.join(bld.env.MBUILD, 'Mars Explorer_Data')
+	if not os.path.exists(outdir):
+		os.makedirs(outdir)
+	global out
+	out = os.path.join(outdir, 'e36192721fc364533a8edf2aefd3b72c.dll')
+	
+	bld(rule='\"${MCS}\" ' +
+		SOURCES +
+		' -out:\"' + out +
+		'\" -sdk:' + bld.env.MONOSDK +
+		' -langversion:' + bld.env.MONOLANGVERSION +
+		' -target:library'
+		' -reference:\"' +
+			bld.env.REF_UnityEngine + '\",\"' + 					bld.env.REF_AsmCSfp + '\"')
