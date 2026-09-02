@@ -1,0 +1,81 @@
+## MarsRuntime
+
+import os
+import shutil
+import sys
+
+def options(opt):
+	opt.load('compiler_c')
+	opt.add_option('--release_profile',
+		action='store',
+		default='no',
+		help='specify this as \"yes\" to make a release build instead of a debug build which is the default')
+
+def configure(conf):
+	conf.load('compiler_c')
+	conf.env.MONOINC = os.path.join(conf.env.MONO_HOME, 'include', 'mono-2.0')
+	conf.env.RELEASE_PROFILE = conf.options.release_profile
+	if conf.env.RELEASE_PROFILE == 'yes':
+		print('TAKE NOTE: you are configured to build a release profile')
+
+def post(bld):
+	ext = '.exe' if os.name == 'nt' else ''
+	distdir = os.path.join(bld.top_dir, 'marsxplr_build')
+	os.makedirs(distdir, exist_ok=True)
+	shutil.copy(
+		os.path.join(bld.out_dir, 'MarsRuntime', 'Mars Explorer' + ext),
+		os.path.join(distdir, 'Mars Explorer' + ext))
+
+	shutil.copytree(
+		os.path.join(bld.top_dir, 'resources'),
+		os.path.join(distdir, 'Mars Explorer_Data'),
+		dirs_exist_ok=True)
+	
+	mscorlib = os.path.join(
+		bld.env.MONO_HOME,
+		'lib',
+		'mono',
+		'4.5',
+		'mscorlib.dll')
+	mscorlibdistdir = os.path.join(
+		distdir,
+		'Mars Explorer_Data',
+		'lib')
+	if(not os.path.exists(mscorlib)):
+		raise Exception("mscorlib.dll NOT FOUND IN SYSTEM")
+	os.makedirs(mscorlibdistdir, exist_ok=True)
+	shutil.copy(mscorlib,
+		os.path.join(mscorlibdistdir, 'mscorlib.dll'))
+
+	monoshlibname = ('libmonosgen-2.0.so' \
+		if not sys.platform == 'darwin' else 'libmonosgen-2.0.dylib') \
+		if not os.name == 'nt' else ('mono-2.0-sgen.dll')
+	monoshlibdistname = ('mono-runtime.so' \
+		if not sys.platform == 'darwin' else 'mono-runtime.dylib') \
+		if not os.name == 'nt' else 'mono-runtime.dll'
+	monoshlib = os.path.join(
+		bld.env.MONO_HOME,
+		'lib' if not os.name == 'nt' else 'bin',
+		monoshlibname)
+	if(not os.path.exists(monoshlib)):
+		raise Exception(monoshlibname + " NOT FOUND IN SYSTEM")
+	monoshlibdistdir = os.path.join(
+		distdir,
+		'Mars Explorer_Data',
+		'unity')
+	os.makedirs(monoshlibdistdir, exist_ok=True)
+	shutil.copy(monoshlib,
+		os.path.join(monoshlibdistdir, monoshlibdistname),
+		follow_symlinks=True)
+
+def build(bld):
+	bld.add_post_fun(post)
+
+	bld.program(
+		source=bld.path.ant_glob(os.path.join('src', '*.c')),
+		target='Mars Explorer',
+		cflags=
+			(['/W4', '/std:c11', '/I' + bld.env.MONOINC] if bld.env.CC_NAME == 'msvc'
+			else ['-Wall', '-Wextra', '-std=c99', '-I' + bld.env.MONOINC, '-D_POSIX_C_SOURCE=200809L']) \
+            + ['-DNDEBUG' if bld.env.RELEASE_PROFILE == 'yes' else '']
+	)

@@ -1,0 +1,6 @@
+marsxplr_build/
+ripper_build/
+editor_build/
+waf*/
+.lock-waf*
+.DS_Store

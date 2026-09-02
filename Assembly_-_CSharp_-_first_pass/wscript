@@ -1,0 +1,22 @@
+## Assembly - CSharp - first pass
+
+import os
+import shutil
+
+def post(bld):
+	distdir = os.path.join(bld.top_dir, 'marsxplr_build', 'Mars Explorer_Data')
+	os.makedirs(distdir, exist_ok=True)
+	shutil.copy(
+		os.path.join(bld.out_dir, 'Assembly_-_CSharp_-_first_pass', '26998b3a9cbf54825a27e5f2d3cc4df1.dll'),
+		os.path.join(distdir, 'Assembly - CSharp - first pass.dll'))
+
+def build(bld):
+	bld.add_post_fun(post)
+	
+	bld(
+		source=bld.path.ant_glob(os.path.join('src', '*.cs')),
+		target='26998b3a9cbf54825a27e5f2d3cc4df1.dll',
+		rule='"${MCS}" -recurse:\"' +
+			os.path.join(bld.path.abspath(), 'src', '*.cs') + '\"' +
+			' -reference:\"' + str(os.path.join(bld.out_dir, 'UnityEngine', 'UnityEngine.dll')) + '\"'
+			' -out:${TGT} -target:library ${MONOOPTS}')

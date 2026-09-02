@@ -1,0 +1,23 @@
+== THE BIG BOOK OF EDITOR KEYBINDS ==
+
+W		in moveCam mode: move forward
+
+A		moveCam: strafe left
+
+S		moveCam: move backward
+
+D		moveCam: strafe right
+
+Shift	moveCam: move down
+
+Space	moveCam: move up
+
+Ctrl	moveCam: move faster
+
+V		enable/disable moveCam
+
+Ctrl-N		new whirld
+
+Ctrl-O		open whirld
+
+Ctrl-Q		quit editor
